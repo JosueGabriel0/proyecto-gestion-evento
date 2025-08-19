@@ -4,7 +4,7 @@ Sistema de gestión para jornadas científicas que optimiza el registro de alumn
 ---
 
 ## 📌 Tecnologías
-- **Backend:** Spring Boot
+- **Backend:** Laravel
 - **Frontend Web:** React (Panel de administración)
 - **App Móvil:** Flutter (Registro y escaneo QR)
 - **Base de Datos:** MySQL
@@ -29,14 +29,14 @@ El sistema sigue una arquitectura distribuida y multiplataforma:
 [ React Web ]     [ Flutter App ]
         \           /
          \         /
-         [ Spring Boot API ]
+         [ Laravel API ]
                 |
          [ Base de Datos ]
 ```
 
 - **Frontend Web:** Panel para administradores y jurados
 - **App Móvil:** Registro de alumnos y escaneo de QR
-- **Backend:** API REST con Spring Boot
+- **Backend:** API REST con Laravel
 - **Base de Datos:** MySQL para gestión centralizada
 
 ---
@@ -48,13 +48,15 @@ El sistema sigue una arquitectura distribuida y multiplataforma:
 git clone https://github.com/usuario/proyecto-jornada-cientifica.git
 ```
 
-### 2️⃣ Configurar backend
-- Instalar **Java 17** y **Maven**
-- Configurar variables de entorno para la base de datos
-- Ejecutar:
+### 2️⃣ Configurar backend (Laravel)
+- Instalar **PHP 8+**, **Composer** y **Laravel**
+- Configurar `.env` con las credenciales de la base de datos
+- Ejecutar migraciones y servidor:
 ```bash
-cd backend/jornada-cientifica-spring-boot
-mvn spring-boot:run
+cd backend/jornada-cientifica-laravel
+composer install
+php artisan migrate
+php artisan serve
 ```
 
 ### 3️⃣ Configurar frontend web
@@ -76,9 +78,10 @@ flutter run
 ## 🧪 Requerimientos
 - Node.js 18+
 - Flutter 3.0+
-- Java 17
+- PHP 8+
+- Composer
+- Laravel 10+
 - MySQL
-- Maven
 
 ---
 
