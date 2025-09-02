@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Http\Requests;
+namespace App\Infrastructure\Http\Requests\Role;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -16,6 +16,7 @@ class RoleRequest extends FormRequest
     {
         return [
             'nombre' => 'required|string|max:255',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ];
     }
 }

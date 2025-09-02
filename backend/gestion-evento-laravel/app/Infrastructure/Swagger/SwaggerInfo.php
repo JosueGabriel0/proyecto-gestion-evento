@@ -6,7 +6,7 @@ use OpenApi\Annotations as OA;
 
 /**
  * @OA\Info(
- *     title="API de Gestión de Roles",
+ *     title="API de Gestión de Eventos",
  *     version="1.0.0",
  *     description="Documentación de la API para el proyecto de gestión de eventos",
  *     @OA\Contact(

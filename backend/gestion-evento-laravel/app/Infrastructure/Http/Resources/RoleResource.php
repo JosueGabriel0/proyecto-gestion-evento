@@ -3,6 +3,7 @@
 namespace App\Infrastructure\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class RoleResource extends JsonResource
 {
@@ -19,6 +20,7 @@ class RoleResource extends JsonResource
         return [
             'id' => $role->getId(),
             'nombre' => $role->getNombre(),
+            'foto' => $this->getFoto() ? Storage::url($this->getFoto()) : null,
         ];
     }
 }

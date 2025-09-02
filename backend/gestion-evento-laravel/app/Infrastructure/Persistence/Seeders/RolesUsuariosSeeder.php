@@ -8,36 +8,162 @@ use App\Infrastructure\Persistence\Eloquent\Models\PersonaModel;
 use App\Infrastructure\Persistence\Eloquent\Models\RoleModel;
 use App\Infrastructure\Persistence\Eloquent\Models\UserModel;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\Persona;
-use App\Models\Alumno;
-use App\Models\Jurado;
 
 class RolesUsuariosSeeder extends Seeder
 {
     public function run(): void
     {
-        // ====== ROLES ======
-        $roles = [
-            'ROLE_ADMIN',
-            'ROLE_SUPER_ADMIN',
-            'ROLE_ALUMNO',
-            'ROLE_JURADO'
-        ];
+        // ============================
+        // Filiales
+        // ============================
+        DB::table('filiales')->insert([
+            [
+                'nombre' => 'Campus Lima',
+                'direccion' => 'Av. Universitaria 123, Lima',
+                'telefono' => '01-1234567',
+                'email' => 'lima@upu.edu.pe',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Campus Tarapoto',
+                'direccion' => 'Jr. Principal 456, Tarapoto',
+                'telefono' => '042-7654321',
+                'email' => 'tarapoto@upu.edu.pe',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Campus Juliaca',
+                'direccion' => 'Av. Puno 789, Juliaca',
+                'telefono' => '051-9876543',
+                'email' => 'juliaca@upu.edu.pe',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
 
+        // ============================
+        // Facultades
+        // ============================
+        DB::table('facultades')->insert([
+            // Campus Lima
+            [
+                'nombre' => 'Facultad de Ingeniería y Arquitectura',
+                'codigo' => 'FIA',
+                'filial_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Facultad de Ciencias Empresariales',
+                'codigo' => 'FCE',
+                'filial_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Campus Tarapoto
+            [
+                'nombre' => 'Facultad de Ingeniería y Arquitectura',
+                'codigo' => 'FIA-T',
+                'filial_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Facultad de Ciencias Empresariales',
+                'codigo' => 'FCE-T',
+                'filial_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // Campus Juliaca
+            [
+                'nombre' => 'Facultad de Ingeniería y Arquitectura',
+                'codigo' => 'FIA-J',
+                'filial_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Facultad de Ciencias Empresariales',
+                'codigo' => 'FCE-J',
+                'filial_id' => 3,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        // ============================
+        // Escuelas
+        // ============================
+        DB::table('escuelas')->insert([
+            // FIA - Campus Lima
+            [
+                'nombre' => 'Escuela Profesional de Ingeniería de Sistemas',
+                'codigo' => 'SIS',
+                'facultad_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Escuela Profesional de Ingeniería Civil',
+                'codigo' => 'CIV',
+                'facultad_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Escuela Profesional de Ingeniería de Industrias Alimentarias',
+                'codigo' => 'ALI',
+                'facultad_id' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            // FCE - Campus Lima
+            [
+                'nombre' => 'Escuela Profesional de Administración de Empresas',
+                'codigo' => 'ADM',
+                'facultad_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Escuela Profesional de Contabilidad',
+                'codigo' => 'CON',
+                'facultad_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nombre' => 'Escuela Profesional de Marketing',
+                'codigo' => 'MKT',
+                'facultad_id' => 2,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        // ============================
+        // Roles
+        // ============================
+        $roles = ['ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ALUMNO', 'ROLE_JURADO', 'ROLE_PONENTE'];
         foreach ($roles as $rol) {
             RoleModel::firstOrCreate(['nombre' => $rol]);
         }
 
-        // ====== ADMIN ======
+        // ============================
+        // ADMIN
+        // ============================
         $admin = UserModel::firstOrCreate(
             ['email' => 'admin@jornada.com'],
             [
                 'name' => 'Administrador',
                 'password' => Hash::make('admin123'),
-                'role_id' => RoleModel::where('nombre', 'ROLE_ADMIN')->first()->id
+                'role_id' => RoleModel::where('nombre', 'ROLE_ADMIN')->first()->id,
+                'escuela_id' => 1, // Ingeniería de Sistemas
             ]
         );
 
@@ -54,13 +180,16 @@ class RolesUsuariosSeeder extends Seeder
             'fechaNacimiento' => '1990-01-01'
         ]);
 
-        // ====== SUPER ADMIN ======
+        // ============================
+        // SUPER ADMIN
+        // ============================
         $superAdmin = UserModel::firstOrCreate(
             ['email' => 'superadmin@jornada.com'],
             [
                 'name' => 'Super Admin',
                 'password' => Hash::make('super123'),
-                'role_id' => RoleModel::where('nombre', 'ROLE_SUPER_ADMIN')->first()->id
+                'role_id' => RoleModel::where('nombre', 'ROLE_SUPER_ADMIN')->first()->id,
+                'escuela_id' => 1,
             ]
         );
 
@@ -77,13 +206,16 @@ class RolesUsuariosSeeder extends Seeder
             'fechaNacimiento' => '1985-05-05'
         ]);
 
-        // ====== ALUMNO ======
+        // ============================
+        // ALUMNO
+        // ============================
         $alumno = UserModel::firstOrCreate(
             ['email' => 'alumno@jornada.com'],
             [
                 'name' => 'Alumno Demo',
                 'password' => Hash::make('alumno123'),
-                'role_id' => RoleModel::where('nombre', 'ROLE_ALUMNO')->first()->id
+                'role_id' => RoleModel::where('nombre', 'ROLE_ALUMNO')->first()->id,
+                'escuela_id' => 1,
             ]
         );
 
@@ -102,18 +234,21 @@ class RolesUsuariosSeeder extends Seeder
 
         AlumnoModel::firstOrCreate([
             'user_id' => $alumno->id,
-            'codigo_qr' => 'QR_ALUMNO_123',
+            'codigo_universitario' => '1234567',
             'carrera' => 'Ingeniería de Sistemas',
             'ciclo' => 'VIII'
         ]);
 
-        // ====== JURADO ======
+        // ============================
+        // JURADO
+        // ============================
         $jurado = UserModel::firstOrCreate(
             ['email' => 'jurado@jornada.com'],
             [
                 'name' => 'Jurado Demo',
                 'password' => Hash::make('jurado123'),
-                'role_id' => RoleModel::where('nombre', 'ROLE_JURADO')->first()->id
+                'role_id' => RoleModel::where('nombre', 'ROLE_JURADO')->first()->id,
+                'escuela_id' => 1,
             ]
         );
 

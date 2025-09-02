@@ -18,13 +18,7 @@ class PersonaModel extends Model
         'fotoPerfil',
         'fechaNacimiento',
         'user_id',
-        'role_id',
     ];
-
-    public function role()
-    {
-        return $this->belongsTo(RoleModel::class, 'role_id', 'id');
-    }
 
     public function user()
     {

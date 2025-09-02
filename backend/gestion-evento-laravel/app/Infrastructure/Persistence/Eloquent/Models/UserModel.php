@@ -46,6 +46,20 @@ class UserModel extends Authenticatable
         return $this->hasOne(PersonaModel::class, 'user_id', 'id');
     }
 
+    public function alumno()
+    {
+        return $this->hasOne(AlumnoModel::class, 'user_id', 'id');
+    }
+
+    public function ponente()
+    {
+        return $this->hasOne(PonenteModel::class, 'user_id', 'id');
+    }
+
+    public function jurado()
+    {
+        return $this->hasOne(JuradoModel::class, 'user_id', 'id');
+    }
     /**
      * Convierte el Eloquent Model en una Entidad de Dominio
      */
@@ -77,5 +91,10 @@ class UserModel extends Authenticatable
         $model->role_id = $user->getRoleId();
 
         return $model;
+    }
+
+    public function escuela()
+    {
+        return $this->belongsTo(EscuelaModel::class);
     }
 }

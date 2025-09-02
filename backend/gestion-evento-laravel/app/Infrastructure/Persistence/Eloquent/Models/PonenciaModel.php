@@ -22,9 +22,9 @@ class PonenciaModel extends Model
     // 🔗 Relaciones
 
     // Una ponencia pertenece a un alumno
-    public function alumno()
+    public function categoria()
     {
-        return $this->belongsTo(AlumnoModel::class);
+        return $this->belongsTo(CategoriaModel::class);
     }
 
     // Una ponencia puede tener muchas evaluaciones

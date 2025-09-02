@@ -42,7 +42,7 @@ use OpenApi\Annotations as OA;
 class RoleModel extends Model
 {
     protected $table = 'roles';
-    protected $fillable = ['nombre'];
+    protected $fillable = ['nombre', 'foto'];
 
     public function users()
     {

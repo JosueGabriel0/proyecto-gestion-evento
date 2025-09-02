@@ -12,7 +12,7 @@ return new class extends Migration {
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->onDelete('cascade');
-            $table->string('codigo_qr')->unique();
+            $table->string('codigo_universitario')->unique();
             $table->string('carrera', 100);
             $table->string('ciclo', 20)->nullable();
             $table->timestamps();

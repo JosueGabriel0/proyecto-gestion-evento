@@ -7,7 +7,7 @@ use App\Application\UseCases\Role\UpdateRoleUseCase;
 use App\Application\UseCases\Role\DeleteRoleUseCase;
 use App\Application\UseCases\Role\GetRoleUseCase;
 use App\Application\UseCases\Role\ListRoleUseCase;
-use App\Infrastructure\Http\Requests\RoleRequest;
+use App\Infrastructure\Http\Requests\Role\RoleRequest;
 use App\Infrastructure\Http\Resources\RoleResource;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;

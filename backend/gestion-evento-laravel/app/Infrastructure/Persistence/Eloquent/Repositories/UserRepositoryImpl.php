@@ -56,7 +56,7 @@ class UserRepositoryImpl implements UserRepository
      */
     private function mapToEntity(UserModel $model): User
     {
-        return new User(
+        return new UserModel(
             $model->name,
             new Email($model->email),
             new Password($model->password),

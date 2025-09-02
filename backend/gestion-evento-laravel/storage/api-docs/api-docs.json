@@ -1,7 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "API de Gestión de Roles",
+        "title": "API de Gestión de Eventos",
         "description": "Documentación de la API para el proyecto de gestión de eventos",
         "contact": {
             "email": "soporte@ejemplo.com"
@@ -77,6 +77,412 @@
                 }
             }
         },
+        "/facultades": {
+            "get": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Listar todas las facultades",
+                "operationId": "9153ac46d6217fcfd8fce49db266a8d1",
+                "responses": {
+                    "200": {
+                        "description": "Lista de facultades",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Facultad"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Crear una nueva Facultad con foto",
+                "operationId": "12fefcdeee48d7c2879208692849872d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Supervisor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen de la facultad",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Facultad creada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Facultad"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/facultades/{id}": {
+            "get": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Obtener una facultad por ID",
+                "operationId": "465307b2114bb358f04be83ac24233be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la facultad",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Facultad encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Facultad"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Actualizar una facultad con foto",
+                "operationId": "1e0ef617fcbc427721718a339f576d02",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Editor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen de la facultad",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Facultad actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Facultad"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Eliminar una facultad",
+                "operationId": "df74b8a0489168786fc976a00bc9b61b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la facultad",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Facultad eliminada correctamente"
+                    },
+                    "404": {
+                        "description": "Facultad no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/filiales": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Listar todas las filiales",
+                "operationId": "41e33c80d9ed80b19dbba3004b0971a7",
+                "responses": {
+                    "200": {
+                        "description": "Lista de filiales",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Filial"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Crear una nueva Filial con foto",
+                "operationId": "d99b6d4cf66d1ea64fdcc1704690530a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Supervisor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen de la filial",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Filial creada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/filiales/{id}": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Obtener una filial por ID",
+                "operationId": "e266b65c11ce2a7d9a2b3736f2dc76ed",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la filial",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filial encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Filial no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Actualizar una filial con foto",
+                "operationId": "7741a01d81b7d1db6420a3ef0cb6d3be",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Editor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen de la filial",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Filial actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Eliminar una filial",
+                "operationId": "ee855e3701b7b0830eb1d3728542ecec",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la filial",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Filial eliminada correctamente"
+                    },
+                    "404": {
+                        "description": "Filial no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/roles": {
             "get": {
                 "tags": [
@@ -109,12 +515,12 @@
                 "tags": [
                     "Roles"
                 ],
-                "summary": "Crear un nuevo rol",
+                "summary": "Crear un nuevo rol con foto",
                 "operationId": "9e785b259d47f9b51b8a9ec45568a2a6",
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "nombre"
@@ -123,6 +529,11 @@
                                     "nombre": {
                                         "type": "string",
                                         "example": "Supervisor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen del rol",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -141,7 +552,12 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
         "/roles/{id}": {
@@ -176,16 +592,19 @@
                     "404": {
                         "description": "Rol no encontrado"
                     }
-                }
-            }
-        },
-        "roles/{id}": {
-            "put": {
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
                 "tags": [
                     "Roles"
                 ],
-                "summary": "Actualizar un rol existente",
-                "operationId": "06dc5d49c5c59a90f9641200ac279dba",
+                "summary": "Actualizar un rol con foto",
+                "operationId": "9adfa6b7d3aa6ff697d8a931382280d3",
                 "parameters": [
                     {
                         "name": "id",
@@ -197,17 +616,19 @@
                     }
                 ],
                 "requestBody": {
-                    "required": true,
+                    "required": false,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
-                                "required": [
-                                    "nombre"
-                                ],
                                 "properties": {
                                     "nombre": {
                                         "type": "string",
                                         "example": "Editor"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen del rol",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -225,18 +646,20 @@
                                 }
                             }
                         }
-                    },
-                    "404": {
-                        "description": "Rol no encontrado"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             },
             "delete": {
                 "tags": [
                     "Roles"
                 ],
                 "summary": "Eliminar un rol",
-                "operationId": "43f31ca11c44a2f9c9073f0c72b78866",
+                "operationId": "15e1df2880de751df7887430c2c32793",
                 "parameters": [
                     {
                         "name": "id",
@@ -254,12 +677,75 @@
                     "404": {
                         "description": "Rol no encontrado"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         }
     },
     "components": {
         "schemas": {
+            "Facultad": {
+                "title": "Facultad",
+                "description": "Representación de una facultad",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Facultad de Ingeniería"
+                    },
+                    "codigo": {
+                        "type": "string",
+                        "example": "FI001"
+                    },
+                    "foto": {
+                        "type": "string",
+                        "example": "images/facultades/foto.png",
+                        "nullable": true
+                    },
+                    "filialId": {
+                        "type": "integer",
+                        "example": 2
+                    }
+                },
+                "type": "object"
+            },
+            "Filial": {
+                "title": "Filial",
+                "description": "Entidad Filial",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Filial Lima"
+                    },
+                    "direccion": {
+                        "type": "string",
+                        "example": "Av. Siempre Viva 123",
+                        "nullable": true
+                    },
+                    "telefono": {
+                        "type": "string",
+                        "example": "987654321",
+                        "nullable": true
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "filial@upeu.edu.pe",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
             "Role": {
                 "required": [
                     "id",
@@ -311,6 +797,14 @@
         {
             "name": "Auth",
             "description": "Auth"
+        },
+        {
+            "name": "Facultades",
+            "description": "Facultades"
+        },
+        {
+            "name": "Filiales",
+            "description": "Filiales"
         },
         {
             "name": "Roles",

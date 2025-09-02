@@ -25,6 +25,7 @@ class RoleRepositoryImpl implements RoleRepository
     {
         $model = new RoleModel();
         $model->nombre = $role->getNombre();
+        $model->foto = $role->getFoto();
         $model->save();
 
         return $this->mapToEntity($model);
@@ -34,6 +35,7 @@ class RoleRepositoryImpl implements RoleRepository
     {
         $model = RoleModel::findOrFail($role->getId());
         $model->nombre = $role->getNombre();
+        $model->foto = $role->getFoto();
         $model->save();
 
         return $this->mapToEntity($model);
@@ -49,8 +51,10 @@ class RoleRepositoryImpl implements RoleRepository
      */
     private function mapToEntity(RoleModel $model): Role
     {
-        $role = new Role($model->id, $model->nombre);
-
-        return $role;
+        return new Role(
+            $model->id,
+            $model->nombre,
+            $model->foto // ✅ pasamos foto desde el modelo a la entidad
+        );
     }
 }

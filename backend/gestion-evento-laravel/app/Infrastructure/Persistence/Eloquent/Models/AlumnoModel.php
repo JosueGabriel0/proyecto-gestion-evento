@@ -27,8 +27,8 @@ class AlumnoModel extends Model
     }
 
     // Un alumno puede tener varias ponencias
-    public function ponencias()
+    public function categorias()
     {
-        return $this->hasMany(PonenciaModel::class);
+        return $this->hasMany(CategoriaModel::class);
     }
 }

@@ -9,7 +9,7 @@ class UpdateRoleUseCase
 {
     public function __construct(private RoleRepository $roleRepository) {}
 
-    public function execute(int $id, string $nombre): Role
+    public function execute(int $id, string $nombre, ?string $foto): Role
     {
         // Buscar rol existente
         $existingRole = $this->roleRepository->find($id);
@@ -18,7 +18,7 @@ class UpdateRoleUseCase
         }
 
         // Crear nueva entidad con los datos actualizados
-        $role = new Role($id, $nombre);
+        $role = new Role($id, $nombre, $foto);
 
         return $this->roleRepository->update($role);
     }

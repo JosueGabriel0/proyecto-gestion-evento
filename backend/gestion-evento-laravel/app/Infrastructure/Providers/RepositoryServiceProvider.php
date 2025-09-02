@@ -2,12 +2,14 @@
 
 namespace App\Infrastructure\Providers;
 
+use App\Domain\Repositories\FacultadRepository;
 use Illuminate\Support\ServiceProvider;
 use App\Domain\Repositories\UserRepository;
 use App\Infrastructure\Persistence\Eloquent\Repositories\UserRepositoryImpl;
 
 // Para roles
 use App\Domain\Repositories\RoleRepository;
+use App\Infrastructure\Persistence\Eloquent\Repositories\FacultadRepositoryImpl;
 use App\Infrastructure\Persistence\Eloquent\Repositories\RoleRepositoryImpl;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -19,5 +21,7 @@ class RepositoryServiceProvider extends ServiceProvider
 
         // Role repository
         $this->app->bind(RoleRepository::class, RoleRepositoryImpl::class);
+
+        $this->app->bind(FacultadRepository::class, FacultadRepositoryImpl::class);
     }
 }
