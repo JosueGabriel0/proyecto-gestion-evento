@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Infrastructure\Persistence\Eloquent\Repositories;
+
 use App\Domain\Entities\Escuela;
 use App\Domain\Repositories\EscuelaRepository;
 use App\Infrastructure\Persistence\Eloquent\Models\EscuelaModel;
@@ -24,7 +26,7 @@ class EscuelaRepositoryImpl implements EscuelaRepository
         $nuevaEscuela = new EscuelaModel();
         $nuevaEscuela -> nombre = $escuela->getNombre();
         $nuevaEscuela -> codigo = $escuela->getCodigo();
-        $nuevaEscuela -> facultadId = $escuela->getFacultadId();
+        $nuevaEscuela -> facultad_id = $escuela->getFacultadId();
         $nuevaEscuela -> foto = $escuela->getFoto();
         
         $nuevaEscuela -> save();
@@ -36,8 +38,9 @@ class EscuelaRepositoryImpl implements EscuelaRepository
         $escuelaActualizada = EscuelaModel::findOrFail($id);
         $escuelaActualizada->nombre = $escuela->getNombre();
         $escuelaActualizada->codigo = $escuela->getCodigo();
-        $escuelaActualizada->facultadId = $escuela->getFacultadId();
+        $escuelaActualizada->facultad_id = $escuela->getFacultadId();
         $escuelaActualizada->foto = $escuela->getFoto();
+        $escuelaActualizada->save();
 
         return $this-> toEntity($escuelaActualizada);
     }
@@ -52,7 +55,7 @@ class EscuelaRepositoryImpl implements EscuelaRepository
             id: $model->id,
             nombre: $model->nombre,
             codigo: $model->codigo,
-            facultadId: $model->facultad_id,
+            facultad_id: $model->facultad_id,
             foto: $model->foto
         );
     }

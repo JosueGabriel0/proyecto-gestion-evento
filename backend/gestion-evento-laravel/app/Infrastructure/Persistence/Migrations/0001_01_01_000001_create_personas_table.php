@@ -25,6 +25,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')
                 ->nullable()
+                ->unique() // ✅ Hace que user_id sea único
                 ->constrained('users')
                 ->onDelete('set null');
 

@@ -10,12 +10,13 @@ class CreateEscuelaUseCase {
     {        
     }
 
-    public function execute(string $nombre, string $codigo, int $facultadId, ?string $foto = null): Escuela{
+    public function execute(string $nombre, string $codigo, int $facultad_id, ?string $foto = null): Escuela{
         $nuevaEscuela = new Escuela(
             id : null,
             nombre: $nombre,
             codigo: $codigo,
-            facultadId: $facultadId
+            facultad_id: $facultad_id,
+            foto: $foto,
         );
 
         return $this->escuelaRepository->save($nuevaEscuela);

@@ -3,8 +3,6 @@
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
 use App\Domain\Entities\User;
-use App\Domain\ValueObjects\Email;
-use App\Domain\ValueObjects\Password;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,7 +15,6 @@ class UserModel extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
-        'name',
         'email',
         'password',
         'role_id',
@@ -28,17 +25,24 @@ class UserModel extends Authenticatable
         'remember_token',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
 
     public function role()
     {
         return $this->belongsTo(RoleModel::class, 'role_id', 'id');
+    }
+
+    public function escuela()
+    {
+        return $this->belongsTo(EscuelaModel::class);
+    }
+
+    public function notificaciones()
+    {
+        return $this->hasMany(NotificacionModel::class, 'user_id', 'id');
     }
 
     public function persona()
@@ -46,9 +50,9 @@ class UserModel extends Authenticatable
         return $this->hasOne(PersonaModel::class, 'user_id', 'id');
     }
 
-    public function alumno()
+    public function asistencias()
     {
-        return $this->hasOne(AlumnoModel::class, 'user_id', 'id');
+        return $this->hasMany(AsistenciaModel::class, 'user_id', 'id');
     }
 
     public function ponente()
@@ -56,24 +60,15 @@ class UserModel extends Authenticatable
         return $this->hasOne(PonenteModel::class, 'user_id', 'id');
     }
 
+    public function alumno()
+    {
+        return $this->hasOne(AlumnoModel::class, 'user_id', 'id');
+    }
+
     public function jurado()
     {
         return $this->hasOne(JuradoModel::class, 'user_id', 'id');
     }
-    /**
-     * Convierte el Eloquent Model en una Entidad de Dominio
-     */
-    public function toDomainEntity(): User
-    {
-        return new User(
-            id: $this->id,   // 👈 importante
-            name: $this->name,
-            email: new Email($this->email),
-            password: new Password($this->password),
-            roleId: $this->role_id
-        );
-    }
-
     /**
      * Convierte desde una Entidad de Dominio a un UserModel (útil para persistir)
      */
@@ -85,16 +80,10 @@ class UserModel extends Authenticatable
             $model->id = $user->getId(); // 👈 mapeamos si ya existe
         }
 
-        $model->name = $user->getName();
         $model->email = (string) $user->getEmail();
         $model->password = (string) $user->getPassword();
         $model->role_id = $user->getRoleId();
 
         return $model;
-    }
-
-    public function escuela()
-    {
-        return $this->belongsTo(EscuelaModel::class);
     }
 }

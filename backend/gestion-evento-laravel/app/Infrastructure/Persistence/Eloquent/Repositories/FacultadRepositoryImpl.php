@@ -43,8 +43,8 @@ class FacultadRepositoryImpl implements FacultadRepository
     {
         $facultadEncontrada = FacultadModel::findOrFail($id);
         $facultadEncontrada->nombre = $facultad->getNombre();
-        $facultadEncontrada->direccion = $facultad->getCodigo();
-        $facultadEncontrada->telefono = $facultad->getFilialId();
+        $facultadEncontrada->codigo = $facultad->getCodigo();
+        $facultadEncontrada->filial_id = $facultad->getFilialId();
         $facultadEncontrada->foto = $facultad->getFoto();
         $facultadEncontrada->save();
 

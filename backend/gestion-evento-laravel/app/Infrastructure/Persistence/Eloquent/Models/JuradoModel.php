@@ -21,7 +21,7 @@ class JuradoModel extends Model
     // Un jurado pertenece a un usuario
     public function user()
     {
-        return $this->belongsTo(UserModel::class);
+        return $this->belongsTo(UserModel::class, 'user_id', 'id');
     }
 
     // Un jurado puede realizar varias evaluaciones

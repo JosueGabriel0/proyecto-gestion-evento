@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Application\UseCases\Escuela;
+
 use App\Domain\Entities\Escuela;
 use App\Domain\Repositories\EscuelaRepository;
 

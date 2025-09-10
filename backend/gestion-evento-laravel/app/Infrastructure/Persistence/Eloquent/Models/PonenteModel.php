@@ -22,7 +22,7 @@ class PonenteModel extends Model
      */
     public function user()
     {
-        return $this->belongsTo(UserModel::class);
+        return $this->belongsTo(UserModel::class, 'user_id', 'id');
     }
 
     /**

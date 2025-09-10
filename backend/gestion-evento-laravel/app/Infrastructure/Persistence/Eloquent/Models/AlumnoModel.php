@@ -13,7 +13,7 @@ class AlumnoModel extends Model
 
     protected $fillable = [
         'user_id',
-        'codigo_qr',
+        'codigo_universitario',
         'carrera',
         'ciclo',
     ];
@@ -23,12 +23,6 @@ class AlumnoModel extends Model
     // Un alumno pertenece a un usuario
     public function user()
     {
-        return $this->belongsTo(UserModel::class);
-    }
-
-    // Un alumno puede tener varias ponencias
-    public function categorias()
-    {
-        return $this->hasMany(CategoriaModel::class);
+        return $this->belongsTo(UserModel::class, 'user_id', 'id');
     }
 }

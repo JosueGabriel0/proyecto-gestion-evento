@@ -160,7 +160,6 @@ class RolesUsuariosSeeder extends Seeder
         $admin = UserModel::firstOrCreate(
             ['email' => 'admin@jornada.com'],
             [
-                'name' => 'Administrador',
                 'password' => Hash::make('admin123'),
                 'role_id' => RoleModel::where('nombre', 'ROLE_ADMIN')->first()->id,
                 'escuela_id' => 1, // Ingeniería de Sistemas
@@ -186,7 +185,6 @@ class RolesUsuariosSeeder extends Seeder
         $superAdmin = UserModel::firstOrCreate(
             ['email' => 'superadmin@jornada.com'],
             [
-                'name' => 'Super Admin',
                 'password' => Hash::make('super123'),
                 'role_id' => RoleModel::where('nombre', 'ROLE_SUPER_ADMIN')->first()->id,
                 'escuela_id' => 1,
@@ -212,7 +210,6 @@ class RolesUsuariosSeeder extends Seeder
         $alumno = UserModel::firstOrCreate(
             ['email' => 'alumno@jornada.com'],
             [
-                'name' => 'Alumno Demo',
                 'password' => Hash::make('alumno123'),
                 'role_id' => RoleModel::where('nombre', 'ROLE_ALUMNO')->first()->id,
                 'escuela_id' => 1,
@@ -245,7 +242,6 @@ class RolesUsuariosSeeder extends Seeder
         $jurado = UserModel::firstOrCreate(
             ['email' => 'jurado@jornada.com'],
             [
-                'name' => 'Jurado Demo',
                 'password' => Hash::make('jurado123'),
                 'role_id' => RoleModel::where('nombre', 'ROLE_JURADO')->first()->id,
                 'escuela_id' => 1,
