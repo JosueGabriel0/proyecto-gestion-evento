@@ -72,7 +72,7 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $user = UserModel::where('email', $request->email)->first();
+        $user = UserModel::where('email', $request->email)->with('role')->first();
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Credenciales incorrectas'], 401);
@@ -80,17 +80,15 @@ class AuthController extends Controller
 
         // Crear token
         $tokenResult = $user->createToken('Personal Access Token');
-
-        // Obtener el token real
         $token = $tokenResult->accessToken;
-
-        // Adjuntar rol al token como extra_info
-        $tokenResult->token->save(); // guarda el token
 
         return response()->json([
             'token' => $token,
-            'user' => $user,
-            'role' => $user->role->nombre, // incluir rol en la respuesta
+            'user' => [
+                'idUsuario' => $user->id,
+                'role'      => $user->role ? $user->role->nombre : null,
+                'email'     => $user->email,
+            ]
         ]);
     }
 }

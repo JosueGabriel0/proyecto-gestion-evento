@@ -29,10 +29,13 @@ return new class extends Migration
             $table->string('foto', 255)->nullable();
             $table->string('codigo_qr', 255)->unique();
 
-             $table->foreignId('periodo_id')
+            $table->foreignId('periodo_id')
                 ->nullable()
                 ->constrained('periodos')
                 ->onDelete('set null');
+                
+            $table->unsignedBigInteger('escuela_id');
+            $table->foreign('escuela_id')->references('id')->on('escuelas')->onDelete('cascade');
 
 
             $table->timestamps(); // created_at y updated_at

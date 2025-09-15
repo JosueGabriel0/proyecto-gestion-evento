@@ -1,13 +1,9 @@
-import { useState } from 'react'
-import HomePage from './presentation/pages/general/inicioDashboard/HomePage'
-/*import './App.css'*/
+import './App.css'
+
+import AppRouter from "./presentation/routes/AppRouter"
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-      <HomePage />
-  )
+  return <AppRouter/>;
 }
 
 export default App

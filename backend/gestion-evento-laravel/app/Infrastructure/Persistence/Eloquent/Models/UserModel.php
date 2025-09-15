@@ -15,6 +15,7 @@ class UserModel extends Authenticatable
     protected $table = 'users';
 
     protected $fillable = [
+        'name',
         'email',
         'password',
         'role_id',
@@ -69,21 +70,16 @@ class UserModel extends Authenticatable
     {
         return $this->hasOne(JuradoModel::class, 'user_id', 'id');
     }
+
     /**
-     * Convierte desde una Entidad de Dominio a un UserModel (útil para persistir)
+     * 👇 Aquí agregas los claims personalizados al JWT
      */
-    public static function fromDomainEntity(User $user): self
+    public function getJWTCustomClaims(): array
     {
-        $model = new self();
-
-        if ($user->getId() !== null) {
-            $model->id = $user->getId(); // 👈 mapeamos si ya existe
-        }
-
-        $model->email = (string) $user->getEmail();
-        $model->password = (string) $user->getPassword();
-        $model->role_id = $user->getRoleId();
-
-        return $model;
+        return [
+            'idUsuario' => $this->id,
+            'role'      => $this->role ? $this->role->nombre : null,
+            'email'     => $this->email,
+        ];
     }
 }

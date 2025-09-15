@@ -1,30 +1,36 @@
+import axios from "axios";
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 // ================================
-// Tipos auxiliares
+// Tipos de datos
 // ================================
 
-// Credenciales del login
 export interface LoginCredentials {
   email: string;
   password: string;
 }
 
-// Respuesta esperada del login
 export interface LoginResponse {
-  accessToken: string;
-  refreshToken: string;
-  role: string;
+  token: string;
+  user: {
+    idUsuario: number;
+    role: string;
+    email: string;
+  };
 }
 
-// Payload que se espera en el JWT
-export interface JWTPayload {
-  nombreRol?: string;
-  idUsuario?: string;
-  idInscripcion?: string;
-  [key: string]: any; // Para no romper si vienen más campos
-}
+export type UserRole =
+  | "ROLE_SUPER_ADMIN"
+  | "ROLE_ADMIN"
+  | "ROLE_PONENTE"
+  | "ROLE_JURADO"
+  | "ROLE_ESTUDIANTE"
+  | "ROLE_ADMIN"
+  | null;
 
 // ================================
-// Funciones de almacenamiento
+// Manejo de almacenamiento
 // ================================
 
 export const saveToken = (token: string): void => {
@@ -35,110 +41,51 @@ export const getToken = (): string | null => {
   return localStorage.getItem("authToken");
 };
 
-export const saveRefreshToken = (refreshToken: string): void => {
-  localStorage.setItem("refreshToken", refreshToken);
-};
-
-export const getRefreshToken = (): string | null => {
-  return localStorage.getItem("refreshToken");
-};
-
 export const isAuthenticated = (): boolean => {
-  const token = getToken();
-  return !!token;
+  return !!getToken();
 };
 
 // ================================
-// Funciones de autenticación
+// Autenticación con axios
 // ================================
 
 export const login = async (credentials: LoginCredentials): Promise<string> => {
   try {
-    const response = await fetch(
-      `${process.env.REACT_APP_API_BASE_URL}/auth/login`,
+    const { data } = await axios.post<LoginResponse>(
+      `${baseUrl}/api/login`,
+      credentials,
       {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
+        headers: { "Content-Type": "application/json" },
       }
     );
 
-    if (!response.ok) {
-      throw new Error(`Login failed: ${response.statusText}`);
-    }
+    // Guardar token y datos del usuario
+    saveToken(data.token);
+    localStorage.setItem("userRole", data.user.role);
+    localStorage.setItem("userId", data.user.idUsuario.toString());
+    localStorage.setItem("userEmail", data.user.email);
 
-    const data: LoginResponse = await response.json();
-    saveToken(data.accessToken);
-    saveRefreshToken(data.refreshToken);
-    localStorage.setItem("userRole", data.role);
-
-    return data.accessToken;
+    return data.token;
   } catch (error) {
     console.error("Error logging in:", error);
     throw error;
   }
 };
 
-export const getShortLivedToken = async (): Promise<string> => {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) {
-    throw new Error("No refresh token available");
-  }
-
-  try {
-    const response = await fetch("http://localhost:9090/auth/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refreshToken }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Token refresh failed: ${response.statusText}`);
-    }
-
-    const data: { accessToken: string } = await response.json();
-    saveToken(data.accessToken);
-    return data.accessToken;
-  } catch (error) {
-    console.error("Error getting short-lived token:", error);
-    throw error;
-  }
-};
-
 // ================================
-// Funciones utilitarias de usuario
+// Funciones utilitarias
 // ================================
 
-const decodeToken = (): JWTPayload | null => {
-  const token = getToken();
-  if (!token) return null;
-
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1])) as JWTPayload;
-    return payload;
-  } catch (error) {
-    console.error("Error decoding token:", error);
-    return null;
-  }
-};
-
-export const getUserRole = (): string | null => {
-  const payload = decodeToken();
-  return payload?.nombreRol || null;
+export const getUserRole = (): UserRole => {
+  return (localStorage.getItem("userRole") as UserRole) ?? null;
 };
 
 export const getUserId = (): string | null => {
-  const payload = decodeToken();
-  return payload?.idUsuario || null;
+  return localStorage.getItem("userId");
 };
 
-export const getInscripcionId = (): string | null => {
-  const payload = decodeToken();
-  return payload?.idInscripcion || null;
+export const getUserEmail = (): string | null => {
+  return localStorage.getItem("userEmail");
 };
 
 // ================================
@@ -147,22 +94,14 @@ export const getInscripcionId = (): string | null => {
 
 export const validateToken = async (): Promise<boolean> => {
   const token = getToken();
-  if (!token) {
-    return false;
-  }
+  if (!token) return false;
 
   try {
-    const response = await fetch("http://localhost:9090/auth/validate", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ token }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Token validation failed: ${response.statusText}`);
-    }
+    await axios.post(
+      `${baseUrl}/auth/validate`,
+      { token },
+      { headers: { "Content-Type": "application/json" } }
+    );
 
     return true;
   } catch (error) {
@@ -173,6 +112,7 @@ export const validateToken = async (): Promise<boolean> => {
 
 export const logout = (): void => {
   localStorage.removeItem("authToken");
-  localStorage.removeItem("refreshToken");
   localStorage.removeItem("userRole");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("userEmail");
 };

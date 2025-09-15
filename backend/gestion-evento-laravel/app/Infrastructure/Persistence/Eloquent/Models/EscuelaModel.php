@@ -28,4 +28,9 @@ class EscuelaModel extends Model
     {
         return $this->hasMany(UserModel::class);
     }
+
+    public function eventos()
+    {
+        return $this->hasMany(EventoModel::class);
+    }
 }

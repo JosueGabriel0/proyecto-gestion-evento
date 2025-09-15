@@ -2,7 +2,7 @@ import { useState } from "react";
 import type { ReactNode } from "react";
 import HomePageCSS from "./HomePage.module.css";
 import { Link } from "react-router-dom";
-import InicioPage from "./InicioPage";
+import InicioPage from "./inicio/InicioPage";
 
 // Definimos las claves posibles del menú
 type ComponentKey = "Inicio" | "Servicios" | "Contacto";
