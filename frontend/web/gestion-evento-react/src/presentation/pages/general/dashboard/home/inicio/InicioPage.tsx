@@ -48,7 +48,7 @@ function InicioPage() {
                     <div className={InicioPageCSS["subtitulo-secundario"]}>
                         <div className={InicioPageCSS["cuadradito"]}></div>
                         <div className={InicioPageCSS["letras-secundarias"]}>
-                            <h2>Licenciamiento y acreditación</h2>
+                            <h2 className={InicioPageCSS["h2-licenciamiento"]}>Licenciamiento y acreditación</h2>
                         </div>
                     </div>
                     <div className={InicioPageCSS["imagenes-secundarias"]}>
