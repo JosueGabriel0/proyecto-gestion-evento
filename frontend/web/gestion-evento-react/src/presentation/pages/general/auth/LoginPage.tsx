@@ -3,6 +3,7 @@ import { getUserRole, login } from "../../../../infrastructure/services/authServ
 import type { UserRole } from "../../../../infrastructure/services/authServices/authService";
 import { useNavigate, Link } from "react-router-dom";
 import LoginPageCSS from "./LoginPage.module.css";
+import BlurText from "../../../components/text/BlurText";
 
 // Definición de tipos
 interface LoginCredentials {
@@ -97,15 +98,15 @@ const LoginPage: React.FC = () => {
       const rolDelUsuario = getUserRole();
       setUserRole(rolDelUsuario);
 
-      if (rolDelUsuario === "ROLE_SUPER_ADMIN") 
+      if (rolDelUsuario === "ROLE_SUPER_ADMIN")
         navigate("/dashboard-super-admin");
       else if (rolDelUsuario === "ROLE_ADMIN")
         navigate("/dashboard-admin");
-      else if (rolDelUsuario === "ROLE_PONENTE") 
+      else if (rolDelUsuario === "ROLE_PONENTE")
         navigate("/dashboard-docente");
-      else if (rolDelUsuario === "ROLE_JURADO") 
+      else if (rolDelUsuario === "ROLE_JURADO")
         navigate("/dashboard-estudiante");
-      else if (rolDelUsuario === "ROLE_ESTUDIANTE") 
+      else if (rolDelUsuario === "ROLE_ESTUDIANTE")
         navigate("/dashboard-estudiante");
       else setError("Rol desconocido. Comuníquese con soporte.");
     } catch (err) {
@@ -134,16 +135,36 @@ const LoginPage: React.FC = () => {
         <div className={LoginPageCSS["login-container"]}>
           <div className={LoginPageCSS["login-container-1"]}>
             <div className={LoginPageCSS["login-container-data"]}>
-              <h2>Iniciar sesión aquí</h2>
+              <div className="flex justify-center">
+                <BlurText
+                  text="Iniciar sesión aquí"
+                  delay={150}
+                  animateBy="words"
+                  direction="top"
+                  className="!text-3xl text-blue-900 mt-5  font-bold"
+                />
+              </div>
               <form onSubmit={handleLogin}>
                 <div className={LoginPageCSS["user-container"]}>
-                  <label className={LoginPageCSS["label-usuario"]}>Email</label>
+                  <BlurText
+                    text="Email"
+                    delay={150}
+                    animateBy="words"
+                    direction="top"
+                    className="!text-lg !text-blue-900 !font-bold !text-start"
+                  />
                   <input type="text" placeholder="Ingrese su email" name="email" value={credentials.email} onChange={handleInputChange} className={LoginPageCSS["input-field"]} />
 
                 </div>
 
                 <div className={LoginPageCSS["password-container"]}>
-                  <label className={LoginPageCSS["label-password"]}>Password</label>
+                  <BlurText
+                    text="Password"
+                    delay={150}
+                    animateBy="words"
+                    direction="top"
+                    className="!text-lg !text-blue-900 !font-bold mt-5 !text-start"
+                  />
                   <div className={LoginPageCSS["input-wrapper"]}>
                     <button
                       type="button"
@@ -177,17 +198,35 @@ const LoginPage: React.FC = () => {
                           <polyline points="1.5 6 4.5 9 10.5 1"></polyline></svg></span>
                     </label>
                     <div className={LoginPageCSS["remember-me-label"]}>
-                      <label>Recuérdame</label>
+                      <BlurText
+                        text="Recuerdame"
+                        delay={150}
+                        animateBy="words"
+                        direction="top"
+                        className="!text-base !text-blue-900 !font-bold mt-2"
+                      />
                     </div>
                   </div>
-                  <Link to="/restablecimiento-contrasenia" className={LoginPageCSS["forgot-password"]}>¿Olvidaste la contraseña?</Link>
+                  <BlurText
+                    text="¿Olvidaste la contraseña?"
+                    delay={150}
+                    animateBy="words"
+                    direction="top"
+                    className="!text-base !text-blue-900 !font-bold mt-3 !ml-10"
+                  />
                 </div>
 
                 {error && <div className={LoginPageCSS["error"]}>{error}</div>}
                 <button type="submit" className={LoginPageCSS["login-button"]}>Iniciar Sesión</button>
               </form>
 
-              <p className={LoginPageCSS["alternative-text"]}>O usa tu cuenta</p>
+              <BlurText
+                text="O usa tu cuenta"
+                delay={150}
+                animateBy="words"
+                direction="top"
+                className="!text-xl !text-blue-900 !font-bold !mt-5"
+              />
             </div>
             <div className={LoginPageCSS["card"]}>
               <a className={LoginPageCSS["social-link1"]}>
@@ -223,10 +262,22 @@ const LoginPage: React.FC = () => {
 
           <div className={LoginPageCSS["login-container-2"]}>
             <div className={LoginPageCSS["letras-logo"]}>
-              <div className={LoginPageCSS["letras"]}>
-                <h2>Educando para la vida y la enternidad</h2>
-                <p>Ingresa al sistema universitario con tu cuenta institucional</p>
-              </div>
+                <div className={`${LoginPageCSS["letras"]} text-center`}>
+                    <BlurText
+                      text="Educando para la vida y la eternidad"
+                      delay={150}
+                      animateBy="words"
+                      direction="top"
+                      className="!text-4xl !text-white !font-bold !mt-20"
+                    />
+                  <BlurText
+                      text="Ingresa al sistema universitario con tu cuenta institucional"
+                      delay={150}
+                      animateBy="words"
+                      direction="top"
+                      className="!text-xl !text-white !mt-5"
+                    />
+                </div>
               <div className={LoginPageCSS["logos"]}>
                 <div className={LoginPageCSS["logo1"]}>
                   <img src="/images/logo2.png" alt="" />

@@ -1,7 +1,11 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "../pages/general/dashboard/home/HomePage";
 import LoginPage from "../pages/general/auth/LoginPage";
-import AdminDashboardPage from "../pages/general/dashboard/admin/adminDashboardPage";
+import AdminDashboardPage from "../pages/admin/dashboard/adminDashboardPage";
+import TestTailwind from "../components/TestTailwind";
+import AppLayout from "../layout/AppLayout";
+import RoleProtectedRoute from "./RoleProtectedRoute";
+import RoleGestionPage from "../pages/admin/cruds/roleGestionPage";
 
 const AppRouter = () => {
     return (
@@ -9,8 +13,22 @@ const AppRouter = () => {
             {/* 🌍 Públicas */}
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/dashboard-super-admin" element={<LoginPage />} />
-            <Route path="/dashboard-admin" element={<AdminDashboardPage />} />
+
+            <Route element={<AppLayout />}>
+
+                <Route path="/dashboard-admin" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <AdminDashboardPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/admin-roles" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <RoleGestionPage />
+                    </RoleProtectedRoute>
+                } />
+            </Route>
+
             {/*
         <Route path="/email" element={<EmailPage />} />
         <Route path="/restablecimiento-contrasenia" element={<RestablecerContraseniaPage />} />

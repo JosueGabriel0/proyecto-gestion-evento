@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 use App\Domain\Repositories\RoleRepository;
 use App\Domain\Entities\Role;
 use App\Infrastructure\Persistence\Eloquent\Models\RoleModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class RoleRepositoryImpl implements RoleRepository
 {
@@ -47,6 +48,31 @@ class RoleRepositoryImpl implements RoleRepository
     }
 
     /**
+     * Devuelve roles paginados como LengthAwarePaginator de Laravel,
+     * transformando cada modelo en entidad de dominio
+     */
+    
+    public function getRolesPaginated(int $page = 1, int $perPage = 10): LengthAwarePaginator
+    {
+        return RoleModel::paginate(
+            $perPage,
+            ['*'],
+            'page',
+            $page
+        )->through(fn(RoleModel $model) => $this->mapToEntity($model));
+    }
+
+    /**
+     * Busca roles por término y devuelve paginación transformada a entidades
+     */
+    public function searchRoles(string $term, int $perPage = 10): LengthAwarePaginator
+    {
+        return RoleModel::where('nombre', 'LIKE', "%{$term}%")
+            ->paginate($perPage)
+            ->through(fn(RoleModel $model) => $this->mapToEntity($model));
+    }
+
+    /**
      * Convierte un Eloquent Model a Domain Entity
      */
     private function mapToEntity(RoleModel $model): Role
@@ -54,7 +80,7 @@ class RoleRepositoryImpl implements RoleRepository
         return new Role(
             $model->id,
             $model->nombre,
-            $model->foto // ✅ pasamos foto desde el modelo a la entidad
+            $model->foto // pasamos foto desde el modelo a la entidad
         );
     }
 }

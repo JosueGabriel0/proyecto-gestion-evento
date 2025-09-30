@@ -40,6 +40,7 @@
     font-size: 40px;
     font-weight: bold;
     margin-top: 10px;
+    margin-bottom: 30px;
 }
 
 .texto-principal {
@@ -63,6 +64,44 @@
         background-position: 0% 50%;
     }
 }
+
+.splitTextGradient {
+    font-size: 40px !important;
+    font-weight: bold !important;
+    margin-top: 10px !important;
+    margin-bottom: 30px !important;
+
+    background: linear-gradient(90deg,
+            #014278,
+            #4A8DB7,
+            #0369A1,
+            #00274D,
+            #1A1A1A,
+            #2b65ff,
+            #034fdb) !important;
+    background-size: 400% 400% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+
+    animation: gradientMove 8s ease infinite !important;
+}
+
+
+/* Animación del gradiente */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 
 .mision {
     margin-top: 10px;
@@ -103,6 +142,7 @@
 .vision-container {
     display: flex;
     flex-direction: row;
+    margin-top: 20px;
 }
 
 .vision-icono {
@@ -143,12 +183,12 @@
 }
 
 .cuadradito {
-    height: 4%;
-    width: 35%;
+    height: 5%;
+    width: 30%;
     background-color: #4A8DB7;
     position: absolute;
     z-index: -1;
-    margin-top: -5px;
+    margin-top: 5px;
     border-radius: 10px;
 }
 

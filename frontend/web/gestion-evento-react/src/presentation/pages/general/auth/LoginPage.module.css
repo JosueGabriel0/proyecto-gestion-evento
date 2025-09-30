@@ -49,7 +49,7 @@
 .login-container {
     width: 842px;
     height: 602px;
-    margin-bottom: 40px;
+    margin: auto;
     text-align: center;
     background: white;
     border-radius: 21px;
@@ -64,9 +64,6 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: 30px;
-    position:relative;
-    z-index: 2;
 }
 
 .login-container-data {
@@ -110,7 +107,7 @@ label {
 }
 
 .input-field {
-    width: 85%;
+    width: 100%;
     padding: 8px 35px 8px 8px;
     margin-top: 0;
     border: 1px solid #ccc;
@@ -122,6 +119,7 @@ label {
     box-shadow: 2.5px 3px 0 #000;
     outline: none;
     transition: ease 0.25s;
+    color: black;
 }
 
 .input-field:focus {
@@ -159,9 +157,9 @@ label {
 
 .checkbox-wrapper-46 .cbx span:first-child {
     position: relative;
-    width: 10px;
+    width: 14px;
     height: 14px;
-    border-radius: 4px;
+    border-radius: 3px;
     transform: scale(1);
     vertical-align: middle;
     border: 1px solid #9098a9;
@@ -427,16 +425,8 @@ label {
     margin-top: 35px;
 }
 
-.label-usuario {
-    margin-bottom: 5px;
-}
-
-.label-password {
-    margin-bottom: 5px;
-}
-
 .password-container {
-    margin-top: 20px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif;
@@ -479,7 +469,6 @@ label {
     align-items: center;
     overflow: hidden;
     transition: 0.3s ease;
-    margin-top: -5px;
 }
 
 .pupil {
@@ -649,7 +638,7 @@ label {
 
     .login-container-1 {
         width: 100%;
-        height: 100px;
+        height: 500px;
         display: flex;
         flex-direction: column;
     }

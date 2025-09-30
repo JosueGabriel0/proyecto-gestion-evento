@@ -9,8 +9,12 @@ class GetRoleUseCase
 {
     public function __construct(private RoleRepository $roleRepository) {}
 
-    public function execute(int $id): ?Role
+    public function execute(int $id): Role
     {
-        return $this->roleRepository->find($id);
+        $role = $this->roleRepository->find($id);
+        if (!$role) {
+            throw new \RuntimeException("Rol no encontrado");
+        }
+        return $role;
     }
 }

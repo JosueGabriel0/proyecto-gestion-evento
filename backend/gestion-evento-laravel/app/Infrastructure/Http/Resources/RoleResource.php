@@ -9,12 +9,20 @@ class RoleResource extends JsonResource
 {
     public function toArray($request): array
     {
+        if (!$this->resource) {
+            return [
+                'id' => null,
+                'nombre' => null,
+                'foto' => null,
+            ];
+        }
+
         $role = $this->resource;
 
         return [
             'id' => $role->getId(),
             'nombre' => $role->getNombre(),
-            'foto' => $this->getFoto() ? asset(Storage::url($this->getFoto())) : null,
+            'foto' => $role->getFoto() ? asset(Storage::url($role->getFoto())) : null,
         ];
     }
 }

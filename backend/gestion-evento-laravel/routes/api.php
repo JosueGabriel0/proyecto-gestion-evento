@@ -33,7 +33,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('escuelas', EscuelaController::class);
         Route::post('/escuelas/{id}', [EscuelaController::class, 'update']);
 
-        Route::apiResource('roles', RoleController::class);
+        Route::get('/roles/paginated', [RoleController::class, 'paginated']);
+        Route::get('/roles/search',    [RoleController::class, 'search']);
+        Route::apiResource('roles', RoleController::class)->except(['create', 'edit']);
         Route::post('/roles/{id}', [RoleController::class, 'update']);
 
         Route::apiResource('usuarios', UserPersonaController::class);
