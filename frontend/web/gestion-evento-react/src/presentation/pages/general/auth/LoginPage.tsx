@@ -1,27 +1,41 @@
+// pages/auth/LoginPage.tsx
 import React, { useState, useEffect } from "react";
-import { getUserRole, login } from "../../../../infrastructure/services/authServices/authService";
-import type { UserRole } from "../../../../infrastructure/services/authServices/authService";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import LoginPageCSS from "./LoginPage.module.css";
 import BlurText from "../../../components/text/BlurText";
+import { AuthRepository } from "../../../../infrastructure/repositories/AuthRepository";
+import { AuthService } from "../../../../application/services/AuthService";
+import { TokenStorage } from "../../../../infrastructure/repositories/TokenStorage";
 
-// Definición de tipos
+// Tipos
 interface LoginCredentials {
   email: string;
   password: string;
 }
+
+type UserRole =
+  | "ROLE_SUPER_ADMIN"
+  | "ROLE_ADMIN"
+  | "ROLE_PONENTE"
+  | "ROLE_JURADO"
+  | "ROLE_ESTUDIANTE"
+  | null;
 
 interface PupilPosition {
   x: string;
   y: string;
 }
 
+// Instancia del servicio
+const authRepo = new AuthRepository();
+const tokenStorage = new TokenStorage();
+const authService = new AuthService(authRepo, tokenStorage);
+
 const LoginPage: React.FC = () => {
   const [credentials, setCredentials] = useState<LoginCredentials>({
     email: "",
     password: "",
   });
-
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -39,7 +53,6 @@ const LoginPage: React.FC = () => {
         setTimeout(() => setIsBlinking(false), 200);
       }
     }, Math.random() * 4000 + 2000);
-
     return () => clearInterval(blinkInterval);
   }, [isClosed]);
 
@@ -54,7 +67,6 @@ const LoginPage: React.FC = () => {
         const pupil = eye.querySelector<HTMLElement>(
           `.${LoginPageCSS.pupil}`
         );
-
         if (!pupil) return;
 
         const rect = eye.getBoundingClientRect();
@@ -71,7 +83,6 @@ const LoginPage: React.FC = () => {
         const maxMove = eyeRadius - pupilRadius;
 
         const limitedDistance = Math.min(distance, maxMove);
-
         const angle = Math.atan2(deltaY, deltaX);
         const moveX = Math.cos(angle) * limitedDistance;
         const moveY = Math.sin(angle) * limitedDistance;
@@ -79,7 +90,6 @@ const LoginPage: React.FC = () => {
         pupil.style.transform = `translate(${moveX}px, ${moveY}px)`;
       });
     };
-
     document.addEventListener("mousemove", handleMouseMove);
     return () => document.removeEventListener("mousemove", handleMouseMove);
   }, []);
@@ -90,26 +100,43 @@ const LoginPage: React.FC = () => {
     setCredentials({ ...credentials, [name]: value });
   };
 
-  // login
+  // login usando AuthService
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      await login(credentials);
-      const rolDelUsuario = getUserRole();
-      setUserRole(rolDelUsuario);
+    setError(null);
 
-      if (rolDelUsuario === "ROLE_SUPER_ADMIN")
-        navigate("/dashboard-super-admin");
-      else if (rolDelUsuario === "ROLE_ADMIN")
-        navigate("/dashboard-admin");
-      else if (rolDelUsuario === "ROLE_PONENTE")
-        navigate("/dashboard-docente");
-      else if (rolDelUsuario === "ROLE_JURADO")
-        navigate("/dashboard-estudiante");
-      else if (rolDelUsuario === "ROLE_ESTUDIANTE")
-        navigate("/dashboard-estudiante");
-      else setError("Rol desconocido. Comuníquese con soporte.");
+    try {
+      const response = await authService.login(
+        credentials.email,
+        credentials.password
+      );
+
+      // response tiene token y role
+      tokenStorage.saveToken(response.token);
+      tokenStorage.saveUser(response.user); // si tu LocalStorageToken implementa setUser
+
+      const role = response.user.role as UserRole;
+      setUserRole(role);
+
+      switch (role) {
+        case "ROLE_SUPER_ADMIN":
+          navigate("/dashboard-super-admin");
+          break;
+        case "ROLE_ADMIN":
+          navigate("/dashboard-admin");
+          break;
+        case "ROLE_PONENTE":
+          navigate("/dashboard-docente");
+          break;
+        case "ROLE_JURADO":
+        case "ROLE_ESTUDIANTE":
+          navigate("/dashboard-estudiante");
+          break;
+        default:
+          setError("Rol desconocido. Comuníquese con soporte.");
+      }
     } catch (err) {
+      console.error(err);
       setError("El nombre de Usuario o la Contraseña son incorrectos");
     }
   };
@@ -262,22 +289,22 @@ const LoginPage: React.FC = () => {
 
           <div className={LoginPageCSS["login-container-2"]}>
             <div className={LoginPageCSS["letras-logo"]}>
-                <div className={`${LoginPageCSS["letras"]} text-center`}>
-                    <BlurText
-                      text="Educando para la vida y la eternidad"
-                      delay={150}
-                      animateBy="words"
-                      direction="top"
-                      className="!text-4xl !text-white !font-bold !mt-20"
-                    />
-                  <BlurText
-                      text="Ingresa al sistema universitario con tu cuenta institucional"
-                      delay={150}
-                      animateBy="words"
-                      direction="top"
-                      className="!text-xl !text-white !mt-5"
-                    />
-                </div>
+              <div className={`${LoginPageCSS["letras"]} text-center`}>
+                <BlurText
+                  text="Educando para la vida y la eternidad"
+                  delay={150}
+                  animateBy="words"
+                  direction="top"
+                  className="!text-4xl !text-white !font-bold !mt-20"
+                />
+                <BlurText
+                  text="Ingresa al sistema universitario con tu cuenta institucional"
+                  delay={150}
+                  animateBy="words"
+                  direction="top"
+                  className="!text-xl !text-white !mt-5"
+                />
+              </div>
               <div className={LoginPageCSS["logos"]}>
                 <div className={LoginPageCSS["logo1"]}>
                   <img src="/images/logo2.png" alt="" />

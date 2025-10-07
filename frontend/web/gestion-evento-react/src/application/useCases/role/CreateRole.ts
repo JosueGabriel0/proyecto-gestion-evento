@@ -8,7 +8,7 @@ export class CreateRole {
     this.roleRepository = roleRepository;
   }
 
-  async execute(role: Role): Promise<Role> {
-    return await this.roleRepository.createRole(role);
+  async execute(role: Role, file?: File): Promise<Role> {
+    return await this.roleRepository.createRole(role, file);
   }
 }

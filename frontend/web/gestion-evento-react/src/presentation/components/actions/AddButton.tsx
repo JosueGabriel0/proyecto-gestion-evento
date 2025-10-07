@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-const AddButton = () => {
+interface AddButtonProps {
+  onClick?: () => void; // 👈 permite el callback
+}
+
+const AddButton = ({ onClick }: AddButtonProps) => {
   return (
     <StyledWrapper>
-      <button className="Btn">
+      <button className="Btn" onClick={onClick}>
         <div className="sign">+</div>
         <div className="text">Crear</div>
       </button>

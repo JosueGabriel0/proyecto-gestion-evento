@@ -1,14 +1,23 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-const InputSearch = () => {
+interface InputSearchProps {
+  onSearch?: (term: string) => void;
+}
+
+const InputSearch: React.FC<InputSearchProps> = ({ onSearch }) => {
   return (
     <StyledWrapper>
       <div className="input-container">
-        <input className="input" name="text" type="text" placeholder="Buscar rol............." /> 
+        <input
+          className="input"
+          type="text"
+          placeholder="Buscar rol..."
+          onChange={(e) => onSearch?.(e.target.value)} // 👈 dispara búsqueda
+        />
       </div>
     </StyledWrapper>
   );
-}
+};
 
 const StyledWrapper = styled.div`
   .input {

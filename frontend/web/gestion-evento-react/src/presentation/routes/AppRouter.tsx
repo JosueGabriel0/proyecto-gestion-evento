@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import HomePage from "../pages/general/dashboard/home/HomePage";
 import LoginPage from "../pages/general/auth/LoginPage";
-import AdminDashboardPage from "../pages/admin/dashboard/adminDashboardPage";
-import TestTailwind from "../components/TestTailwind";
+import AdminDashboardPage from "../pages/admin/dashboard/AdminDashboardPage";
 import AppLayout from "../layout/AppLayout";
 import RoleProtectedRoute from "./RoleProtectedRoute";
-import RoleGestionPage from "../pages/admin/cruds/roleGestionPage";
+import RoleGestionPage from "../pages/admin/cruds/role/RoleGestionPage";
+import RolePage from "../pages/admin/cruds/role/RoleFormPage";
+import Page404 from "../pages/general/Page404";
 
 const AppRouter = () => {
     return (
@@ -16,6 +17,12 @@ const AppRouter = () => {
 
             <Route element={<AppLayout />}>
 
+                <Route path="/dashboard-super-admin" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <AdminDashboardPage />
+                    </RoleProtectedRoute>
+                } />
+
                 <Route path="/dashboard-admin" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
                         <AdminDashboardPage />
@@ -25,6 +32,18 @@ const AppRouter = () => {
                 <Route path="/admin-roles" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
                         <RoleGestionPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/roles/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <RolePage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/roles/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <RolePage />
                     </RoleProtectedRoute>
                 } />
             </Route>
@@ -66,7 +85,7 @@ const AppRouter = () => {
             {/* ...idem para usuarios, personas, docentes, estudiantes, inscripciones */}
 
             {/* ❌ 404 */}
-            <Route path="*" element={<h2>404 - Página no encontrada</h2>} />
+            <Route path="*" element={<div className="flex items-center justify-center min-h-screen"><Page404 /></div>} />
         </Routes>
     );
 };

@@ -29,8 +29,12 @@ export class RoleService {
     this.searchRolesUC = new SearchRoles(roleRepository);
   }
 
-  async createRole(role: Role): Promise<Role> {
-    return await this.createRoleUC.execute(role);
+  async createRole(role: Role, file?: File): Promise<Role> {
+    return await this.createRoleUC.execute(role, file);
+  }
+
+  async updateRole(role: Role, file?: File): Promise<Role> {
+    return await this.updateRoleUC.execute(role, file);
   }
 
   async deleteRole(id: number): Promise<void> {
@@ -43,10 +47,6 @@ export class RoleService {
 
   async getRoles(): Promise<Role[]> {
     return await this.getRolesUC.execute();
-  }
-
-  async updateRole(role: Role): Promise<Role> {
-    return await this.updateRoleUC.execute(role);
   }
 
   async getRolesPaginated(

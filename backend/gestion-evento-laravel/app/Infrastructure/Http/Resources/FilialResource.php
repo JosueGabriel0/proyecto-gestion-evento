@@ -4,19 +4,31 @@ namespace App\Infrastructure\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
-use OpenApi\Annotations as OA;
 
 class FilialResource extends JsonResource
 {
     public function toArray($request): array
     {
+        if (!$this->resource) {
+            return [
+                'id'        => null,
+                'nombre'    => null,
+                'direccion' => null,
+                'telefono'  => null,
+                'email'     => null,
+                'foto'      => null,
+            ];
+        }
+
+        $filial = $this->resource;
+
         return [
-            'id'        => $this->getId(),
-            'nombre'    => $this->getNombre(),
-            'direccion' => $this->getDireccion(),
-            'telefono'  => $this->getTelefono(),
-            'email'     => $this->getEmail(),
-            'foto' => $this->getFoto() ? asset(Storage::url($this->getFoto())) : null,
+            'id'        => $filial->getId(),
+            'nombre'    => $filial->getNombre(),
+            'direccion' => $filial->getDireccion(),
+            'telefono'  => $filial->getTelefono(),
+            'email'     => $filial->getEmail(),
+            'foto'      => $filial->getFoto() ? asset(Storage::url($filial->getFoto())) : null,
         ];
     }
 }

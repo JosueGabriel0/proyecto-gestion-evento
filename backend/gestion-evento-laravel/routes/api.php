@@ -22,11 +22,15 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     // Roles super admin y admin
-    Route::middleware([CheckRole::class . ':ROLE_SUPER_ADMIN,ROLE_ADMIN'])->group(function () {
+    Route::middleware([CheckRole::class . ':ROLE_SUPER_ADMIN'])->group(function () {
 
+        Route::get('/filiales/paginated', [FilialController::class, 'paginated']);
+        Route::get('/filiales/search',    [FilialController::class, 'search']);
         Route::apiResource('filiales', FilialController::class);
         Route::post('/filiales/{id}', [FilialController::class, 'update']);
+    });
 
+    Route::middleware([CheckRole::class . ':ROLE_SUPER_ADMIN,ROLE_ADMIN'])->group(function () {
         Route::apiResource('facultades', FacultadController::class);
         Route::post('/facultades/{id}', [FacultadController::class, 'update']);
 

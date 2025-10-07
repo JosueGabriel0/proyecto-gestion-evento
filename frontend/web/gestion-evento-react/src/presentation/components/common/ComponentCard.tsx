@@ -9,8 +9,10 @@ import SplitText from "../text/SplitText";
 interface ComponentCardProps {
   title: string;
   children: React.ReactNode;
-  className?: string; // Additional custom classes for styling
-  desc?: string; // Description text
+  className?: string;
+  desc?: string;
+  onSearch?: (term: string) => void; // 👈 NUEVO
+  onAdd?: () => void; // 👈 NUEVOx
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = ({
@@ -18,6 +20,8 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   children,
   className = "",
   desc = "",
+  onSearch,
+  onAdd, // 👈 NUEVO
 }) => {
   return (
     <div
@@ -41,7 +45,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           />
         </h3>
         <div className="flex gap-3">
-          <InputSearch />
+          <InputSearch onSearch={onSearch} />
           <ButtonSearch />
         </div>
         <div className="flex items-center gap-3">
@@ -54,7 +58,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
             thickness={10}
             style={{ borderRadius: 20 }}
           >
-            <AddButton />
+            <AddButton onClick={onAdd}/>
           </ElectricBorder>
 
         </div>

@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 use App\Domain\Entities\Filial;
 use App\Domain\Repositories\FilialRepository;
 use App\Infrastructure\Persistence\Eloquent\Models\FilialModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class FilialRepositoryImpl implements FilialRepository
 {
@@ -52,6 +53,23 @@ class FilialRepositoryImpl implements FilialRepository
     public function delete(int $id): void
     {
         FilialModel::destroy($id);
+    }
+
+    public function getFilialesPaginated(int $page = 1,int $perPage = 10): LengthAwarePaginator
+    {
+        return FilialModel::paginate(
+            $perPage,
+            ['*'],
+            'page',
+            $page
+        )->through(fn(FilialModel $model) => $this->mapToEntity($model));
+    }
+    
+    public function searchFiliales(string $term, int $perPage = 10): LengthAwarePaginator
+    {
+        return FilialModel::where('nombre', 'LIKE', "%{$term}%")
+            ->paginate($perPage)
+            ->through(fn(FilialModel $model) => $this->mapToEntity($model));
     }
 
     private function mapToEntity(FilialModel $model): Filial

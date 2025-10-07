@@ -1,5 +1,5 @@
 // infrastructure/repositories/RoleRepository.ts
-import { axiosClient } from "../config/axiosClient";
+import { AxiosClient } from "../config/AxiosClient";
 import type { IRoleRepository } from "../../domain/repositories/IRoleRepository";
 import { Role } from "../../domain/entities/Role";
 import { RoleMapper } from "../../application/dtos/mappers/RoleMapper";
@@ -9,29 +9,52 @@ export class RoleRepository implements IRoleRepository {
   private readonly endpoint = "/roles";
 
   async getRoles(): Promise<Role[]> {
-    const response = await axiosClient.get(this.endpoint);
+    const response = await AxiosClient.get(this.endpoint);
     return response.data.map((dto: any) => RoleMapper.toDomain(dto));
   }
 
   async getRoleById(id: number): Promise<Role> {
-    const response = await axiosClient.get(`${this.endpoint}/${id}`);
+    const response = await AxiosClient.get(`${this.endpoint}/${id}`);
     return RoleMapper.toDomain(response.data);
   }
 
-  async createRole(role: Role): Promise<Role> {
-    const dto = RoleMapper.toDTO(role);
-    const response = await axiosClient.post(this.endpoint, dto);
+  async createRole(role: Role, file?: File): Promise<Role> {
+    const formData = new FormData();
+    formData.append("nombre", role.nombre);
+
+    if (file) {
+      formData.append("foto", file); // archivo real
+    }
+
+    const response = await AxiosClient.post(this.endpoint, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     return RoleMapper.toDomain(response.data);
   }
 
-  async updateRole(role: Role): Promise<Role> {
-    const dto = RoleMapper.toDTO(role);
-    const response = await axiosClient.put(`${this.endpoint}/${role.id}`, dto);
+  async updateRole(role: Role, file?: File): Promise<Role> {
+    const formData = new FormData();
+    formData.append("nombre", role.nombre);
+
+    if (file) {
+      formData.append("foto", file);
+    }
+
+    // 👈 Aquí NO usamos _method ni PUT, solo POST
+    const response = await AxiosClient.post(`${this.endpoint}/${role.id}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
     return RoleMapper.toDomain(response.data);
   }
 
   async deleteRole(id: number): Promise<void> {
-    await axiosClient.delete(`${this.endpoint}/${id}`);
+    await AxiosClient.delete(`${this.endpoint}/${id}`);
   }
 
   // 👇 nuevos métodos
@@ -39,7 +62,7 @@ export class RoleRepository implements IRoleRepository {
     page: number = 1,
     perPage: number = 10
   ): Promise<PaginatedResponse<Role>> {
-    const response = await axiosClient.get(
+    const response = await AxiosClient.get(
       `${this.endpoint}/paginated?page=${page}&per_page=${perPage}`
     );
 
@@ -50,7 +73,7 @@ export class RoleRepository implements IRoleRepository {
   }
 
   async searchRoles(term: string, perPage: number = 10): Promise<PaginatedResponse<Role>> {
-    const response = await axiosClient.get(
+    const response = await AxiosClient.get(
       `${this.endpoint}/search?q=${encodeURIComponent(term)}&per_page=${perPage}`
     );
     return {

@@ -1,12 +1,16 @@
 import { useState } from "react";
 import { DropdownItem } from "../ui/dropdown/DropdownItem";
 import { Dropdown } from "../ui/dropdown/Dropdown";
-import { Link, useNavigate } from "react-router";
-import { logout } from "../../../infrastructure/services/authServices/authService";
+import { useNavigate } from "react-router";
+import { AuthService } from "../../../application/services/AuthService";
+import { AuthRepository } from "../../../infrastructure/repositories/AuthRepository";
+import { TokenStorage } from "../../../infrastructure/repositories/TokenStorage";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate(); // 👈 para redirección
+
+  const authService = new AuthService(new AuthRepository(), new TokenStorage());
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -17,7 +21,7 @@ export default function UserDropdown() {
   }
 
   function handleLogout() {
-    logout(); // 👈 limpia localStorage
+    authService.logout(); // 👈 limpia localStorage
     setIsOpen(false); // cierra dropdown
     navigate("/login"); // redirige al login
   }

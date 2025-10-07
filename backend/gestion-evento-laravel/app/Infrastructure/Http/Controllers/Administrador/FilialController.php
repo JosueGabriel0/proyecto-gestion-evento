@@ -7,10 +7,13 @@ use App\Application\UseCases\Filial\AllFilialesUseCase;
 use App\Application\UseCases\Filial\CreateFilialUseCase;
 use App\Application\UseCases\Filial\DeleteFilialUseCase;
 use App\Application\UseCases\Filial\FindFilialUseCase;
+use App\Application\UseCases\Filial\GetFilialesPaginatedUseCase;
+use App\Application\UseCases\Filial\SearchFilialUseCase;
 use App\Application\UseCases\Filial\UpdateFilialUseCase;
 use App\Infrastructure\Http\Requests\Filial\CreateFilialRequest;
 use App\Infrastructure\Http\Requests\Filial\UpdateFilialRequest;
 use App\Infrastructure\Http\Resources\FilialResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Annotations as OA;
@@ -22,7 +25,9 @@ class FilialController extends Controller
         private UpdateFilialUseCase $updateFilialUseCase,
         private DeleteFilialUseCase $deleteFilialUseCase,
         private FindFilialUseCase $getFilialUseCase,
-        private AllFilialesUseCase $listFilialesUseCase
+        private AllFilialesUseCase $listFilialesUseCase,
+        private GetFilialesPaginatedUseCase $getFilialesPaginatedUseCase,
+        private SearchFilialUseCase $searchFilialUseCase
     ) {}
 
 
@@ -312,5 +317,113 @@ class FilialController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/filiales/paginated",
+     *     summary="Obtener filiales paginadas",
+     *     description="Devuelve una lista de filiales con paginación.",
+     *     tags={"Filiales"},
+     * security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página a consultar",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Cantidad de resultados por página",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=10)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de filiales paginadas",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer", example=1),
+     *             @OA\Property(property="per_page", type="integer", example=10),
+     *             @OA\Property(property="total", type="integer", example=50),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Filial")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function paginated(Request $request): JsonResponse
+    {
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
+
+        $paginator = $this->getFilialesPaginatedUseCase->execute($page, $perPage);
+
+        return response()->json([
+            'current_page' => $paginator->currentPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'data' => FilialResource::collection($paginator->items()),
+        ], JsonResponse::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/filiales/search",
+     *     summary="Buscar filiales con paginación",
+     *     description="Busca filiales según un término y devuelve resultados paginados.",
+     *     tags={"Filiales"},
+     * security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="q",
+     *         in="query",
+     *         description="Término de búsqueda",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Cantidad de resultados por página",
+     *         required=false,
+     *         @OA\Schema(type="integer", default=10)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Resultados de búsqueda paginados",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer", example=1),
+     *             @OA\Property(property="per_page", type="integer", example=10),
+     *             @OA\Property(property="total", type="integer", example=12),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Filial")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $term = $request->input('q', '');
+        $perPage = $request->input('per_page', 10);
+
+        $paginator = $this->searchFilialUseCase->execute($term, $perPage);
+
+        return response()->json([
+            'current_page' => $paginator->currentPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'data' => FilialResource::collection($paginator->items()),
+        ], JsonResponse::HTTP_OK);
     }
 }

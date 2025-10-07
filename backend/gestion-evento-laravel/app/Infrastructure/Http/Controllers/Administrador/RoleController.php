@@ -283,7 +283,7 @@ class RoleController extends Controller
      *     description="Devuelve una lista paginada de roles",
      *     operationId="getRolesPaginated",
      *     tags={"Roles"},
-     *
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="page",
      *         in="query",
