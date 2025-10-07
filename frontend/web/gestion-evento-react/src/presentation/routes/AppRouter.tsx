@@ -8,6 +8,7 @@ import RoleGestionPage from "../pages/admin/cruds/role/RoleGestionPage";
 import RoleFormPage from "../pages/admin/cruds/role/RoleFormPage";
 import Page404 from "../pages/general/Page404";
 import FilialGestionPage from "../pages/superAdmin/cruds/filial/FilialGestionPage";
+import FilialFormPage from "../pages/superAdmin/cruds/filial/FilialFormPage";
 
 const AppRouter = () => {
     return (
@@ -27,6 +28,18 @@ const AppRouter = () => {
                 <Route path="/super-admin-filiales" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialGestionPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/filiales/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <FilialFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/filiales/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <FilialFormPage />
                     </RoleProtectedRoute>
                 } />
 

@@ -11,6 +11,7 @@ interface ComponentCardProps {
   children: React.ReactNode;
   className?: string;
   desc?: string;
+  placeHolder: string;
   onSearch?: (term: string) => void; // 👈 NUEVO
   onAdd?: () => void; // 👈 NUEVOx
 }
@@ -20,6 +21,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
   children,
   className = "",
   desc = "",
+  placeHolder = "",
   onSearch,
   onAdd, // 👈 NUEVO
 }) => {
@@ -45,7 +47,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
           />
         </h3>
         <div className="flex gap-3">
-          <InputSearch onSearch={onSearch} />
+          <InputSearch onSearch={onSearch} placeHolder={placeHolder}/>
           <ButtonSearch />
         </div>
         <div className="flex items-center gap-3">

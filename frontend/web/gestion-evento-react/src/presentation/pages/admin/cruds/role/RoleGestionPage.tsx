@@ -80,6 +80,7 @@ export default function RoleGestionPage() {
       {/* 🔹 Tabla de roles */}
       <ComponentCard
         title="Tabla de Roles"
+        placeHolder="Buscar Rol........"
         onSearch={(term) => setSearchTerm(term)}
         onAdd={() => navigate("/roles/new")}
       >

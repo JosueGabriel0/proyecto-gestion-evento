@@ -4,7 +4,6 @@ import { RoleService } from "../../../../application/services/RoleService";
 import { RoleRepository } from "../../../../infrastructure/repositories/RoleRepository";
 import InputText from "../input/InputText";
 import InputFile from "../input/InputFile";
-import ElectricBorder from "../../actions/ElectricBorder";
 import AddEditButton from "../../actions/AddEditButton";
 
 const roleRepository = new RoleRepository();

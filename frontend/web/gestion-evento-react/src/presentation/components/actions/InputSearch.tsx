@@ -1,17 +1,18 @@
 import styled from "styled-components";
 
 interface InputSearchProps {
+  placeHolder: string;
   onSearch?: (term: string) => void;
 }
 
-const InputSearch: React.FC<InputSearchProps> = ({ onSearch }) => {
+const InputSearch: React.FC<InputSearchProps> = ({ placeHolder, onSearch }) => {
   return (
     <StyledWrapper>
       <div className="input-container">
         <input
           className="input"
           type="text"
-          placeholder="Buscar rol..."
+          placeholder={placeHolder}
           onChange={(e) => onSearch?.(e.target.value)} // 👈 dispara búsqueda
         />
       </div>
