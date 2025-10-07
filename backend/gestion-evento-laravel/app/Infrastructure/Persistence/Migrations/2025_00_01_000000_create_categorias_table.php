@@ -13,8 +13,6 @@ return new class extends Migration
             $table->string('nombre', 150)->unique();
             $table->string('descripcion', 255)->nullable();
             $table->string('foto', 255)->nullable();
-            $table->unsignedBigInteger('ponencia_id');
-            $table->foreign('ponencia_id')->references('id')->on('ponencias')->onDelete('cascade');
             $table->timestamps();
         });
     }

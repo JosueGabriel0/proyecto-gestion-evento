@@ -12,7 +12,7 @@ import Loading2 from "../../../../components/loaders/Loading2";
 const roleRepository = new RoleRepository();
 const roleService = new RoleService(roleRepository);
 
-export default function RolePage() {
+export default function RoleFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [role, setRole] = useState<Role | undefined>();

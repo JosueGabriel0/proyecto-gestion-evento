@@ -5,8 +5,9 @@ import AdminDashboardPage from "../pages/admin/dashboard/AdminDashboardPage";
 import AppLayout from "../layout/AppLayout";
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import RoleGestionPage from "../pages/admin/cruds/role/RoleGestionPage";
-import RolePage from "../pages/admin/cruds/role/RoleFormPage";
+import RoleFormPage from "../pages/admin/cruds/role/RoleFormPage";
 import Page404 from "../pages/general/Page404";
+import FilialGestionPage from "../pages/superAdmin/cruds/filial/FilialGestionPage";
 
 const AppRouter = () => {
     return (
@@ -20,6 +21,12 @@ const AppRouter = () => {
                 <Route path="/dashboard-super-admin" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <AdminDashboardPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super-admin-filiales" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <FilialGestionPage />
                     </RoleProtectedRoute>
                 } />
 
@@ -37,13 +44,13 @@ const AppRouter = () => {
 
                 <Route path="/roles/new" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
-                        <RolePage />
+                        <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
 
                 <Route path="/roles/edit/:id" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
-                        <RolePage />
+                        <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
             </Route>
