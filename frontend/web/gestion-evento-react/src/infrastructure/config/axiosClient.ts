@@ -1,6 +1,6 @@
 // infrastructure/config/axiosClient.ts
 import axios from "axios";
-import { API_CONFIG } from "./ApiConfig";
+import { API_CONFIG } from "./apiConfig";
 
 export const AxiosClient = axios.create({
   baseURL: API_CONFIG.baseURL,
