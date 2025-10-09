@@ -642,6 +642,8 @@ class ComposerStaticInit25be5f4dd5bf1172f0b7a5b01c04f26c
         'App\\Application\\UseCases\\Filial\\CreateFilialUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/CreateFilialUseCase.php',
         'App\\Application\\UseCases\\Filial\\DeleteFilialUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/DeleteFilialUseCase.php',
         'App\\Application\\UseCases\\Filial\\FindFilialUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/FindFilialUseCase.php',
+        'App\\Application\\UseCases\\Filial\\GetFilialesPaginatedUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/GetFilialesPaginatedUseCase.php',
+        'App\\Application\\UseCases\\Filial\\SearchFilialUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/SearchFilialUseCase.php',
         'App\\Application\\UseCases\\Filial\\UpdateFilialUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Filial/UpdateFilialUseCase.php',
         'App\\Application\\UseCases\\Role\\CreateRoleUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Role/CreateRoleUseCase.php',
         'App\\Application\\UseCases\\Role\\DeleteRoleUseCase' => __DIR__ . '/../..' . '/app/Application/UseCases/Role/DeleteRoleUseCase.php',

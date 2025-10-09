@@ -1,0 +1,69 @@
+import { Facultad } from "../../domain/entities/Facultad";
+import type { IFacultadRepository } from "../../domain/repositories/IFacultadRepository";
+import type { PaginatedResponse } from "../dtos/PaginatedResponse";
+
+import { CreateFacultadUseCase } from "../useCases/facultad/CreateFacultadUseCase";
+import { DeleteFacultadUseCase } from "../useCases/facultad/DeleteFacultadUseCase";
+import { GetFacultadByIdUseCase } from "../useCases/facultad/GetFacultadByIdUseCase";
+import { GetFacultadesPaginatedUseCase } from "../useCases/facultad/GetFacultadesPaginatedUseCase";
+import { GetFacultadesUseCase } from "../useCases/facultad/GetFacultadesUseCase";
+import { SearchFacultadPaginatedUseCase } from "../useCases/facultad/SearchFacultadPaginatedUseCase";
+import { UpdateFacultadUseCase } from "../useCases/facultad/UpdateFacultadUseCase";
+
+export class FacultadService {
+  private readonly createFacultadUseCase: CreateFacultadUseCase;
+  private readonly deleteFacultadUseCase: DeleteFacultadUseCase;
+  private readonly getFacultadByIdUseCase: GetFacultadByIdUseCase;
+  private readonly getFacultadesPaginatedUseCase: GetFacultadesPaginatedUseCase;
+  private readonly getFacultadesUseCase: GetFacultadesUseCase;
+  private readonly searchFacultadPaginatedUseCase: SearchFacultadPaginatedUseCase;
+  private readonly updateFacultadUseCase: UpdateFacultadUseCase;
+
+  constructor(iFacultadRepository: IFacultadRepository) {
+    this.createFacultadUseCase = new CreateFacultadUseCase(iFacultadRepository);
+    this.deleteFacultadUseCase = new DeleteFacultadUseCase(iFacultadRepository);
+    this.getFacultadByIdUseCase = new GetFacultadByIdUseCase(iFacultadRepository);
+    this.getFacultadesPaginatedUseCase = new GetFacultadesPaginatedUseCase(iFacultadRepository);
+    this.getFacultadesUseCase = new GetFacultadesUseCase(iFacultadRepository);
+    this.searchFacultadPaginatedUseCase = new SearchFacultadPaginatedUseCase(iFacultadRepository);
+    this.updateFacultadUseCase = new UpdateFacultadUseCase(iFacultadRepository);
+  }
+
+  async createFacultad(
+  facultadData: { id: number; nombre: string; codigo: string; foto: string | null; filialId: number },
+  file?: File
+): Promise<any> {
+  const facultad = new Facultad(
+    facultadData.id,
+    facultadData.nombre,
+    facultadData.codigo,
+    facultadData.foto,
+    facultadData.filialId
+  );
+  return await this.createFacultadUseCase.execute(facultad, file);
+}
+
+  async deleteFacultad(id: number): Promise<void> {
+    return await this.deleteFacultadUseCase.execute(id);
+  }
+
+  async getFacultadById(id: number): Promise<Facultad> {
+    return await this.getFacultadByIdUseCase.execute(id);
+  }
+
+  async getFacultadesPaginated(page: number, perPage: number): Promise<PaginatedResponse<Facultad>> {
+    return await this.getFacultadesPaginatedUseCase.execute(page, perPage);
+  }
+
+  async getFacultades(): Promise<Facultad[]> {
+    return await this.getFacultadesUseCase.execute();
+  }
+
+  async searchFacultadPaginated(term: string, perPage: number): Promise<PaginatedResponse<Facultad>> {
+    return await this.searchFacultadPaginatedUseCase.execute(term, perPage);
+  }
+
+  async updateFacultad(facultad: Facultad, file?: File): Promise<Facultad> {
+    return await this.updateFacultadUseCase.execute(facultad, file);
+  }
+}

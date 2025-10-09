@@ -20,6 +20,8 @@ return array(
     'App\\Application\\UseCases\\Filial\\CreateFilialUseCase' => $baseDir . '/app/Application/UseCases/Filial/CreateFilialUseCase.php',
     'App\\Application\\UseCases\\Filial\\DeleteFilialUseCase' => $baseDir . '/app/Application/UseCases/Filial/DeleteFilialUseCase.php',
     'App\\Application\\UseCases\\Filial\\FindFilialUseCase' => $baseDir . '/app/Application/UseCases/Filial/FindFilialUseCase.php',
+    'App\\Application\\UseCases\\Filial\\GetFilialesPaginatedUseCase' => $baseDir . '/app/Application/UseCases/Filial/GetFilialesPaginatedUseCase.php',
+    'App\\Application\\UseCases\\Filial\\SearchFilialUseCase' => $baseDir . '/app/Application/UseCases/Filial/SearchFilialUseCase.php',
     'App\\Application\\UseCases\\Filial\\UpdateFilialUseCase' => $baseDir . '/app/Application/UseCases/Filial/UpdateFilialUseCase.php',
     'App\\Application\\UseCases\\Role\\CreateRoleUseCase' => $baseDir . '/app/Application/UseCases/Role/CreateRoleUseCase.php',
     'App\\Application\\UseCases\\Role\\DeleteRoleUseCase' => $baseDir . '/app/Application/UseCases/Role/DeleteRoleUseCase.php',

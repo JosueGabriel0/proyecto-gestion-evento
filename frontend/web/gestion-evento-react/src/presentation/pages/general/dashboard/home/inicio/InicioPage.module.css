@@ -1,0 +1,327 @@
+.container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.splineBackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    /* Poner el fondo detrás del contenido */
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    /* Asegurar que el contenido esté encima del fondo */
+    color: white;
+    height: auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.contenido-principal {
+    max-width: 900px;
+    margin-left: 5%;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.texto-principal {
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.texto-principal {
+    background: linear-gradient(90deg, #014278, #4A8DB7, #0369A1, #00274D, #1A1A1A, #2b65ff, #034fdb);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientMove 8s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.splitTextGradient {
+    font-size: 40px !important;
+    font-weight: bold !important;
+    margin-top: 10px !important;
+    margin-bottom: 30px !important;
+
+    background: linear-gradient(90deg,
+            #014278,
+            #4A8DB7,
+            #0369A1,
+            #00274D,
+            #1A1A1A,
+            #2b65ff,
+            #034fdb) !important;
+    background-size: 400% 400% !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+
+    animation: gradientMove 8s ease infinite !important;
+}
+
+
+/* Animación del gradiente */
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+
+.mision {
+    margin-top: 10px;
+}
+
+.mision-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.mision-icono {
+    margin: 8px 0 0 10px;
+}
+
+.mision-subtitulo {
+    width: 100px;
+}
+
+.primer-rectangulo {
+    height: 5px;
+    width: 100%;
+    background-color: yellow;
+    margin-top: -5px;
+}
+
+.mision h2 {
+    color: #014278;
+    display: inline;
+    font-size: 30px;
+}
+
+.mision p {
+    color: #4A8DB7;
+    text-align: justify;
+    font-size: 20px;
+}
+
+.vision-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.vision-icono {
+    margin: 8px 0 0 10px;
+}
+
+.vision-subtitulo {
+    width: 90px;
+}
+
+.segundo-rectangulo {
+    height: 5px;
+    width: 100%;
+    background-color: yellow;
+    margin-top: -5px;
+}
+
+.vision h2 {
+    color: #014278;
+    display: inline;
+    font-size: 30px;
+}
+
+.vision p {
+    color: #4A8DB7;
+    text-align: justify;
+    font-size: 20px;
+}
+
+/* Deja que contenido-secundario se vea */
+.contenido-secundario {
+    width: 100%;
+    margin-top: 0;
+    /* espacio arriba y centrado */
+    height: auto;
+    /* deja que crezca */
+    padding: 20px;
+}
+
+.cuadradito {
+    height: 5%;
+    width: 30%;
+    background-color: #4A8DB7;
+    position: absolute;
+    z-index: -1;
+    margin-top: 5px;
+    border-radius: 10px;
+}
+
+.subtitulo-secundario h2 {
+    display: inline;
+}
+
+.letras-secundarias {
+    margin-left: 10px;
+}
+
+.imagenes-secundarias {
+    display: flex;
+    flex-wrap: wrap;
+    height: auto;
+    /* Que se adapte al contenido */
+    justify-content: center;
+    /* Centra las imágenes */
+    gap: 40px;
+    /* Espacio entre imágenes (ajusta a gusto) */
+    background-color: rgba(1, 22, 39, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border-color: yellow;
+    margin: auto;
+    margin-top: 15px;
+    overflow-x: hidden;
+    /* Previene scroll horizontal */
+}
+
+.contenedor-imagen-1 {
+    height: 110px;
+    width: 110px;
+    margin-left: 20px;
+}
+
+.contenedor-imagen-1 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.contenedor-imagen-2 {
+    height: 110px;
+    width: 200px;
+}
+
+.contenedor-imagen-2 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.contenedor-imagen-3 {
+    height: 110px;
+    width: 200px;
+}
+
+.contenedor-imagen-3 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.contenedor-imagen-4 {
+    height: 110px;
+    width: 200px;
+}
+
+.contenedor-imagen-4 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.contenedor-imagen-5 {
+    height: 90px;
+    width: 90px;
+    margin-top: 10px;
+}
+
+.contenedor-imagen-5 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.contenedor-imagen-6 {
+    height: 110px;
+    width: 200px;
+}
+
+.contenedor-imagen-6 img {
+    object-fit: contain;
+    height: 100%;
+    width: 100%;
+}
+
+.boton-libro-reclamaciones {
+    margin-top: 10px;
+    height: 5%;
+    width: 250px;
+    border: 5px solid yellow;
+    background-color: rgba(1, 22, 39, 0.6);
+    /* Fondo semitransparente */
+    backdrop-filter: blur(10px);
+    /* Nivel de desenfoque */
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+}
+
+.boton-libro-reclamaciones p {
+    color: yellow;
+    width: 210px;
+    margin: 3px 0 0 15px;
+}
+
+.h2-licenciamiento {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .imagenes-secundarias {
+        gap: 20px;
+        flex-direction: column;
+        /* apila imágenes en móviles */
+        align-items: center;
+    }
+
+    .imagenes-secundarias div {
+        width: 120px;
+        /* fuerza que las imágenes sean más pequeñas */
+    }
+}

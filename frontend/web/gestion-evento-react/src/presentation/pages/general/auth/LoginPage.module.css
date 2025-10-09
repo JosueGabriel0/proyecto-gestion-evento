@@ -1,0 +1,809 @@
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Video de fondo */
+.background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: blur(8px);
+    /* Aplica el desenfoque */
+}
+
+/* Contenido encima del video */
+.content {
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    /* Capa semi-transparente */
+    padding: 20px;
+    border-radius: 10px;
+}
+
+/* Estilo del texto */
+.content h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.content p {
+    font-size: 1.2rem;
+}
+
+
+.login-container {
+    width: 842px;
+    height: 602px;
+    margin: auto;
+    text-align: center;
+    background: white;
+    border-radius: 21px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.login-container-1 {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container-data {
+    margin: 40px 79px 0px 79px;
+}
+
+.login-container-2 {
+    position: relative;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    overflow: hidden;
+    border-radius: 21px;
+}
+
+.login-container-2 video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+h2 {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+    color: #01357A;
+    font-size: 29px;
+}
+
+label {
+    display: block;
+    text-align: left;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #01357A;
+    font-size: 17px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 8px 35px 8px 8px;
+    margin-top: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+
+    border: 1.5px solid #000;
+    border-radius: 0.5rem;
+    box-shadow: 2.5px 3px 0 #000;
+    outline: none;
+    transition: ease 0.25s;
+    color: black;
+}
+
+.input-field:focus {
+    box-shadow: 5.5px 7px 0 black;
+}
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 17px;
+}
+
+.checkbox-wrapper-46 {
+    display: flex;
+}
+
+.checkbox-wrapper-46 input[type="checkbox"] {
+    display: none;
+    visibility: hidden;
+}
+
+.checkbox-wrapper-46 .cbx {
+    margin: auto;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+}
+
+.checkbox-wrapper-46 .cbx span {
+    display: inline-block;
+    vertical-align: middle;
+    transform: translate3d(0, 0, 0);
+}
+
+.checkbox-wrapper-46 .cbx span:first-child {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    transform: scale(1);
+    vertical-align: middle;
+    border: 1px solid #9098a9;
+    transition: all 0.2s ease;
+}
+
+.checkbox-wrapper-46 .cbx span:first-child svg {
+    position: absolute;
+    top: 2px;
+    left: 1.5px;
+    width: 9px;
+    height: 9px;
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 16px;
+    stroke-dashoffset: 16px;
+    transition: all 0.3s ease;
+    transition-delay: 0.1s;
+    transform: translate3d(0, 0, 0);
+}
+
+.checkbox-wrapper-46 .cbx span:first-child:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: #506eec;
+    display: block;
+    transform: scale(0);
+    opacity: 1;
+    border-radius: 50%;
+}
+
+.checkbox-wrapper-46 .cbx span:last-child {
+    padding-left: 4px;
+    font-size: 14px;
+}
+
+.checkbox-wrapper-46 .cbx:hover span:first-child {
+    border-color: #506eec;
+}
+
+.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child {
+    background: #506eec;
+    border-color: #506eec;
+    animation: wave-46 0.4s ease;
+}
+
+.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child svg {
+    stroke-dashoffset: 0;
+}
+
+.checkbox-wrapper-46 .inp-cbx:checked+.cbx span:first-child:before {
+    transform: scale(3.5);
+    opacity: 0;
+    transition: all 0.6s ease;
+}
+
+@keyframes wave-46 {
+    50% {
+        transform: scale(0.9);
+    }
+}
+
+.remember-me-label {
+    color: #0a3d91;
+    margin: -5px 0px 0px 5px;
+    font-size: 15px;
+}
+
+.forgot-password {
+    margin-top: 25px;
+    font-weight: bold;
+    color: #0a3d91;
+    text-decoration: none;
+    text-align: center;
+    font-size: 15px;
+}
+
+.error {
+    font-size: 15px;
+    color: red;
+}
+
+.login-button {
+    margin-top: 15px;
+    width: 100%;
+    font-weight: bold;
+    cursor: pointer;
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 21px;
+    border: 1px solid #1062cb;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: transparent;
+    color: #1464C8;
+    overflow: hidden;
+    box-shadow: 0 0 0 0 transparent;
+    -webkit-transition: all 0.2s ease-in;
+    -moz-transition: all 0.2s ease-in;
+    transition: all 0.2s ease-in;
+}
+
+.login-button:hover {
+    color: #fff;
+    background: #1771de;
+    box-shadow: 0 0 30px 5px rgba(0, 142, 236, 0.815);
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+.login-button:hover::before {
+    -webkit-animation: sh02 0.5s 0s linear;
+    -moz-animation: sh02 0.5s 0s linear;
+    animation: sh02 0.5s 0s linear;
+}
+
+.login-button::before {
+    content: '';
+    display: block;
+    width: 0px;
+    height: 86%;
+    position: absolute;
+    top: 7%;
+    left: 0%;
+    opacity: 0;
+    background: #fff;
+    box-shadow: 0 0 50px 30px #fff;
+    -webkit-transform: skewX(-20deg);
+    -moz-transform: skewX(-20deg);
+    -ms-transform: skewX(-20deg);
+    -o-transform: skewX(-20deg);
+    transform: skewX(-20deg);
+}
+
+@keyframes sh02 {
+    from {
+        opacity: 0;
+        left: 0%;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        left: 100%;
+    }
+}
+
+.login-button:active {
+    box-shadow: 0 0 0 0 transparent;
+    -webkit-transition: box-shadow 0.2s ease-in;
+    -moz-transition: box-shadow 0.2s ease-in;
+    transition: box-shadow 0.2s ease-in;
+}
+
+.alternative-text {
+    margin: 30px 0px 0px 0px;
+    font-size: 17px;
+    color: #01357A;
+    font-weight: bold;
+}
+
+.card {
+    background-color: #01143d !important;
+    margin: 0 auto;
+    display: flex;
+    height: 70px;
+    width: 350px;
+    border-radius: 10px;
+}
+
+.card svg {
+    position: absolute;
+    display: flex;
+    width: 60%;
+    height: 100%;
+    font-size: 24px;
+    font-weight: 700;
+    opacity: 1;
+    transition: opacity 0.25s;
+    z-index: 2;
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
+.card .social-link1,
+.card .social-link2,
+.card .social-link3,
+.card .social-link4,
+.card .social-link5 {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    color: whitesmoke;
+    font-size: 24px;
+    text-decoration: none;
+    transition: 0.25s;
+    border-radius: 50px;
+}
+
+.card svg {
+    transform: scale(1);
+}
+
+.card .social-link1:hover {
+    background: #f09433;
+    background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f09433', endColorstr='#bc1888', GradientType=1);
+    animation: bounce_613 0.4s linear;
+}
+
+.card .social-link2:hover {
+    background-color: #242c34;
+    animation: bounce_613 0.4s linear;
+}
+
+.card .social-link3:hover {
+    background-color: #5865f2;
+    animation: bounce_613 0.4s linear;
+}
+
+.card .social-link4:hover {
+    background-color: #0a66c2;
+    animation: bounce_613 0.4s linear;
+}
+
+.card .social-link5:hover {
+    background-color: #ff8000;
+    animation: bounce_613 0.4s linear;
+}
+
+@keyframes bounce_613 {
+    40% {
+        transform: scale(1.4);
+    }
+
+    60% {
+        transform: scale(0.8);
+    }
+
+    80% {
+        transform: scale(1.2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.user-container {
+    margin-top: 35px;
+}
+
+.password-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.toggle-password:hover {
+    color: #000;
+}
+
+.toggle-password {
+    padding: 0;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 20px;
+    height: 0px;
+}
+
+.eye {
+    width: 17px;
+    height: 13px;
+    background: white;
+    border: 1px solid black;
+    /* Borde negro */
+    border-radius: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    transition: 0.3s ease;
+}
+
+.pupil {
+    width: 6px;
+    height: 6px;
+    background: black;
+    border-radius: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+    transition: transform 0.05s ease-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pupil-reflection {
+    width: 2px;
+    /* Tamaño del reflejo */
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 20%;
+    /* Posición inicial en la parte superior */
+    left: 30%;
+}
+
+.closed {
+    width: 17px;
+    height: 13px;
+    /* Reducimos la altura */
+    border: none;
+    /* Quitamos el borde general */
+    border-bottom: 3px solid black;
+    /* Solo borde inferior para la curva */
+    border-radius: 0 0 15px 15px;
+    /* Hace la forma de sonrisa ")" */
+    background: none;
+    /* Eliminamos el fondo */
+}
+
+.closed .pupil {
+    display: none;
+    /* Oculta la pupila */
+}
+
+.eye.blink {
+    height: 5px;
+    /* Ojo se cierra */
+    transition: height 0.1s ease-in-out;
+}
+
+.letras-logo {
+    z-index: 1;
+    margin: 0 auto;
+}
+
+.letras {
+    width: 350px;
+    height: 250px;
+    margin: 0 auto;
+}
+
+.letras h2 {
+    color: #ffffff;
+    text-align: center;
+    font-size: 36px;
+    margin-top: 85px;
+}
+
+.letras p {
+    font-weight: 100;
+}
+
+.logos {
+    margin: 0 auto;
+    width: 350px;
+    height: 200px;
+    display: flex;
+}
+
+.logo1 {
+    width: 120px;
+    height: 120px;
+    margin-top: 70px;
+}
+
+.logo1 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.logo2 {
+    margin-left: 30px;
+    width: 200px;
+    height: 100px;
+    margin-top: 75px;
+}
+
+.logo2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+@media (max-width: 500px) {
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        overflow-y: visible;
+    }
+
+    /* Video de fondo */
+    .background-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+        filter: blur(8px);
+        /* Aplica el desenfoque */
+    }
+
+    .content {
+        position: relative;
+        z-index: 1;
+        color: white;
+        display: flex;
+        flex-direction: row;
+        background: rgba(0, 0, 0, 0.4);
+        /* Capa semi-transparente */
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    /* Estilo del texto */
+    .content h1 {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .content p {
+        font-size: 1.2rem;
+    }
+
+
+    .login-container {
+        width: 350px;
+        height: 1000px;
+        text-align: center;
+        background: white;
+        border-radius: 21px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: space-between;
+        overflow-y: auto;
+        min-height: 100vh;
+    }
+
+    .login-container-1 {
+        width: 100%;
+        height: 500px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .login-container-data {
+        margin: 10px 19px 0px 19px;
+    }
+
+    .login-container-data h2 {
+        margin: 15px 0 0 0;
+    }
+
+    .login-container-data label {
+        margin: 0;
+    }
+
+    .login-container-2 {
+        width: 100%;
+        height: 490px;
+        display: flex;
+        border-radius: 0px;
+        z-index: 2;
+        position: relative;
+    }
+
+    .login-container-2 video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    h2 {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        text-align: center;
+        color: #01357A;
+        font-size: 25px;
+    }
+
+    label {
+        display: block;
+        text-align: left;
+        font-weight: bold;
+        margin-top: 10px;
+        color: #01357A;
+        font-size: 13px;
+    }
+
+    .options {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 30px;
+    }
+
+    .checkbox-wrapper-46 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .remember-me-label {
+        color: #0a3d91;
+        font-size: 13px;
+        margin-left: 5px;
+        margin-top: 0px;
+    }
+
+    .forgot-password {
+        margin-top: 0;
+        font-weight: bold;
+        color: #0a3d91;
+        text-decoration: none;
+        text-align: center;
+        font-size: 13px;
+    }
+
+    .login-button {
+        margin-top: 20px;
+        width: 100%;
+        font-weight: bold;
+        cursor: pointer;
+        position: relative;
+        padding: 10px 20px;
+        border-radius: 21px;
+        border: 1px solid #1062cb;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        background: transparent;
+        color: #1464C8;
+        overflow: hidden;
+        box-shadow: 0 0 0 0 transparent;
+        -webkit-transition: all 0.2s ease-in;
+        -moz-transition: all 0.2s ease-in;
+        transition: all 0.2s ease-in;
+    }
+
+    .alternative-text {
+        margin: 50px 0px 0px 0px;
+        font-size: 17px;
+        color: #01357A;
+        font-weight: bold;
+    }
+
+    .card {
+        background-color: #01143d !important;
+        margin: 0 auto;
+        display: flex;
+        height: 50px;
+        width: 250px;
+    }
+
+    .card svg {
+        position: absolute;
+        display: flex;
+        width: 60%;
+        height: 150%;
+        font-size: 18px;
+        font-weight: 700;
+        opacity: 1;
+        transition: opacity 0.25s;
+        z-index: 2;
+        padding: 0.25rem;
+        cursor: pointer;
+    }
+
+    .letras {
+        width: 340px;
+        height: 150px;
+        margin: 0 auto;
+    }
+
+    .letras h2 {
+        color: #ffffff;
+        text-align: center;
+        font-size: 32px;
+        margin-top: 55px;
+    }
+
+    .letras p {
+        font-weight: 100;
+        font-size: 13px;
+    }
+
+    .logos {
+        margin: 0 auto;
+        width: 270px;
+        height: 220px;
+        display: flex;
+    }
+
+    .logo1 {
+        width: 120px;
+        height: 120px;
+        margin-top: 100px;
+    }
+
+    .logo2 {
+        margin-left: 30px;
+        width: 200px;
+        height: 100px;
+        margin-top: 105px;
+    }
+}
