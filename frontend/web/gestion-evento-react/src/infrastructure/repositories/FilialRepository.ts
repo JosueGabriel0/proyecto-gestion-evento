@@ -1,7 +1,7 @@
 import { FilialMapper } from "../../application/dtos/mappers/FilialMapper";
 import type { PaginatedResponse } from "../../application/dtos/PaginatedResponse";
 import type { Filial } from "../../domain/entities/Filial";
-import type { IFilialRepository } from "../../domain/repositories/IFilialRepositoy";
+import type { IFilialRepository } from "../../domain/repositories/IFilialRepository";
 import { AxiosClient } from "../config/AxiosClient";
 
 export class FilialRepository implements IFilialRepository {

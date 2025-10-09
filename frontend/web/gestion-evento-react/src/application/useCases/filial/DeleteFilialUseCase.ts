@@ -1,4 +1,4 @@
-import type { IFilialRepository } from "../../../domain/repositories/IFilialRepositoy";
+import type { IFilialRepository } from "../../../domain/repositories/IFilialRepository";
 
 export class DeleteFilialUseCase{
     private readonly iFilialRepository: IFilialRepository;

@@ -1,5 +1,5 @@
 import type { Filial } from "../../domain/entities/Filial";
-import type { IFilialRepository } from "../../domain/repositories/IFilialRepositoy";
+import type { IFilialRepository } from "../../domain/repositories/IFilialRepository";
 import type { PaginatedResponse } from "../dtos/PaginatedResponse";
 import { CreateFilialUseCase } from "../useCases/filial/CreateFilialUseCase";
 import { DeleteFilialUseCase } from "../useCases/filial/DeleteFilialUseCase";
