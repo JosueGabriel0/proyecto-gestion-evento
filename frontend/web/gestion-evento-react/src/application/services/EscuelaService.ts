@@ -56,8 +56,4 @@ export class EscuelaService {
   async updateEscuela(escuela: Escuela, file?: File): Promise<Escuela> {
     return await this.updateEscuelaUseCase.execute(escuela, file);
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> temp-recuperacion}

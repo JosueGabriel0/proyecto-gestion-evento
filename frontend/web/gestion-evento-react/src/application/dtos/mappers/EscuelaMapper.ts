@@ -21,8 +21,4 @@ export class EscuelaMapper {
       foto: escuela.foto,
     };
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> temp-recuperacion}

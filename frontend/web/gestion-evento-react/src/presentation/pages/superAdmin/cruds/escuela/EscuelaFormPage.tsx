@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-export default function EscuelaFormPage(){
-    return(
-        <div></div>
-    )
-}
-=======
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ElectricBorder from "../../../../components/actions/ElectricBorder";
@@ -87,4 +80,3 @@ export default function EscuelaFormPage() {
     </div>
   );
 }
->>>>>>> temp-recuperacion}

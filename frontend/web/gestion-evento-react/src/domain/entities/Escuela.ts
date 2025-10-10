@@ -38,8 +38,4 @@ export class Escuela {
   get foto(): string | undefined {
     return this._foto;
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> temp-recuperacion}

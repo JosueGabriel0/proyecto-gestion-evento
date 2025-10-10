@@ -98,8 +98,4 @@ export class EscuelaRepository implements IEscuelaRepository {
       data: paginatedData.data.map((dto: any) => EscuelaMapper.toDomain(dto)),
     };
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> temp-recuperacion}
