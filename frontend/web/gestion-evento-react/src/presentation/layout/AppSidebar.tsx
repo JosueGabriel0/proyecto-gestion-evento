@@ -44,6 +44,7 @@ const getMenuItemsByRole = (role: string): NavItem[] => {
       name: "Gestionar",
       subItems: [
         { name: "Filiales", path: "/super-admin-filiales" },
+        { name: "Escuelas", path: "/super-admin-escuelas" },
         { name: "Permisos", path: "/permisos" },
       ],
     });
