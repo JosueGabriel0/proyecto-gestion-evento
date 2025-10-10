@@ -1,5 +1,5 @@
 import type { Filial } from "../../../domain/entities/Filial";
-import type { IFilialRepository } from "../../../domain/repositories/IFilialRepositoy";
+import type { IFilialRepository } from "../../../domain/repositories/IFilialRepository";
 
 export class CreateFilialUseCase{
     private readonly ifilialRepository: IFilialRepository;

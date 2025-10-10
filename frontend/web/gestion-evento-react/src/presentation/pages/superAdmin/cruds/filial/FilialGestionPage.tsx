@@ -4,7 +4,6 @@ import Swal from "sweetalert2";
 
 import ComponentCard from "../../../../components/common/ComponentCard";
 import BasicTableOne from "../../../../components/BasicTables/BasicTableOne";
-import { Role } from "../../../../../domain/entities/Role";
 import { FilialRepository } from "../../../../../infrastructure/repositories/FilialRepository";
 import { FilialService } from "../../../../../application/services/FilialService";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
@@ -84,6 +83,7 @@ export default function FilialGestionPage() {
             {/* 🔹 Tabla de roles */}
             <ComponentCard
                 title="Tabla de Filiales"
+                placeHolder="Buscar filial......"
                 onSearch={(term) => setSearchTerm(term)}
                 onAdd={() => navigate("/filiales/new")}
             >

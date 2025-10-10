@@ -9,6 +9,8 @@ import RoleFormPage from "../pages/admin/cruds/role/RoleFormPage";
 import Page404 from "../pages/general/Page404";
 import FilialGestionPage from "../pages/superAdmin/cruds/filial/FilialGestionPage";
 import EscuelaGestionPage from "../pages/superAdmin/cruds/escuela/EscuelaGestionPage";
+import FilialFormPage from "../pages/superAdmin/cruds/filial/FilialFormPage";
+import EscuelaFormPage from "../pages/superAdmin/cruds/escuela/EscuelaFormPage";
 
 const AppRouter = () => {
     return (
@@ -18,7 +20,7 @@ const AppRouter = () => {
             <Route path="/login" element={<LoginPage />} />
 
             <Route element={<AppLayout />}>
-
+                {/* SUPER ADMIN */}
                 <Route path="/dashboard-super-admin" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <AdminDashboardPage />
@@ -31,12 +33,37 @@ const AppRouter = () => {
                     </RoleProtectedRoute>
                 } />
 
+                <Route path="/filiales/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <FilialFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/filiales/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <FilialFormPage />
+                    </RoleProtectedRoute>
+                } />
+
                 <Route path="/super-admin-escuelas" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <EscuelaGestionPage />
                     </RoleProtectedRoute>
                 } />
 
+                <Route path="/escuelas/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <EscuelaFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/escuelas/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
+                        <EscuelaFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                {/* ADMIN */}
                 <Route path="/dashboard-admin" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
                         <AdminDashboardPage />
@@ -61,42 +88,6 @@ const AppRouter = () => {
                     </RoleProtectedRoute>
                 } />
             </Route>
-
-            {/*
-        <Route path="/email" element={<EmailPage />} />
-        <Route path="/restablecimiento-contrasenia" element={<RestablecerContraseniaPage />} />
-        <Route path="/cambiar-contrasenia/:token" element={<CambiarContraseniaPage />} />
-        <Route path="/unauthorized" element={<UnauthorizedPage />} />
-*/}
-
-            {/* 👨‍💼 ADMINISTRADOR */}
-            {/*
-                <Route
-                    path="/dashboard-administrador"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <AdministradorDashboardPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/roles"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <ListRolPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/add-rol"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <AddRolPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                */}
-            {/* ...idem para usuarios, personas, docentes, estudiantes, inscripciones */}
 
             {/* ❌ 404 */}
             <Route path="*" element={<div className="flex items-center justify-center min-h-screen"><Page404 /></div>} />

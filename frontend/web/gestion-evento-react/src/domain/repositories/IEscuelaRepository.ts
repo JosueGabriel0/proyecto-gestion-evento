@@ -9,4 +9,8 @@ export interface IEscuelaRepository {
   deleteEscuela(id: number): Promise<void>;
   getEscuelasPaginated(page?: number, perPage?: number): Promise<PaginatedResponse<Escuela>>;
   searchEscuelasPaginated(term: string, perPage?: number): Promise<PaginatedResponse<Escuela>>;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> temp-recuperacion}

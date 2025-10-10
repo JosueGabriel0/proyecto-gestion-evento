@@ -1,5 +1,5 @@
 import type { Filial } from "../../../domain/entities/Filial";
-import type { IFilialRepository } from "../../../domain/repositories/IFilialRepositoy";
+import type { IFilialRepository } from "../../../domain/repositories/IFilialRepository";
 import type { PaginatedResponse } from "../../dtos/PaginatedResponse";
 
 export class SearchFilialPaginatedUseCase{

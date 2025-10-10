@@ -2,13 +2,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+<<<<<<< HEAD
 import ComponentCard from "../../../../components/common/ComponentCard";
+=======
+>>>>>>> temp-recuperacion}
 import BasicTableOne from "../../../../components/BasicTables/BasicTableOne";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 
 import type { Escuela } from "../../../../../domain/entities/Escuela";
 import { EscuelaRepository } from "../../../../../infrastructure/repositories/EscuelaRepository";
 import { EscuelaService } from "../../../../../application/services/EscuelaService";
+<<<<<<< HEAD
+=======
+import ComponentCard from "../../../../components/common/ComponentCard";
+>>>>>>> temp-recuperacion}
 
 // 🔹 Instanciamos el repositorio y servicio
 const escuelaRepository = new EscuelaRepository();
@@ -90,17 +97,31 @@ export default function EscuelaGestionPage() {
       {/* 🔹 Contenedor de la tabla */}
       <ComponentCard
         title="Tabla de Escuelas"
+<<<<<<< HEAD
         onSearch={(term) => setSearchTerm(term)}
         onAdd={() => navigate("/super-admin-escuelas/new")}
+=======
+        placeHolder="Buscar filial..."  // ✅ <-- lo agregas aquí
+        onSearch={(term) => setSearchTerm(term)}
+        onAdd={() => navigate("/escuelas/new")}
+>>>>>>> temp-recuperacion}
       >
         <BasicTableOne<Escuela>
           columns={columns}
           fetchData={fetchEscuelas}
           searchTerm={searchTerm}
+<<<<<<< HEAD
           onEdit={(escuela) => navigate(`/super-admin-escuelas/edit/${escuela.id}`)}
+=======
+          onEdit={(escuela) => navigate(`/escuelas/edit/${escuela.id}`)}
+>>>>>>> temp-recuperacion}
           onDelete={handleDelete}
         />
       </ComponentCard>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> temp-recuperacion}

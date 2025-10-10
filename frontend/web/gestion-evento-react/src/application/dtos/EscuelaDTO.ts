@@ -3,5 +3,5 @@ export interface EscuelaDTO {
   nombre: string;
   codigo: string;
   facultad_id: number;
-  foto?: string
+  foto?: string;
 }
