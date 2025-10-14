@@ -397,6 +397,165 @@
                 ]
             }
         },
+        "/escuelas/paginated": {
+            "get": {
+                "tags": [
+                    "Escuelas"
+                ],
+                "summary": "Obtener escuelas paginadas",
+                "description": "Devuelve una lista paginada de escuelas",
+                "operationId": "getEscuelasPaginated",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página a obtener",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de escuelas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 57
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Administrador"
+                                                    },
+                                                    "foto": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/foto.png",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parámetros inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/escuelas/search": {
+            "get": {
+                "tags": [
+                    "Escuelas"
+                ],
+                "summary": "Buscar escuelas con paginación",
+                "description": "Permite buscar escuelas por nombre con soporte de paginación",
+                "operationId": "0eb49a1217a2111a9c3af916588b1770",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Término de búsqueda para filtrar escuelas",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Administrador"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página (por defecto 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de búsqueda de escuelas con paginación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Facultad"
+                                            }
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/facultades": {
             "get": {
                 "tags": [
@@ -717,464 +876,156 @@
                 ]
             }
         },
-        "/filiales": {
+        "/facultades/paginated": {
             "get": {
                 "tags": [
-                    "Filiales"
+                    "Facultades"
                 ],
-                "summary": "Listar filiales",
-                "description": "Devuelve todos las filiales disponibles",
-                "operationId": "d7057692e2bfa16bfe73e954d8600d79",
+                "summary": "Obtener facultades paginadas",
+                "description": "Devuelve una lista paginada de facultades",
+                "operationId": "getFacultadesPaginated",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página a obtener",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de filiales",
+                        "description": "Lista paginada de facultades",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Filial"
-                                    }
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 57
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "Administrador"
+                                                    },
+                                                    "foto": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/foto.png",
+                                                        "nullable": true
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parámetros inválidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/facultades/search": {
+            "get": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Buscar roles con paginación",
+                "description": "Permite buscar facultades por nombre con soporte de paginación",
+                "operationId": "2000688f75307b13d4a18b82ca1d047b",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Término de búsqueda para filtrar facultades",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Administrador"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página (por defecto 10)",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de búsqueda de facultades con paginación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Facultad"
+                                            }
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 3
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
                     },
                     "500": {
                         "description": "Error interno del servidor"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Crear una nueva filial",
-                "description": "Crea una filial con nombre y opcionalmente una foto",
-                "operationId": "5eee9bb4bfe3925466950c748059d184",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "nombre"
-                                ],
-                                "properties": {
-                                    "nombre": {
-                                        "description": "Nombre de la filial",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "direccion": {
-                                        "description": "Direccion",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "telefono": {
-                                        "description": "Telefono",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "email": {
-                                        "description": "email",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "foto": {
-                                        "description": "Imagen de la filial (archivo opcional)",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Filial creada exitosamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Filial"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Error de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "El campo nombre es obligatorio."
-                                        },
-                                        "errors": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/filiales/{id}": {
-            "get": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Obtener una filial por ID",
-                "description": "Devuelve una filial específica por su ID",
-                "operationId": "475a6b62cae3338334403ff0f6806d4d",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la filial",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Filial encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Filial"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Filial no encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Filial no encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Actualizar una filial existente",
-                "description": "Permite actualizar el nombre de una filial y opcionalmente su foto",
-                "operationId": "8b39d2fe16269564a36aafcf3a226696",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la filial a actualizar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "required": [
-                                    "nombre"
-                                ],
-                                "properties": {
-                                    "nombre": {
-                                        "description": "Nuevo nombre de la filial",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "direccion": {
-                                        "description": "Direccion",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "telefono": {
-                                        "description": "Telefono",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "email": {
-                                        "description": "email",
-                                        "type": "string",
-                                        "example": "Example"
-                                    },
-                                    "foto": {
-                                        "description": "Nueva imagen de la filial (opcional)",
-                                        "type": "string",
-                                        "format": "binary"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Filial actualizada correctamente",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Filial"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Filial no encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Filial no encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Error de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "El campo nombre es obligatorio."
-                                        },
-                                        "errors": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Eliminar una filial",
-                "description": "Elimina una filial por su ID",
-                "operationId": "70fdcf47bd3b8b0a16b311aa618c2dbc",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID de la filial a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Filial eliminado correctamente (sin contenido)"
-                    },
-                    "404": {
-                        "description": "Filial no encontrada",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Filial no encontrada"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/filiales/paginated": {
-            "get": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Obtener filiales paginadas",
-                "description": "Devuelve una lista de filiales con paginación.",
-                "operationId": "61dff765d5a68f75392d6dd7b66dff09",
-                "parameters": [
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Número de página a consultar",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 1
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Cantidad de resultados por página",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Lista de filiales paginadas",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "current_page": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "per_page": {
-                                            "type": "integer",
-                                            "example": 10
-                                        },
-                                        "total": {
-                                            "type": "integer",
-                                            "example": 50
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Filial"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/filiales/search": {
-            "get": {
-                "tags": [
-                    "Filiales"
-                ],
-                "summary": "Buscar filiales con paginación",
-                "description": "Busca filiales según un término y devuelve resultados paginados.",
-                "operationId": "5df97783dcaae31c02f913f28f7cee20",
-                "parameters": [
-                    {
-                        "name": "q",
-                        "in": "query",
-                        "description": "Término de búsqueda",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "per_page",
-                        "in": "query",
-                        "description": "Cantidad de resultados por página",
-                        "required": false,
-                        "schema": {
-                            "type": "integer",
-                            "default": 10
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Resultados de búsqueda paginados",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "current_page": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "per_page": {
-                                            "type": "integer",
-                                            "example": 10
-                                        },
-                                        "total": {
-                                            "type": "integer",
-                                            "example": 12
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/Filial"
-                                            }
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
                     }
                 },
                 "security": [
@@ -2106,6 +1957,473 @@
                     }
                 ]
             }
+        },
+        "/filiales": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Listar filiales",
+                "description": "Devuelve todos las filiales disponibles",
+                "operationId": "5de9e3819adf0e8f9c6a03711ddaed5f",
+                "responses": {
+                    "200": {
+                        "description": "Lista de filiales",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Filial"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Crear una nueva filial",
+                "description": "Crea una filial con nombre y opcionalmente una foto",
+                "operationId": "97b7eeafe5559056959f032ddcd17f87",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "description": "Nombre de la filial",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "direccion": {
+                                        "description": "Direccion",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "telefono": {
+                                        "description": "Telefono",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "foto": {
+                                        "description": "Imagen de la filial (archivo opcional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Filial creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El campo nombre es obligatorio."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/filiales/{id}": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Obtener una filial por ID",
+                "description": "Devuelve una filial específica por su ID",
+                "operationId": "dede7b1c08146eb16309816da5144e55",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la filial",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filial encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Filial no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Filial no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Actualizar una filial existente",
+                "description": "Permite actualizar el nombre de una filial y opcionalmente su foto",
+                "operationId": "59acb9e1befcdd8ee61b92f9738f373e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la filial a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "description": "Nuevo nombre de la filial",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "direccion": {
+                                        "description": "Direccion",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "telefono": {
+                                        "description": "Telefono",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "email": {
+                                        "description": "email",
+                                        "type": "string",
+                                        "example": "Example"
+                                    },
+                                    "foto": {
+                                        "description": "Nueva imagen de la filial (opcional)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Filial actualizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Filial"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Filial no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Filial no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El campo nombre es obligatorio."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Eliminar una filial",
+                "description": "Elimina una filial por su ID",
+                "operationId": "719ea95f40812c5d59be193d5422f541",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la filial a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Filial eliminado correctamente (sin contenido)"
+                    },
+                    "404": {
+                        "description": "Filial no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Filial no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/filiales/paginated": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Obtener filiales paginadas",
+                "description": "Devuelve una lista de filiales con paginación.",
+                "operationId": "9faf909ee27f314623bfb9ff9447ce2b",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página a consultar",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de filiales paginadas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 50
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Filial"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/filiales/search": {
+            "get": {
+                "tags": [
+                    "Filiales"
+                ],
+                "summary": "Buscar filiales con paginación",
+                "description": "Busca filiales según un término y devuelve resultados paginados.",
+                "operationId": "ee96ccb3700ec9346296da72f40c7be4",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Término de búsqueda",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de resultados por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de búsqueda paginados",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "per_page": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "total": {
+                                            "type": "integer",
+                                            "example": 12
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Filial"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -2442,16 +2760,16 @@
             "description": "Facultades"
         },
         {
-            "name": "Filiales",
-            "description": "Filiales"
-        },
-        {
             "name": "Roles",
             "description": "Roles"
         },
         {
             "name": "Usuarios",
             "description": "Usuarios"
+        },
+        {
+            "name": "Filiales",
+            "description": "Filiales"
         }
     ]
 }

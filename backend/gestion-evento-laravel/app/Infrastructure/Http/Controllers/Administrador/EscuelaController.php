@@ -6,6 +6,8 @@ use App\Application\UseCases\Escuela\CreateEscuelaUseCase;
 use App\Application\UseCases\Escuela\DeleteEscuelaUseCase;
 use App\Application\UseCases\Escuela\GetAllEscuelasUseCase;
 use App\Application\UseCases\Escuela\GetEscuelaByIdUseCase;
+use App\Application\UseCases\Escuela\GetEscuelasPaginatedUseCase;
+use App\Application\UseCases\Escuela\SearchEscuelaUseCase;
 use App\Application\UseCases\Escuela\UpdateEscuelaUseCase;
 use App\Infrastructure\Http\Requests\Escuela\CreateEscuelaRequest;
 use App\Infrastructure\Http\Requests\Escuela\UpdateEscuelaRequest;
@@ -13,6 +15,7 @@ use App\Infrastructure\Http\Resources\EscuelaResource;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\JsonResponse;
 use RuntimeException;
+use Illuminate\Http\Request;
 
 class EscuelaController
 {
@@ -21,7 +24,9 @@ class EscuelaController
         private DeleteEscuelaUseCase $deleteEscuelaUseCase,
         private GetAllEscuelasUseCase $getAllEscuelasUseCase,
         private GetEscuelaByIdUseCase $getEscuelaByIdUseCase,
-        private UpdateEscuelaUseCase $updateEscuelaUseCase
+        private UpdateEscuelaUseCase $updateEscuelaUseCase,
+        private GetEscuelasPaginatedUseCase $getEscuelasPaginatedUseCase,
+        private SearchEscuelaUseCase $searchEscuelaUseCase,
     ) {}
 
     /**
@@ -307,5 +312,121 @@ class EscuelaController
                 Response::HTTP_NOT_FOUND
             );
         }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/escuelas/paginated",
+     *     summary="Obtener escuelas paginadas",
+     *     description="Devuelve una lista paginada de escuelas",
+     *     operationId="getEscuelasPaginated",
+     *     tags={"Escuelas"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Número de página a obtener",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         description="Cantidad de resultados por página",
+     *         required=false,
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista paginada de escuelas",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer", example=1),
+     *             @OA\Property(property="per_page", type="integer", example=10),
+     *             @OA\Property(property="total", type="integer", example=57),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="nombre", type="string", example="Administrador"),
+     *                     @OA\Property(property="foto", type="string", nullable=true, example="https://example.com/foto.png")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Parámetros inválidos"
+     *     )
+     * )
+     */
+    public function paginated(Request $request): JsonResponse
+    {
+        $page    = $request->input('page', 1);
+        $perPage = $request->input('per_page', 10);
+
+        $paginator = $this->getEscuelasPaginatedUseCase->execute($page, $perPage);
+
+        return response()->json([
+            'current_page' => $paginator->currentPage(),
+            'per_page'     => $paginator->perPage(),
+            'total'        => $paginator->total(),
+            'data'         => EscuelaResource::collection($paginator->items()),
+        ], JsonResponse::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/escuelas/search",
+     *     summary="Buscar escuelas con paginación",
+     *     description="Permite buscar escuelas por nombre con soporte de paginación",
+     *     tags={"Escuelas"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="q",
+     *         in="query",
+     *         required=false,
+     *         description="Término de búsqueda para filtrar escuelas",
+     *         @OA\Schema(type="string", example="Administrador")
+     *     ),
+     *     @OA\Parameter(
+     *         name="per_page",
+     *         in="query",
+     *         required=false,
+     *         description="Cantidad de resultados por página (por defecto 10)",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Resultados de búsqueda de escuelas con paginación",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="current_page", type="integer", example=1),
+     *             @OA\Property(property="data", type="array", @OA\Items(ref="#/components/schemas/Facultad")),
+     *             @OA\Property(property="per_page", type="integer", example=10),
+     *             @OA\Property(property="total", type="integer", example=3)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor"
+     *     )
+     * )
+     */
+    public function search(Request $request): JsonResponse
+    {
+        $perPage = $request->input('per_page', 10);
+        $term = $request->input('q', '');
+        $paginator = $this->searchEscuelaUseCase->execute($term, $perPage);
+
+        return response()->json([
+            'current_page' => $paginator->currentPage(),
+            'per_page'     => $paginator->perPage(),
+            'total'        => $paginator->total(),
+            'data'         => EscuelaResource::collection($paginator->items()),
+        ], JsonResponse::HTTP_OK);
     }
 }

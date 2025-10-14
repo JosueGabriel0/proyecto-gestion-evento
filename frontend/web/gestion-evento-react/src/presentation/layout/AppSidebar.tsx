@@ -5,7 +5,6 @@ import {
   ChevronDownIcon,
   GridIcon,
   HorizontaLDots,
-  UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
@@ -33,7 +32,7 @@ const getMenuItemsByRole = (role: string): NavItem[] => {
       name: "Gestionar",
       subItems: [
         { name: "Roles", path: "/admin-roles" },
-        { name: "Usuarios", path: "/usuarios" },
+        { name: "Facultades", path: "/admin-facultades" },
       ],
     });
   }

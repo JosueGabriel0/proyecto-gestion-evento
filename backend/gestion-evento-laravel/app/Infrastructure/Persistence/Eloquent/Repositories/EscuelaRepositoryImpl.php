@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 use App\Domain\Entities\Escuela;
 use App\Domain\Repositories\EscuelaRepository;
 use App\Infrastructure\Persistence\Eloquent\Models\EscuelaModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EscuelaRepositoryImpl implements EscuelaRepository
 {
@@ -47,6 +48,23 @@ class EscuelaRepositoryImpl implements EscuelaRepository
 
     public function delete(int $id): void{
         EscuelaModel::destroy($id);
+    }
+
+    public function getEscuelasPaginated(int $page = 1, int $perPage = 10): LengthAwarePaginator
+    {
+        return EscuelaModel::paginate(
+            $perPage,
+            ['*'],
+            'page',
+            $page
+        )->through(fn(EscuelaModel $model) => $this->toEntity($model));
+    }
+
+    public function searchEscuela(string $term, int $perPage = 10): LengthAwarePaginator
+    {
+      return EscuelaModel::where('nombre', 'LIKE', "%{$term}%")
+            ->paginate($perPage)
+            ->through(fn(EscuelaModel $model) => $this->toEntity($model));
     }
 
     private function toEntity(EscuelaModel $model): Escuela

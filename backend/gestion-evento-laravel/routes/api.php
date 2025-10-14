@@ -3,9 +3,9 @@
 use App\Infrastructure\Http\Controllers\Administrador\AuthController;
 use App\Infrastructure\Http\Controllers\Administrador\EscuelaController;
 use App\Infrastructure\Http\Controllers\Administrador\FacultadController;
-use App\Infrastructure\Http\Controllers\Administrador\FilialController;
 use App\Infrastructure\Http\Controllers\Administrador\RoleController;
 use App\Infrastructure\Http\Controllers\Administrador\UserPersonaController;
+use App\Infrastructure\Http\Controllers\SuperAdministrador\FilialController;
 use App\Infrastructure\Http\Middleware\CheckRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,9 +31,15 @@ Route::middleware(['auth:api'])->group(function () {
     });
 
     Route::middleware([CheckRole::class . ':ROLE_SUPER_ADMIN,ROLE_ADMIN'])->group(function () {
+        Route::get('/filiales', [FilialController::class, 'index']);
+
+        Route::get('/facultades/paginated', [FacultadController::class, 'paginated']);
+        Route::get('/facultades/search',    [FacultadController::class, 'search']);
         Route::apiResource('facultades', FacultadController::class);
         Route::post('/facultades/{id}', [FacultadController::class, 'update']);
 
+        Route::get('/escuelas/paginated', [EscuelaController::class, 'paginated']);
+        Route::get('/escuelas/search',    [EscuelaController::class, 'search']);
         Route::apiResource('escuelas', EscuelaController::class);
         Route::post('/escuelas/{id}', [EscuelaController::class, 'update']);
 

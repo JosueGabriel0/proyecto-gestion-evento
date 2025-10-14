@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Http\Controllers\Administrador;
+namespace App\Infrastructure\Http\Controllers\SuperAdministrador;
 
 use App\Infrastructure\Http\Controllers\Controller;
 use App\Application\UseCases\Filial\AllFilialesUseCase;

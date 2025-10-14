@@ -8,6 +8,7 @@ import { Role } from "../../../../../domain/entities/Role";
 import { RoleRepository } from "../../../../../infrastructure/repositories/RoleRepository";
 import { RoleService } from "../../../../../application/services/RoleService";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
+import Pagination from "../../../../components/common/Pagination";
 
 const roleRepository = new RoleRepository();
 const roleService = new RoleService(roleRepository);

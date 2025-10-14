@@ -5,6 +5,7 @@ namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 use App\Domain\Entities\Facultad;
 use App\Domain\Repositories\FacultadRepository;
 use App\Infrastructure\Persistence\Eloquent\Models\FacultadModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class FacultadRepositoryImpl implements FacultadRepository
 {
@@ -49,6 +50,23 @@ class FacultadRepositoryImpl implements FacultadRepository
         $facultadEncontrada->save();
 
         return $this->toEntity($facultadEncontrada);
+    }
+
+    public function getFacultadesPaginated(int $page = 1, int $perPage = 10): LengthAwarePaginator
+    {
+        return FacultadModel::paginate(
+            $perPage,
+            ['*'],
+            'page',
+            $page
+        )->through(fn(FacultadModel $model) => $this->toEntity($model));
+    }
+
+    public function searchFacultad(string $term, int $perPage = 10): LengthAwarePaginator
+    {
+      return FacultadModel::where('nombre', 'LIKE', "%{$term}%")
+            ->paginate($perPage)
+            ->through(fn(FacultadModel $model) => $this->toEntity($model));
     }
 
     /**

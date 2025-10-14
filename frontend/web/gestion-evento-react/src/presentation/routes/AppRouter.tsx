@@ -9,6 +9,8 @@ import RoleFormPage from "../pages/admin/cruds/role/RoleFormPage";
 import Page404 from "../pages/general/Page404";
 import FilialGestionPage from "../pages/superAdmin/cruds/filial/FilialGestionPage";
 import FilialFormPage from "../pages/superAdmin/cruds/filial/FilialFormPage";
+import FacultadGestionPage from "../pages/admin/cruds/facultad/FacultadGestionPage";
+import FacultadFormPage from "../pages/admin/cruds/facultad/FacultadFormPage";
 
 const AppRouter = () => {
     return (
@@ -64,6 +66,24 @@ const AppRouter = () => {
                 <Route path="/roles/edit/:id" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
                         <RoleFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/admin-facultades" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <FacultadGestionPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/facultades/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <FacultadFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/facultades/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                        <FacultadFormPage />
                     </RoleProtectedRoute>
                 } />
             </Route>
