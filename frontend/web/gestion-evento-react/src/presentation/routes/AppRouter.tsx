@@ -11,6 +11,8 @@ import FilialGestionPage from "../pages/superAdmin/cruds/filial/FilialGestionPag
 import FilialFormPage from "../pages/superAdmin/cruds/filial/FilialFormPage";
 import FacultadGestionPage from "../pages/admin/cruds/facultad/FacultadGestionPage";
 import FacultadFormPage from "../pages/admin/cruds/facultad/FacultadFormPage";
+import EscuelaGestionPage from "../pages/admin/cruds/escuela/EscuelaGestionPage";
+import EscuelaFormPage from "../pages/admin/cruds/escuela/EscuelaFormPage";
 
 const AppRouter = () => {
     return (
@@ -33,13 +35,13 @@ const AppRouter = () => {
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/filiales/new" element={
+                <Route path="/super-admin-filiales/new" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/filiales/edit/:id" element={
+                <Route path="/super-admin-filiales/edit/:id" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialFormPage />
                     </RoleProtectedRoute>
@@ -51,39 +53,57 @@ const AppRouter = () => {
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/admin-roles" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-roles" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
                         <RoleGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/roles/new" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-roles/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
                         <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/roles/edit/:id" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-roles/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
                         <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/admin-facultades" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-facultades" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
                         <FacultadGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/facultades/new" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-facultades/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <FacultadFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/facultades/edit/:id" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
+                <Route path="/super&admin-facultades/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
                         <FacultadFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super&admin-escuelas" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                        <EscuelaGestionPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super&admin-escuelas/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                        <EscuelaFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super&admin-escuelas/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                        <EscuelaFormPage />
                     </RoleProtectedRoute>
                 } />
             </Route>

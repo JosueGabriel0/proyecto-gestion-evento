@@ -33,6 +33,7 @@ class UpdateEscuelaRequest extends FormRequest
     {
         return [
             'codigo.unique' => 'El código ya está en uso por otra escuela.',
+            'facultad_id.required' => 'La facultad es obligatoria.',
             'facultad_id.exists' => 'La facultad seleccionada no existe.',
         ];
     }

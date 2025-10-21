@@ -4,7 +4,7 @@ use App\Infrastructure\Http\Controllers\Administrador\AuthController;
 use App\Infrastructure\Http\Controllers\Administrador\EscuelaController;
 use App\Infrastructure\Http\Controllers\Administrador\FacultadController;
 use App\Infrastructure\Http\Controllers\Administrador\RoleController;
-use App\Infrastructure\Http\Controllers\Administrador\UserPersonaController;
+use App\Infrastructure\Http\Controllers\Administrador\UserController;
 use App\Infrastructure\Http\Controllers\SuperAdministrador\FilialController;
 use App\Infrastructure\Http\Middleware\CheckRole;
 use Illuminate\Http\Request;
@@ -48,7 +48,9 @@ Route::middleware(['auth:api'])->group(function () {
         Route::apiResource('roles', RoleController::class)->except(['create', 'edit']);
         Route::post('/roles/{id}', [RoleController::class, 'update']);
 
-        Route::apiResource('usuarios', UserPersonaController::class);
-        Route::post('/usuarios/{id}', [UserPersonaController::class, 'update']);
+        Route::get('/users/paginated', [UserController::class, 'index']);
+        Route::get('/users/search',    [UserController::class, 'search']);
+        Route::apiResource('users', UserController::class);
+        Route::post('/users/{id}', [UserController::class, 'update']);
     });
 });

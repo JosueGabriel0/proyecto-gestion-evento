@@ -1494,27 +1494,301 @@
                 ]
             }
         },
-        "/usuarios": {
+        "/users/paginated": {
             "get": {
                 "tags": [
                     "Usuarios"
                 ],
                 "summary": "Listar usuarios",
-                "description": "Devuelve todos los usuarios disponibles",
-                "operationId": "c8cfdac38d2a424a67cd765f37e8b85d",
+                "description": "Obtiene una lista paginada de usuarios, con opción de filtrar por rol.",
+                "operationId": "getUsers",
+                "parameters": [
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "description": "Filtra los usuarios por rol (por ejemplo: ROLE_ESTUDIANTE, ROLE_JURADO, ROLE_PONENTE)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "ROLE_ESTUDIANTE"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página para la paginación",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de usuarios por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "Lista de usuarios",
+                        "description": "Listado de usuarios obtenido correctamente",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Usuario"
-                                    }
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "meta": {
+                                            "description": "Información de paginación",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 5
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 47
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "description": "Enlaces de navegación",
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users?page=5"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users?page=2"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/search": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Buscar usuarios",
+                "description": "Busca usuarios por nombre, apellidos o correo electrónico. Permite filtrar por rol y paginar los resultados.",
+                "operationId": "searchUsers",
+                "parameters": [
+                    {
+                        "name": "term",
+                        "in": "query",
+                        "description": "Término de búsqueda (nombre, apellido o correo)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "juan.perez@upeu.edu.pe"
+                        }
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "description": "Filtra usuarios por rol (por ejemplo: ROLE_ESTUDIANTE, ROLE_JURADO, ROLE_PONENTE)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "ROLE_PONENTE"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página de resultados",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad de usuarios por página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados de la búsqueda de usuarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        },
+                                        "meta": {
+                                            "description": "Información de paginación",
+                                            "properties": {
+                                                "current_page": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "last_page": {
+                                                    "type": "integer",
+                                                    "example": 3
+                                                },
+                                                "per_page": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 25
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "links": {
+                                            "description": "Enlaces de navegación",
+                                            "properties": {
+                                                "first": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users/search?page=1"
+                                                },
+                                                "last": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users/search?page=3"
+                                                },
+                                                "prev": {
+                                                    "type": "string",
+                                                    "example": null,
+                                                    "nullable": true
+                                                },
+                                                "next": {
+                                                    "type": "string",
+                                                    "example": "http://api.test/api/users/search?page=2"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado"
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Obtener un usuario por ID",
+                "description": "Devuelve los datos detallados de un usuario específico mediante su identificador único.",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario que se desea consultar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario encontrado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado — el token de autenticación no fue provisto o es inválido"
                     },
                     "500": {
                         "description": "Error interno del servidor"
@@ -1530,109 +1804,133 @@
                 "tags": [
                     "Usuarios"
                 ],
-                "summary": "Crear un nuevo usuario",
-                "description": "Crea un usuario con nombre y opcionalmente una foto",
-                "operationId": "594d7281b042eb7156b0d6594125840f",
+                "summary": "Actualizar información de un usuario",
+                "description": "Actualiza los datos de un usuario existente, incluyendo su información personal, académica y rol.",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 15
+                        }
+                    }
+                ],
                 "requestBody": {
+                    "description": "Datos actualizados del usuario",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
+                                "required": [
+                                    "email",
+                                    "escuela_id",
+                                    "persona"
+                                ],
                                 "properties": {
                                     "email": {
-                                        "description": "Email",
                                         "type": "string",
-                                        "example": "Administrador@gmail.com"
+                                        "format": "email",
+                                        "example": "usuario.actualizado@ejemplo.com"
                                     },
                                     "password": {
-                                        "description": "Password",
                                         "type": "string",
-                                        "example": "administrador123"
+                                        "example": "nuevaClave123",
+                                        "nullable": true
                                     },
                                     "escuela_id": {
-                                        "description": "Escuela_id",
                                         "type": "integer",
-                                        "example": "1"
+                                        "example": 3
                                     },
-                                    "role_id": {
-                                        "description": "Role_id",
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "nombres": {
-                                        "description": "Nombres",
+                                    "role": {
                                         "type": "string",
-                                        "example": "Administrador"
+                                        "example": "jurado"
                                     },
-                                    "apellidos": {
-                                        "description": "Apellidos",
-                                        "type": "string",
-                                        "example": "Administrador"
+                                    "persona": {
+                                        "required": [
+                                            "nombres",
+                                            "apellidos",
+                                            "tipo_documento",
+                                            "numero_documento",
+                                            "correo_electronico",
+                                            "fecha_nacimiento"
+                                        ],
+                                        "properties": {
+                                            "nombres": {
+                                                "type": "string",
+                                                "example": "María"
+                                            },
+                                            "apellidos": {
+                                                "type": "string",
+                                                "example": "Fernández López"
+                                            },
+                                            "tipo_documento": {
+                                                "type": "string",
+                                                "example": "DNI"
+                                            },
+                                            "numero_documento": {
+                                                "type": "string",
+                                                "example": "78945612"
+                                            },
+                                            "telefono": {
+                                                "type": "string",
+                                                "example": "999888777",
+                                                "nullable": true
+                                            },
+                                            "direccion": {
+                                                "type": "string",
+                                                "example": "Calle Los Sauces 456",
+                                                "nullable": true
+                                            },
+                                            "correo_electronico": {
+                                                "type": "string",
+                                                "example": "maria.fernandez@ejemplo.com"
+                                            },
+                                            "foto_perfil": {
+                                                "type": "string",
+                                                "example": "perfil_maria.jpg",
+                                                "nullable": true
+                                            },
+                                            "fecha_nacimiento": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "1998-02-14"
+                                            }
+                                        },
+                                        "type": "object"
                                     },
-                                    "tipo_documento": {
-                                        "description": "Tipo_documento",
-                                        "type": "string",
-                                        "example": "DNI"
+                                    "alumno": {
+                                        "properties": {
+                                            "codigo_universitario": {
+                                                "type": "string",
+                                                "example": "20224567"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     },
-                                    "numero_documento": {
-                                        "description": "numero_documento",
-                                        "type": "string",
-                                        "example": "1234567"
+                                    "jurado": {
+                                        "properties": {
+                                            "especialidad": {
+                                                "type": "string",
+                                                "example": "Ingeniería de Software"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     },
-                                    "telefono": {
-                                        "description": "Telefono",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "direccion": {
-                                        "description": "Direccion",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "correo_electronico": {
-                                        "description": "Correo_electronico",
-                                        "type": "string",
-                                        "example": "1234567@gmail.com"
-                                    },
-                                    "fecha_nacimiento": {
-                                        "description": "Fecha_nacimiento",
-                                        "type": "string",
-                                        "example": "2000-07-10"
-                                    },
-                                    "codigo_universitario": {
-                                        "description": "Codigo_universitario",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "carrera": {
-                                        "description": "Carrera",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "ciclo": {
-                                        "description": "Ciclo",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "biografia": {
-                                        "description": "Biografia",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "ponencia_id": {
-                                        "description": "Ponencia_id",
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "especialidad": {
-                                        "description": "Especialidad",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "foto_perfil": {
-                                        "description": "Imagen del usuario (archivo opcional)",
-                                        "type": "string",
-                                        "format": "binary"
+                                    "ponente": {
+                                        "properties": {
+                                            "biografia": {
+                                                "type": "string",
+                                                "example": "Ponente en conferencias internacionales de tecnología educativa"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1641,28 +1939,119 @@
                     }
                 },
                 "responses": {
-                    "201": {
-                        "description": "Usuario creado exitosamente",
+                    "200": {
+                        "description": "Usuario actualizado exitosamente",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Usuario"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
                     },
-                    "422": {
-                        "description": "Error de validación",
+                    "400": {
+                        "description": "Datos inválidos o incompletos",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "El campo nombre es obligatorio."
-                                        },
-                                        "errors": {
-                                            "type": "object"
+                                            "example": "Error en los datos enviados"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Eliminar un usuario",
+                "description": "Elimina un usuario existente por su ID.",
+                "operationId": "c8a573915c68d380f0a6611a7234c2fb",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del usuario a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Usuario eliminado correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario eliminado correctamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Usuario no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Usuario no encontrado"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No autorizado"
                                         }
                                     },
                                     "type": "object"
@@ -1678,179 +2067,127 @@
                 ]
             }
         },
-        "/usuarios/{id}": {
-            "get": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Obtener un usuario por ID",
-                "description": "Devuelve un usuario específico por su ID",
-                "operationId": "25ed7e5f41e9ce5c6a9040f57513ee4e",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del usuario",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Usuario encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Usuario"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Usuario no encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Usuario no encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
+        "/users": {
             "post": {
                 "tags": [
                     "Usuarios"
                 ],
-                "summary": "Actualizar un usuario existente",
-                "description": "Permite actualizar el nombre de un usuario y opcionalmente su foto",
-                "operationId": "027548efc75a75b8d0fcd8bec381a9b5",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del usuario a actualizar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
+                "summary": "Registrar un nuevo usuario",
+                "description": "Crea un nuevo usuario con su información personal, académica y de rol.",
+                "operationId": "createUser",
                 "requestBody": {
+                    "description": "Datos necesarios para registrar un nuevo usuario",
                     "required": true,
                     "content": {
-                        "multipart/form-data": {
+                        "application/json": {
                             "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "escuela_id",
+                                    "persona"
+                                ],
                                 "properties": {
                                     "email": {
-                                        "description": "Email",
                                         "type": "string",
-                                        "example": "Administrador@gmail.com"
+                                        "format": "email",
+                                        "example": "usuario@ejemplo.com"
                                     },
                                     "password": {
-                                        "description": "Password",
                                         "type": "string",
-                                        "example": "administrador123"
+                                        "format": "password",
+                                        "example": "12345678"
                                     },
                                     "escuela_id": {
-                                        "description": "Escuela_id",
                                         "type": "integer",
-                                        "example": "1"
+                                        "example": 2
                                     },
-                                    "role_id": {
-                                        "description": "Role_id",
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "nombres": {
-                                        "description": "Nombres",
+                                    "role": {
                                         "type": "string",
-                                        "example": "Administrador"
+                                        "example": "alumno"
                                     },
-                                    "apellidos": {
-                                        "description": "Apellidos",
-                                        "type": "string",
-                                        "example": "Administrador"
+                                    "persona": {
+                                        "required": [
+                                            "nombres",
+                                            "apellidos",
+                                            "tipo_documento",
+                                            "numero_documento",
+                                            "correo_electronico",
+                                            "fecha_nacimiento"
+                                        ],
+                                        "properties": {
+                                            "nombres": {
+                                                "type": "string",
+                                                "example": "Juan"
+                                            },
+                                            "apellidos": {
+                                                "type": "string",
+                                                "example": "Pérez Gómez"
+                                            },
+                                            "tipo_documento": {
+                                                "type": "string",
+                                                "example": "DNI"
+                                            },
+                                            "numero_documento": {
+                                                "type": "string",
+                                                "example": "74125896"
+                                            },
+                                            "telefono": {
+                                                "type": "string",
+                                                "example": "987654321",
+                                                "nullable": true
+                                            },
+                                            "direccion": {
+                                                "type": "string",
+                                                "example": "Av. Los Olivos 123",
+                                                "nullable": true
+                                            },
+                                            "correo_electronico": {
+                                                "type": "string",
+                                                "example": "juan.perez@ejemplo.com"
+                                            },
+                                            "foto_perfil": {
+                                                "type": "string",
+                                                "example": "perfil.jpg",
+                                                "nullable": true
+                                            },
+                                            "fecha_nacimiento": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "1999-05-10"
+                                            }
+                                        },
+                                        "type": "object"
                                     },
-                                    "tipo_documento": {
-                                        "description": "Tipo_documento",
-                                        "type": "string",
-                                        "example": "DNI"
+                                    "alumno": {
+                                        "properties": {
+                                            "codigo_universitario": {
+                                                "type": "string",
+                                                "example": "20210045"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     },
-                                    "numero_documento": {
-                                        "description": "numero_documento",
-                                        "type": "string",
-                                        "example": "1234567"
+                                    "jurado": {
+                                        "properties": {
+                                            "especialidad": {
+                                                "type": "string",
+                                                "example": "Inteligencia Artificial"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     },
-                                    "telefono": {
-                                        "description": "Telefono",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "direccion": {
-                                        "description": "Direccion",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "correo_electronico": {
-                                        "description": "Correo_electronico",
-                                        "type": "string",
-                                        "example": "1234567@gmail.com"
-                                    },
-                                    "fecha_nacimiento": {
-                                        "description": "Fecha_nacimiento",
-                                        "type": "string",
-                                        "example": "2000-07-10"
-                                    },
-                                    "codigo_universitario": {
-                                        "description": "Codigo_universitario",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "carrera": {
-                                        "description": "Carrera",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "ciclo": {
-                                        "description": "Ciclo",
-                                        "type": "string",
-                                        "example": "1234567"
-                                    },
-                                    "biografia": {
-                                        "description": "Biografia",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "ponencia_id": {
-                                        "description": "Ponencia_id",
-                                        "type": "integer",
-                                        "example": "1"
-                                    },
-                                    "especialidad": {
-                                        "description": "Especialidad",
-                                        "type": "string",
-                                        "example": "Administrador"
-                                    },
-                                    "foto_perfil": {
-                                        "description": "Imagen del usuario (archivo opcional)",
-                                        "type": "string",
-                                        "format": "binary"
+                                    "ponente": {
+                                        "properties": {
+                                            "biografia": {
+                                                "type": "string",
+                                                "example": "Experto en gestión de proyectos tecnológicos"
+                                            }
+                                        },
+                                        "type": "object",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1859,25 +2196,25 @@
                     }
                 },
                 "responses": {
-                    "200": {
-                        "description": "Usuario actualizado correctamente",
+                    "201": {
+                        "description": "Usuario creado exitosamente",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Usuario"
+                                    "$ref": "#/components/schemas/User"
                                 }
                             }
                         }
                     },
-                    "404": {
-                        "description": "Usuario no encontrado",
+                    "400": {
+                        "description": "Datos inválidos o incompletos",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Usuario no encontrado"
+                                            "example": "Error en los datos enviados"
                                         }
                                     },
                                     "type": "object"
@@ -1885,70 +2222,11 @@
                             }
                         }
                     },
-                    "422": {
-                        "description": "Error de validación",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "El campo nombre es obligatorio."
-                                        },
-                                        "errors": {
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Usuarios"
-                ],
-                "summary": "Eliminar un usuario",
-                "description": "Elimina un usuario por su ID",
-                "operationId": "cabfd83fe92ce3f1d29fd126ab301a92",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID del usuario a eliminar",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "Usuario eliminado correctamente (sin contenido)"
+                    "401": {
+                        "description": "No autorizado — requiere autenticación"
                     },
-                    "404": {
-                        "description": "Usuario no encontrado",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Usuario no encontrado"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                    "500": {
+                        "description": "Error interno del servidor"
                     }
                 },
                 "security": [
@@ -2670,9 +2948,9 @@
                 },
                 "type": "object"
             },
-            "Usuario": {
+            "User": {
                 "title": "Usuario",
-                "description": "Entidad Usuario del sistema",
+                "description": "Entidad que representa a un usuario del sistema, con sus datos básicos y relaciones asociadas.",
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -2680,16 +2958,16 @@
                     },
                     "email": {
                         "type": "string",
-                        "format": "email",
-                        "example": "admin@ejemplo.com"
+                        "example": "usuario@universidad.edu"
                     },
-                    "passwordHash": {
+                    "password": {
                         "type": "string",
-                        "example": "$2y$10$AbCdEf123456..."
+                        "example": "********"
                     },
                     "escuelaId": {
+                        "description": "ID de la escuela a la que pertenece el usuario",
                         "type": "integer",
-                        "example": 5
+                        "example": 3
                     },
                     "roleId": {
                         "type": "integer",
@@ -2699,12 +2977,12 @@
                     "emailVerifiedAt": {
                         "type": "string",
                         "format": "date-time",
-                        "example": "2025-09-04T10:15:30Z",
+                        "example": "2025-03-15T10:30:00Z",
                         "nullable": true
                     },
                     "rememberToken": {
                         "type": "string",
-                        "example": "a1b2c3d4e5f6g7",
+                        "example": "xyz123token",
                         "nullable": true
                     },
                     "persona": {
@@ -2713,22 +2991,40 @@
                     "role": {
                         "$ref": "#/components/schemas/Role"
                     },
-                    "ponente": {
-                        "$ref": "#/components/schemas/Ponente"
-                    },
                     "alumno": {
                         "$ref": "#/components/schemas/Alumno"
                     },
                     "jurado": {
                         "$ref": "#/components/schemas/Jurado"
                     },
-                    "foto": {
-                        "type": "string",
-                        "format": "url",
-                        "example": "http://localhost/storage/usuarios/admin.png"
+                    "ponente": {
+                        "$ref": "#/components/schemas/Ponente"
                     }
                 },
-                "type": "object"
+                "type": "object",
+                "example": {
+                    "id": 1,
+                    "email": "usuario@universidad.edu",
+                    "escuelaId": 3,
+                    "roleId": 2,
+                    "emailVerifiedAt": "2025-03-15T10:30:00Z",
+                    "persona": {
+                        "nombres": "Juan",
+                        "apellidos": "Pérez",
+                        "correoElectronico": "juan.perez@uni.edu"
+                    },
+                    "role": {
+                        "id": 2,
+                        "nombre": "ROLE_ESTUDIANTE"
+                    },
+                    "alumno": {
+                        "codigoUniversitario": "20201234",
+                        "carrera": "Ingeniería de Sistemas",
+                        "ciclo": "VII"
+                    },
+                    "jurado": null,
+                    "ponente": null
+                }
             }
         },
         "securitySchemes": {

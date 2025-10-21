@@ -26,28 +26,31 @@ const getMenuItemsByRole = (role: string): NavItem[] => {
     },
   ];
 
-  if (role === "ROLE_ADMIN") {
-    base.push({
-      icon: <BoxCubeIcon />,
-      name: "Gestionar",
-      subItems: [
-        { name: "Roles", path: "/admin-roles" },
-        { name: "Facultades", path: "/admin-facultades" },
-      ],
-    });
-  }
-
   if (role === "ROLE_SUPER_ADMIN") {
     base.push({
       icon: <BoxCubeIcon />,
       name: "Gestionar",
       subItems: [
         { name: "Filiales", path: "/super-admin-filiales" },
-        { name: "Permisos", path: "/permisos" },
+        { name: "Roles", path: "/super&admin-roles" },
+        { name: "Facultades", path: "/super&admin-facultades" },
+        { name: "Escuelas", path: "/super&admin-escuelas" },
       ],
     });
   }
 
+  if (role === "ROLE_ADMIN") {
+    base.push({
+      icon: <BoxCubeIcon />,
+      name: "Gestionar",
+      subItems: [
+        { name: "Roles", path: "/super&admin-roles" },
+        { name: "Facultades", path: "/super&admin-facultades" },
+        { name: "Escuelas", path: "/super&admin-escuelas" },
+      ],
+    });
+  }
+  
   return base;
 };
 

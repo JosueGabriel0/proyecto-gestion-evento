@@ -114,7 +114,7 @@ export default function BasicTableOne<T>({
               {(onEdit || onDelete) && (
                 <TableCell
                   isHeader
-                  className="px-5 py-3 font-medium text-gray-500 dark:text-gray-400 text-center"
+                  className="px-5 py-3 font-medium text-gray-500 dark:text-gray-400 text-center w-32"
                 >
                   Acciones
                 </TableCell>
@@ -130,7 +130,7 @@ export default function BasicTableOne<T>({
                   </TableCell>
                 ))}
                 {(onEdit || onDelete) && (
-                  <TableCell className="px-5 py-4 flex justify-center gap-3">
+                  <TableCell className="px-5 py-4 flex justify-center gap-3 w-50">
                     {onEdit && <EditButton onClick={() => onEdit(item)} />}
                     {onDelete && <DeleteButton onClick={() => onDelete(item)} />}
                   </TableCell>

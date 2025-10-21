@@ -10,12 +10,12 @@ class CreateEscuelaUseCase {
     {        
     }
 
-    public function execute(string $nombre, string $codigo, int $facultad_id, ?string $foto = null): Escuela{
+    public function execute(string $nombre, string $codigo, int $facultadId, ?string $foto = null): Escuela{
         $nuevaEscuela = new Escuela(
             id : null,
             nombre: $nombre,
             codigo: $codigo,
-            facultad_id: $facultad_id,
+            facultadId: $facultadId,
             foto: $foto,
         );
 

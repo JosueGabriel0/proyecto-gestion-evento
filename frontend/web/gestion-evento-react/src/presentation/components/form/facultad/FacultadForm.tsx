@@ -63,27 +63,28 @@ export default function FacultadForm({ initialFacultad, onSuccess }: FacultadFor
       onSubmit={handleSubmit}
       className="space-y-4 p-6 border rounded-lg bg-white shadow-md dark:bg-gray-800"
     >
-      {/* Nombre */}
-      <InputText
-        value={nombre}
-        onChange={(e) => setNombre(e.target.value)}
-        label="Nombre de la facultad"
-        placeholder="Escribe el nombre de la facultad"
-      />
+      <div className="mt-5">
+        <InputText
+          value={nombre}
+          onChange={(e) => setNombre(e.target.value)}
+          label="Nombre de la facultad"
+          placeholder="Escribe el nombre de la facultad"
+        />
+      </div>
 
-      {/* Código */}
-      <InputText
-        value={codigo}
-        onChange={(e) => setCodigo(e.target.value)}
-        label="Código"
-        placeholder="Escribe el código"
-      />
-
+      <div className="mt-10">
+        <InputText
+          value={codigo}
+          onChange={(e) => setCodigo(e.target.value)}
+          label="Código"
+          placeholder="Escribe el código"
+        />
+      </div>
       {/* 🔹 Acordeón de Filiales */}
       <div className="mt-5">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-md border border-gray-400 text-center mb-1">
           Selecciona una Filial
-        </label>
+        </span>
 
         <div className="border rounded-lg overflow-hidden">
           {/* Botón del acordeón */}
@@ -100,7 +101,7 @@ export default function FacultadForm({ initialFacultad, onSuccess }: FacultadFor
 
           {/* Contenido del acordeón */}
           {open && (
-            <div className="max-h-60 overflow-y-auto bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+            <div className="max-h-60 overflow-y-auto bg-white !dark:bg-gray-800 border-t !dark:border-gray-700">
               {filiales.length > 0 ? (
                 filiales.map((filial) => (
                   <div
@@ -109,9 +110,8 @@ export default function FacultadForm({ initialFacultad, onSuccess }: FacultadFor
                       setFilialId(filial.id);
                       setOpen(false);
                     }}
-                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${
-                      filialId === filial.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""
-                    }`}
+                    className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${filialId === filial.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""
+                      }`}
                   >
                     {filial.nombre}
                   </div>
@@ -133,7 +133,7 @@ export default function FacultadForm({ initialFacultad, onSuccess }: FacultadFor
 
       <AddEditButton
         name={loading ? "Guardando..." : initialFacultad ? "Actualizar" : "Crear"}
-        onClick={() => {}}
+        onClick={() => { }}
         disabled={loading}
       />
     </form>

@@ -78,6 +78,7 @@ export default function FacultadGestionPage() {
       label: "Filial",
       render: (facultad: Facultad) => {
         const filial = filiales.find((f) => f.id === facultad.filialId);
+        console.log(`Id de busqueda: ${facultad.filialId}`);
         return filial ? filial.nombre : <span className="text-gray-400 italic">Sin filial</span>;
       },
     },
@@ -109,13 +110,13 @@ export default function FacultadGestionPage() {
         title="Tabla de Facultades"
         placeHolder="Buscar Facultad..."
         onSearch={(term) => setSearchTerm(term)}
-        onAdd={() => navigate("/facultades/new")}
+        onAdd={() => navigate("/super&admin-facultades/new")}
       >
         <BasicTableOne<Facultad>
           columns={columns}
           fetchData={fetchFacultades}
           searchTerm={searchTerm}
-          onEdit={(facultad) => navigate(`/facultades/edit/${facultad.id}`)}
+          onEdit={(facultad) => navigate(`/super&admin-facultades/edit/${facultad.id}`)}
           onDelete={handleDelete}
         />
       </ComponentCard>

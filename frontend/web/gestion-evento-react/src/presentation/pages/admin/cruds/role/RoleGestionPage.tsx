@@ -8,7 +8,6 @@ import { Role } from "../../../../../domain/entities/Role";
 import { RoleRepository } from "../../../../../infrastructure/repositories/RoleRepository";
 import { RoleService } from "../../../../../application/services/RoleService";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
-import Pagination from "../../../../components/common/Pagination";
 
 const roleRepository = new RoleRepository();
 const roleService = new RoleService(roleRepository);
@@ -83,13 +82,13 @@ export default function RoleGestionPage() {
         title="Tabla de Roles"
         placeHolder="Buscar Rol........"
         onSearch={(term) => setSearchTerm(term)}
-        onAdd={() => navigate("/roles/new")}
+        onAdd={() => navigate("/super&admin-roles/new")}
       >
         <BasicTableOne<Role>
           columns={columns}
           fetchData={fetchRoles}
           searchTerm={searchTerm}
-          onEdit={(role) => navigate(`/roles/edit/${role.id}`)}
+          onEdit={(role) => navigate(`/super&admin-roles/edit/${role.id}`)}
           onDelete={handleDelete}
         />
       </ComponentCard>

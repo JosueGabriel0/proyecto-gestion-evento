@@ -13,9 +13,13 @@ return new class extends Migration {
                 ->constrained('users')
                 ->onDelete('cascade');
             $table->string('codigo_universitario')->unique();
-            $table->string('carrera', 100);
-            $table->string('ciclo', 20)->nullable();
+            $table->unsignedBigInteger('matricula_id');
             $table->timestamps();
+
+            $table->foreign('matricula_id')
+                  ->references('id')
+                  ->on('matriculas')
+                  ->onDelete('cascade');
         });
     }
 

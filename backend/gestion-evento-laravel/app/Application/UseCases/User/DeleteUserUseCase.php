@@ -6,11 +6,15 @@ use App\Domain\Repositories\UserRepository;
 
 class DeleteUserUseCase
 {
-    public function __construct(private UserRepository $users) {}
+    private UserRepository $repository;
 
-    public function execute(int $userId): void
+    public function __construct(UserRepository $repository)
     {
-        // Aquí podrías cargar el User y validar políticas/reglas de dominio antes de borrar.
-        $this->users->delete($userId);
+        $this->repository = $repository;
+    }
+
+    public function execute(int $id): void
+    {
+        $this->repository->delete($id);
     }
 }

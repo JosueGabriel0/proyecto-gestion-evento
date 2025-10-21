@@ -14,7 +14,7 @@ class EscuelaResource extends JsonResource
             'id'          => $this->getId(),
             'nombre'      => $this->getNombre(),
             'codigo'      => $this->getCodigo(),
-            'facultad_id' => $this->getFacultadId(),
+            'facultadId' => $this->getFacultadId(),
             'foto' => $this->getFoto() ? asset(Storage::url($this->getFoto())) : null,
         ];
     }

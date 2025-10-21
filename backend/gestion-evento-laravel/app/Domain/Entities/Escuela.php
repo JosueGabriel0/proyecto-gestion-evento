@@ -7,20 +7,20 @@ class Escuela
     private ?int $id;
     private string $nombre;
     private string $codigo;
-    private int $facultad_id;
+    private int $facultadId;
     private ?string $foto;
 
     public function __construct(
         ?int $id,
         string $nombre,
         string $codigo,
-        int $facultad_id,
+        int $facultadId,
         ?string $foto = null
     ) {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->codigo = $codigo;
-        $this->facultad_id = $facultad_id;
+        $this->facultadId = $facultadId;
         $this->foto = $foto;
     }
 
@@ -42,10 +42,10 @@ class Escuela
 
     public function getFacultadId(): int
     {
-        return $this->facultad_id;
+        return $this->facultadId;
     }
 
-     public function getFoto(): ?string
+    public function getFoto(): ?string
     {
         return $this->foto;
     }
@@ -63,10 +63,10 @@ class Escuela
 
     public function setFacultadId(int $facultad_id): void
     {
-        $this->facultad_id = $facultad_id;
+        $this->facultadId = $facultad_id;
     }
 
-     public function setFoto(?string $foto): void
+    public function setFoto(?string $foto): void
     {
         $this->foto = $foto;
     }

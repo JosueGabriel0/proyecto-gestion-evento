@@ -73,7 +73,7 @@ class EscuelaRepositoryImpl implements EscuelaRepository
             id: $model->id,
             nombre: $model->nombre,
             codigo: $model->codigo,
-            facultad_id: $model->facultad_id,
+            facultadId: $model->facultad_id,
             foto: $model->foto
         );
     }

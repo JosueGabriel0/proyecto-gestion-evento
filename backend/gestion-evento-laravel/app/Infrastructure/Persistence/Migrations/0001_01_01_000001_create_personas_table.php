@@ -19,7 +19,10 @@ return new class extends Migration
             $table->string('numeroDocumento');
             $table->string('telefono');
             $table->string('direccion');
+            $table->string('pais');
+            $table->string('religion');
             $table->string('correoElectronico');
+            $table->string('correoInstitucional');
             $table->string('fotoPerfil')->nullable();
             $table->date('fechaNacimiento');
 

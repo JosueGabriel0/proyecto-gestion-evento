@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Infrastructure\Persistence\Eloquent\Models\AlumnoModel;
 use App\Infrastructure\Persistence\Eloquent\Models\JuradoModel;
+use App\Infrastructure\Persistence\Eloquent\Models\MatriculaModel;
 use App\Infrastructure\Persistence\Eloquent\Models\PersonaModel;
 use App\Infrastructure\Persistence\Eloquent\Models\RoleModel;
 use App\Infrastructure\Persistence\Eloquent\Models\UserModel;
@@ -174,7 +175,10 @@ class RolesUsuariosSeeder extends Seeder
             'numeroDocumento' => '00000001',
             'telefono' => '999111222',
             'direccion' => 'Oficina Central',
+            'pais' => 'Peru',
+            'religion' => 'Adventista',
             'correoElectronico' => $admin->email,
+            'correoInstitucional' => 'admin.user@upeu.edu.pe',
             'fotoPerfil' => 'admin.png',
             'fechaNacimiento' => '1990-01-01'
         ]);
@@ -199,9 +203,19 @@ class RolesUsuariosSeeder extends Seeder
             'numeroDocumento' => '00000002',
             'telefono' => '999333444',
             'direccion' => 'Oficina Principal',
+            'pais' => 'Peru',
+            'religion' => 'Adventista',
             'correoElectronico' => $superAdmin->email,
+            'correoInstitucional' => 'admin.user@upeu.edu.pe',
             'fotoPerfil' => 'superadmin.png',
             'fechaNacimiento' => '1985-05-05'
+        ]);
+
+        $matricula = MatriculaModel::firstOrCreate([
+            'modo_contrato' => 'Ordinario',
+            'modalida_estudio' => 'Presencial',
+            'ciclo' => 'VIII',
+            'grupo' => 'A',
         ]);
 
         // ============================
@@ -224,7 +238,10 @@ class RolesUsuariosSeeder extends Seeder
             'numeroDocumento' => '12345678',
             'telefono' => '987654321',
             'direccion' => 'Av. Universitaria 123',
+            'pais' => 'Peru',
+            'religion' => 'Adventista',
             'correoElectronico' => $alumno->email,
+            'correoInstitucional' => 'admin.user@upeu.edu.pe',
             'fotoPerfil' => 'alumno.png',
             'fechaNacimiento' => '2000-03-15'
         ]);
@@ -232,8 +249,8 @@ class RolesUsuariosSeeder extends Seeder
         AlumnoModel::firstOrCreate([
             'user_id' => $alumno->id,
             'codigo_universitario' => '1234567',
-            'carrera' => 'Ingeniería de Sistemas',
-            'ciclo' => 'VIII'
+            'ciclo' => 'VIII',
+            'matricula_id' => $matricula->id,
         ]);
 
         // ============================
@@ -256,7 +273,10 @@ class RolesUsuariosSeeder extends Seeder
             'numeroDocumento' => '87654321',
             'telefono' => '912345678',
             'direccion' => 'Av. Ciencia 456',
+            'pais' => 'Peru',
+            'religion' => 'Adventista',
             'correoElectronico' => $jurado->email,
+            'correoInstitucional' => 'admin.user@upeu.edu.pe',
             'fotoPerfil' => 'jurado.png',
             'fechaNacimiento' => '1980-10-20'
         ]);

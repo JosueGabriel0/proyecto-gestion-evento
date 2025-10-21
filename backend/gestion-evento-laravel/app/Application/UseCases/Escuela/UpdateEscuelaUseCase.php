@@ -10,12 +10,12 @@ class UpdateEscuelaUseCase {
     {
     }
 
-    public function execute(int $id, string $nombre, string $codigo, int $facultad_id, ?string $foto = null): Escuela {
+    public function execute(int $id, string $nombre, string $codigo, int $facultadId, ?string $foto = null): Escuela {
        $escuelaActualizada = new Escuela(
         id: $id,
         nombre: $nombre,
         codigo: $codigo,
-        facultad_id: $facultad_id,
+        facultadId: $facultadId,
         foto: $foto,
        );
 

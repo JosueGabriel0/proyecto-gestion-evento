@@ -25,7 +25,7 @@ export class Escuela {
         return(this._foto);
     }
 
-    get filialId(): number {
+    get facultadId(): number {
         return(this._facultadId);
     }
 }

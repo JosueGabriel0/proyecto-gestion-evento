@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import RoleForm from "../../../../components/form/role/RoleForm";
-import { RoleRepository } from "../../../../../infrastructure/repositories/RoleRepository";
-import { RoleService } from "../../../../../application/services/RoleService";
-import { Role } from "../../../../../domain/entities/Role";
 import ElectricBorder from "../../../../components/actions/ElectricBorder";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import Loading from "../../../../components/loaders/Loading";
@@ -61,7 +57,7 @@ export default function FacultadFormPage() {
         <PageBreadcrumb
           pageTitle={id ? "Editar Facultad" : "Crear Facultad"}
           pageBack="Cancelar"
-          routeBack="admin-roles"
+          routeBack="super&admin-facultades"
         />
       </div>
 
@@ -75,7 +71,7 @@ export default function FacultadFormPage() {
         >
           <FacultadForm
             initialFacultad={facultad}
-            onSuccess={() => navigate("/admin-facultades")} // 👉 Redirige al listado
+            onSuccess={() => navigate("/super&admin-facultades")} // 👉 Redirige al listado
           />
         </ElectricBorder>
       </div>

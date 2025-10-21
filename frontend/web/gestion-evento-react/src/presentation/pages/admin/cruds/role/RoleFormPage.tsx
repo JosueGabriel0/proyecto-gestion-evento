@@ -57,7 +57,7 @@ export default function RoleFormPage() {
         <PageBreadcrumb
           pageTitle={id ? "Editar Rol" : "Crear Rol"}
           pageBack="Cancelar"
-          routeBack="admin-roles"
+          routeBack="super&admin-roles"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function RoleFormPage() {
         >
           <RoleForm
             initialRole={role}
-            onSuccess={() => navigate("/admin-roles")} // 👉 Redirige al listado
+            onSuccess={() => navigate("/super&admin-roles")} // 👉 Redirige al listado
           />
         </ElectricBorder>
       </div>

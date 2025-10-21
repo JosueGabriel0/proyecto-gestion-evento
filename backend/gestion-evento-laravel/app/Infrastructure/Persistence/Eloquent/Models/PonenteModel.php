@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Persistence\Eloquent\Models;
 
+use App\Domain\Entities\Ponente;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,7 +19,7 @@ class PonenteModel extends Model
     ];
 
     /**
-     * Relación con el usuario (1 ponente pertenece a un usuario)
+     * 🔗 Relación: un ponente pertenece a un usuario
      */
     public function user()
     {
@@ -26,10 +27,23 @@ class PonenteModel extends Model
     }
 
     /**
-     * Relación con ponencia (1 ponente puede estar en una ponencia)
+     * 🔗 Relación: un ponente pertenece a una ponencia
      */
     public function ponencia()
     {
-        return $this->belongsTo(PonenciaModel::class);
+        return $this->belongsTo(PonenciaModel::class, 'ponencia_id', 'id');
+    }
+
+    /**
+     * 🔁 Convierte el modelo Eloquent a una entidad de dominio Ponente
+     */
+    public function toDomain(): Ponente
+    {
+        return new Ponente(
+            id: $this->id,
+            biografia: $this->biografia,
+            userId: $this->user_id,
+            ponenciaId: $this->ponencia_id
+        );
     }
 }

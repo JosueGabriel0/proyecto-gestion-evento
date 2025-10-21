@@ -2,289 +2,234 @@
 
 namespace App\Infrastructure\Persistence\Eloquent\Repositories;
 
-use App\Domain\Entities\Persona as PersonaEntity;
-use App\Domain\Entities\User as UserEntity;
-use App\Domain\Entities\Role as RoleEntity;
-use App\Domain\Entities\Alumno as AlumnoEntity;
-use App\Domain\Entities\Ponente as PonenteEntity;
-use App\Domain\Entities\Jurado as JuradoEntity;
+use App\Domain\Entities\User;
 use App\Domain\Repositories\UserRepository;
-use App\Infrastructure\Persistence\Eloquent\Models\AlumnoModel;
-use App\Infrastructure\Persistence\Eloquent\Models\JuradoModel;
-use App\Infrastructure\Persistence\Eloquent\Models\UserModel as UserModel;
-use App\Infrastructure\Persistence\Eloquent\Models\PersonaModel as PersonaModel;
-use App\Infrastructure\Persistence\Eloquent\Models\PonenteModel;
+use App\Infrastructure\Persistence\Eloquent\Models\UserModel;
+use App\Infrastructure\Persistence\Eloquent\Models\RoleModel;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 class UserRepositoryImpl implements UserRepository
 {
-    public function create(UserEntity $user): UserEntity
+    /**
+     * Obtener todos los usuarios (opcionalmente filtrados por rol)
+     */
+    public function all(?string $role = null): array
     {
-        return DB::transaction(function () use ($user) {
-            if ($user->getId() !== null) {
-                throw new \InvalidArgumentException('create() no acepta entidades con ID. Usa update().');
-            }
+        $query = UserModel::with(['role', 'persona', 'alumno', 'jurado', 'ponente']);
 
-            // User
-            $userModel = new UserModel();
-            $userModel->email       = $user->getEmail();
-            $userModel->password    = $user->getPasswordHash();
-            $userModel->escuela_id  = $user->getEscuelaId();
-            $userModel->role_id     = $user->getRoleId();
-            $userModel->save();
-
-            $user->setId((int)$userModel->id);
-
-            // Persona
-            $persona = $user->getPersona();
-            if ($persona) {
-                $personaModel = new PersonaModel();
-                $personaModel->nombres           = $persona->getNombres();
-                $personaModel->apellidos         = $persona->getApellidos();
-                $personaModel->tipoDocumento     = $persona->getTipoDocumento();
-                $personaModel->numeroDocumento   = $persona->getNumeroDocumento();
-                $personaModel->telefono          = $persona->getTelefono();
-                $personaModel->direccion         = $persona->getDireccion();
-                $personaModel->correoElectronico = $persona->getCorreoElectronico();
-                $personaModel->fotoPerfil        = $persona->getFotoPerfil();
-                $personaModel->fechaNacimiento   = $persona->getFechaNacimiento()->format('Y-m-d');
-                $personaModel->user_id           = $userModel->id;
-                $personaModel->save();
-
-                $persona->setId((int)$personaModel->id);
-                $persona->attachToUser((int)$userModel->id);
-            }
-
-            // Ponente
-            $ponente = $user->getPonente();
-            if ($ponente) {
-                $ponenteModel = new PonenteModel();
-                $ponenteModel->biografia   = $ponente->getBiografia();
-                $ponenteModel->user_id = $userModel->id;
-                $ponenteModel->ponencia_id = $ponente->getPonenciaId();
-                $ponenteModel->save();
-
-                $ponente->setId((int)$ponenteModel->id);
-            }
-
-            // Alumno
-            $alumno = $user->getAlumno();
-            if ($alumno) {
-                $alumnoModel = new AlumnoModel();
-                $alumnoModel->user_id = $userModel->id;
-                $alumnoModel->codigo_universitario = $alumno->getCodigoUniversitario();
-                $alumnoModel->carrera  = $alumno->getCarrera();
-                $alumnoModel->ciclo    = $alumno->getCiclo();
-                $alumnoModel->save();
-
-                $alumno->setId((int)$alumnoModel->id);
-            }
-
-            // Jurado
-            $jurado = $user->getJurado();
-            if ($jurado) {
-                $juradoModel = new JuradoModel();
-                $juradoModel->user_id  = $userModel->id;
-                $juradoModel->especialidad = $jurado->getEspecialidad();
-                $juradoModel->save();
-
-                $jurado->setId((int)$juradoModel->id);
-            }
-
-            $userModel = UserModel::with(['persona', 'role', 'ponente', 'alumno', 'jurado'])->findOrFail($userModel->id);
-
-            return $this->mapModelToEntity($userModel);
-        });
-    }
-
-    public function update(UserEntity $user): UserEntity
-    {
-        if ($user->getId() === null) {
-            throw new \InvalidArgumentException('update() requiere un ID. Usa create() para nuevos registros.');
+        if ($role) {
+            $query->whereHas('role', fn($q) => $q->where('nombre', $role));
         }
 
-        return DB::transaction(function () use ($user) {
-            /** @var UserModel $userModel */
-            $userModel = UserModel::with(['persona', 'ponente', 'alumno', 'jurado'])->findOrFail($user->getId());
+        return $query->get()
+            ->map(fn($model) => $model->toDomain())
+            ->toArray();
+    }
 
-            $userModel->email       = $user->getEmail();
-            $userModel->password    = $user->getPasswordHash();
-            $userModel->escuela_id  = $user->getEscuelaId();
-            $userModel->role_id     = $user->getRoleId();
-            $userModel->save();
+    /**
+     * Buscar un usuario por ID
+     */
+    public function find(int $id): ?User
+    {
+        $model = UserModel::with(['role', 'persona', 'alumno', 'jurado', 'ponente'])->find($id);
+        return $model ? $model->toDomain() : null;
+    }
 
-            // Persona
-            $persona = $user->getPersona();
-            if ($persona) {
-                $personaModel = $persona->getId()
-                    ? PersonaModel::findOrFail($persona->getId())
-                    : ($userModel->persona ?? new PersonaModel());
+    /**
+     * Crear un usuario con rol asignado
+     */
+    public function create(User $user, string $role): User
+    {
+        return DB::transaction(function () use ($user, $role) {
+            $roleModel = RoleModel::where('nombre', $role)->firstOrFail();
 
-                $personaModel->nombres           = $persona->getNombres();
-                $personaModel->apellidos         = $persona->getApellidos();
-                $personaModel->tipoDocumento     = $persona->getTipoDocumento();
-                $personaModel->numeroDocumento   = $persona->getNumeroDocumento();
-                $personaModel->telefono          = $persona->getTelefono();
-                $personaModel->direccion         = $persona->getDireccion();
-                $personaModel->correoElectronico = $persona->getCorreoElectronico();
-                $personaModel->fotoPerfil        = $persona->getFotoPerfil();
-                $personaModel->fechaNacimiento   = $persona->getFechaNacimiento()->format('Y-m-d');
-                $personaModel->user_id           = $userModel->id;
-                $personaModel->save();
+            // Crear usuario base
+            $model = UserModel::create([
+                'email' => $user->getEmail(),
+                'password' => bcrypt($user->getPassword()),
+                'escuela_id' => $user->getEscuelaId(),
+                'role_id' => $roleModel->id,
+            ]);
 
-                if ($persona->getId() === null) {
-                    $persona->setId((int)$personaModel->id);
-                }
-                $persona->attachToUser((int)$userModel->id);
+            // ✅ Crear persona asociada
+            if ($user->getPersona()) {
+                $persona = $user->getPersona();
+                $model->persona()->create([
+                    'nombres' => $persona->getNombres(),
+                    'apellidos' => $persona->getApellidos(),
+                    'tipo_documento' => $persona->getTipoDocumento(),
+                    'numero_documento' => $persona->getNumeroDocumento(),
+                    'telefono' => $persona->getTelefono(),
+                    'direccion' => $persona->getDireccion(),
+                    'correo_electronico' => $persona->getCorreoElectronico(),
+                    'foto_perfil' => $persona->getFotoPerfil(),
+                    'fecha_nacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
+                ]);
             }
 
-            // Ponente
-            $ponente = $user->getPonente();
-            if ($ponente) {
-                $ponenteModel = $ponente->getId()
-                    ? PonenteModel::findOrFail($ponente->getId())
-                    : ($userModel->ponente ?? new PonenteModel());
-                $ponenteModel->biografia   = $ponente->getBiografia();
-                $ponenteModel->user_id = $userModel->id;
-                $ponenteModel->ponencia_id = $ponente->getPonenciaId();
-                $ponenteModel->save();
+            // Crear relaciones según el rol
+            switch ($role) {
+                case 'ROLE_ESTUDIANTE':
+                    if ($user->getAlumno()) {
+                        $model->alumno()->create([
+                            'codigo_universitario' => $user->getAlumno()->getCodigoUniversitario(),
+                        ]);
+                    }
+                    break;
 
-                if ($ponente->getId() === null) {
-                    $ponente->setId((int)$ponenteModel->id);
-                }
+                case 'ROLE_JURADO':
+                    if ($user->getJurado()) {
+                        $model->jurado()->create([
+                            'especialidad' => $user->getJurado()->getEspecialidad(),
+                        ]);
+                    }
+                    break;
+
+                case 'ROLE_PONENTE':
+                    if ($user->getPonente()) {
+                        $model->ponente()->create([
+                            'biografia' => $user->getPonente()->getBiografia(),
+                        ]);
+                    }
+                    break;
             }
 
-            // Alumno
-            $alumno = $user->getAlumno();
-            if ($alumno) {
-                $alumnoModel = $alumno->getId()
-                    ? AlumnoModel::findOrFail($alumno->getId())
-                    : ($userModel->alumno ?? new AlumnoModel());
-                $alumnoModel->user_id = $userModel->id;
-                $alumnoModel->codigo_universitario = $alumno->getCodigoUniversitario();
-                $alumnoModel->carrera   = $alumno->getCarrera();
-                $alumnoModel->ciclo     = $alumno->getCiclo();
-                $alumnoModel->save();
-
-                if ($alumno->getId() === null) {
-                    $alumno->setId((int)$alumnoModel->id);
-                }
-            }
-
-            // Jurado
-            $jurado = $user->getJurado();
-            if ($jurado) {
-                $juradoModel = $jurado->getId()
-                    ? JuradoModel::findOrFail($jurado->getId())
-                    : ($userModel->jurado ?? new JuradoModel());
-                $juradoModel->user_id  = $userModel->id;
-                $juradoModel->especialidad = $jurado->getEspecialidad();
-                $juradoModel->save();
-
-                if ($jurado->getId() === null) {
-                    $jurado->setId((int)$juradoModel->id);
-                }
-            }
-
-            return $this->mapModelToEntity($userModel->fresh(['persona', 'ponente', 'alumno', 'jurado']));
+            return $model->toDomain();
         });
     }
 
-    public function findById(int $id): ?UserEntity
+    /**
+     * Actualizar un usuario y sus relaciones
+     */
+    public function update(User $user, ?string $role = null): User
     {
-        $m = UserModel::with(['persona', 'role', 'ponente', 'alumno', 'jurado'])->find($id);
-        if (!$m) return null;
+        return DB::transaction(function () use ($user, $role) {
+            $model = UserModel::findOrFail($user->getId());
 
-        return $this->mapModelToEntity($m);
+            $data = [
+                'email' => $user->getEmail(),
+                'escuela_id' => $user->getEscuelaId(),
+            ];
+
+            if ($user->getPassword()) {
+                $data['password'] = bcrypt($user->getPassword());
+            }
+
+            $model->update($data);
+
+            if ($role) {
+                $roleModel = RoleModel::where('nombre', $role)->firstOrFail();
+                $model->update(['role_id' => $roleModel->id]);
+            }
+
+            $currentRole = $role ?? $model->role->nombre;
+
+            // ✅ Actualizar o crear persona
+            if ($user->getPersona()) {
+                $persona = $user->getPersona();
+                $model->persona()->updateOrCreate(
+                    ['user_id' => $model->id],
+                    [
+                        'nombres' => $persona->getNombres(),
+                        'apellidos' => $persona->getApellidos(),
+                        'tipo_documento' => $persona->getTipoDocumento(),
+                        'numero_documento' => $persona->getNumeroDocumento(),
+                        'telefono' => $persona->getTelefono(),
+                        'direccion' => $persona->getDireccion(),
+                        'correo_electronico' => $persona->getCorreoElectronico(),
+                        'foto_perfil' => $persona->getFotoPerfil(),
+                        'fecha_nacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
+                    ]
+                );
+            }
+
+            // Actualizar relaciones según el rol
+            switch ($currentRole) {
+                case 'ROLE_ESTUDIANTE':
+                    if ($user->getAlumno()) {
+                        $model->alumno()->updateOrCreate(
+                            ['user_id' => $model->id],
+                            ['codigo_universitario' => $user->getAlumno()->getCodigoUniversitario()]
+                        );
+                    }
+                    break;
+
+                case 'ROLE_JURADO':
+                    if ($user->getJurado()) {
+                        $model->jurado()->updateOrCreate(
+                            ['user_id' => $model->id],
+                            ['especialidad' => $user->getJurado()->getEspecialidad()]
+                        );
+                    }
+                    break;
+
+                case 'ROLE_PONENTE':
+                    if ($user->getPonente()) {
+                        $model->ponente()->updateOrCreate(
+                            ['user_id' => $model->id],
+                            ['biografia' => $user->getPonente()->getBiografia()]
+                        );
+                    }
+                    break;
+            }
+
+            return $model->toDomain();
+        });
     }
 
-    public function findAll(): array
-    {
-        $models = UserModel::with(['persona', 'role', 'ponente', 'alumno', 'jurado'])->get();
-
-        return $models
-            ->map(fn(UserModel $m) => $this->mapModelToEntity($m))
-            ->all();
-    }
-
+    /**
+     * Eliminar usuario y sus relaciones
+     */
     public function delete(int $id): void
     {
-        DB::transaction(function () use ($id) {
-            $m = UserModel::with(['persona', 'alumno', 'ponente', 'jurado'])->findOrFail($id);
+        $model = UserModel::find($id);
 
-            if ($m->persona) {
-                $m->persona()->delete();
-            }
-            if ($m->alumno) {
-                $m->alumno()->delete();
-            }
-            if ($m->ponente) {
-                $m->ponente()->delete();
-            }
-            if ($m->jurado) {
-                $m->jurado()->delete();
-            }
+        if (!$model) {
+            throw new ModelNotFoundException("Usuario no encontrado con ID: {$id}");
+        }
 
-            $m->delete();
+        DB::transaction(function () use ($model) {
+            $model->alumno()?->delete();
+            $model->jurado()?->delete();
+            $model->ponente()?->delete();
+            $model->delete();
         });
     }
 
-    private function mapModelToEntity(UserModel $m): UserEntity
+    /**
+     * Listado paginado (filtrado por rol si aplica)
+     */
+    public function getUsersPaginated(?string $role = null, int $page = 1, int $perPage = 10): LengthAwarePaginator
     {
-        $persona = $m->persona ? new PersonaEntity(
-            id: (int)$m->persona->id,
-            nombres: $m->persona->nombres,
-            apellidos: $m->persona->apellidos,
-            tipoDocumento: $m->persona->tipoDocumento,
-            numeroDocumento: $m->persona->numeroDocumento,
-            telefono: $m->persona->telefono,
-            direccion: $m->persona->direccion,
-            correoElectronico: $m->persona->correoElectronico,
-            fotoPerfil: $m->persona->fotoPerfil,
-            fechaNacimiento: new \DateTime($m->persona->fechaNacimiento),
-            userId: (int)$m->id
-        ) : null;
+        $query = UserModel::with(['role', 'persona', 'alumno', 'jurado', 'ponente']);
 
-        $role = $m->role ? new RoleEntity(
-            id: (int)$m->role->id,
-            nombre: $m->role->nombre,
-            foto: $m->role->foto
-        ) : null;
+        if ($role) {
+            $query->whereHas('role', fn($q) => $q->where('nombre', $role));
+        }
 
-        $alumno = $m->alumno ? new AlumnoEntity(
-            id: (int)$m->alumno->id,
-            userId: (int)$m->alumno->user_id,
-            codigo_universitario: $m->alumno->codigo_universitario,
-            carrera: $m->alumno->carrera,
-            ciclo: $m->alumno->ciclo
-        ) : null;
+        return $query->paginate($perPage, ['*'], 'page', $page);
+    }
 
-        $ponente = $m->ponente ? new PonenteEntity(
-            id: (int)$m->ponente->id,
-            biografia: $m->ponente->biografia,
-            userId: (int)$m->ponente->user_id,
-            ponenciaId: $m->ponente->ponencia_id
-        ) : null;
+    /**
+     * Buscar usuarios por nombre, correo o rol
+     */
+    public function searchUsers(string $term, ?string $role = null, int $perPage = 10): LengthAwarePaginator
+    {
+        $query = UserModel::with(['role', 'persona'])
+            ->where(function ($q) use ($term) {
+                $q->where('email', 'like', "%{$term}%")
+                    ->orWhereHas('persona', function ($sub) use ($term) {
+                        $sub->where('nombres', 'like', "%{$term}%")
+                            ->orWhere('apellidos', 'like', "%{$term}%");
+                    });
+            });
 
-        $jurado = $m->jurado ? new JuradoEntity(
-            id: (int)$m->jurado->id,
-            userId: (int)$m->jurado->user_id,
-            especialidad: $m->jurado->especialidad
-        ) : null;
+        if ($role) {
+            $query->whereHas('role', fn($q) => $q->where('nombre', $role));
+        }
 
-        return new UserEntity(
-            id: (int)$m->id,
-            email: $m->email,
-            passwordHash: $m->password,
-            escuelaId: (int)$m->escuela_id,
-            roleId: $m->role_id ? (int)$m->role_id : null,
-            emailVerifiedAt: $m->email_verified_at ? new \DateTime($m->email_verified_at) : null,
-            rememberToken: $m->remember_token,
-            persona: $persona,
-            role: $role,
-            alumno: $alumno,
-            ponente: $ponente,
-            jurado: $jurado
-        );
+        return $query->paginate($perPage);
     }
 }
