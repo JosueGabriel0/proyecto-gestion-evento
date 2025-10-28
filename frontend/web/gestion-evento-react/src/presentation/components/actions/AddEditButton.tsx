@@ -2,14 +2,13 @@ import styled from 'styled-components';
 
 interface AddEditButtonProps {
   name: string;
-  onClick: () => void;
   disabled?: boolean;
 }
 
-const AddEditButton = ({ onClick, name, disabled }: AddEditButtonProps) => {
+const AddEditButton = ({ name, disabled }: AddEditButtonProps) => {
   return (
     <StyledWrapper>
-      <button onClick={onClick} disabled={disabled}>
+      <button type="submit" disabled={disabled}>
         <span>{name}</span>
       </button>
     </StyledWrapper>

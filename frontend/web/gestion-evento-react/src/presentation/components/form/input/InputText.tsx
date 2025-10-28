@@ -6,15 +6,16 @@ interface InputTextProps {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
   placeholder?: string;
+  type?: React.HTMLInputTypeAttribute;
 }
 
-const InputText: React.FC<InputTextProps> = ({ value, onChange, label, placeholder }) => {
+const InputText: React.FC<InputTextProps> = ({ value, onChange, label, placeholder, type = "text" }) => {
   return (
     <StyledWrapper>
       <div className="brutalist-container">
         <input
           className="brutalist-input smooth-type"
-          type="text"
+          type={type}
           value={value}
           onChange={onChange}
           placeholder={placeholder || "Escribe aquí"}

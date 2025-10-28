@@ -31,10 +31,11 @@ const getMenuItemsByRole = (role: string): NavItem[] => {
       icon: <BoxCubeIcon />,
       name: "Gestionar",
       subItems: [
-        { name: "Filiales", path: "/super-admin-filiales" },
-        { name: "Roles", path: "/super&admin-roles" },
-        { name: "Facultades", path: "/super&admin-facultades" },
-        { name: "Escuelas", path: "/super&admin-escuelas" },
+        { name: "Filiales", path: "/super-filiales" },
+        { name: "Roles", path: "/super-admin-roles" },
+        { name: "Facultades", path: "/super-admin-facultades" },
+        { name: "Escuelas", path: "/super-admin-escuelas" },
+        { name: "Usuarios", path: "/super-admin-usuarios" },
       ],
     });
   }
@@ -44,9 +45,10 @@ const getMenuItemsByRole = (role: string): NavItem[] => {
       icon: <BoxCubeIcon />,
       name: "Gestionar",
       subItems: [
-        { name: "Roles", path: "/super&admin-roles" },
-        { name: "Facultades", path: "/super&admin-facultades" },
-        { name: "Escuelas", path: "/super&admin-escuelas" },
+        { name: "Roles", path: "/super-admin-roles" },
+        { name: "Facultades", path: "/super-admin-facultades" },
+        { name: "Escuelas", path: "/super-admin-escuelas" },
+        { name: "Usuarios", path: "/super-admin-usuarios" },
       ],
     });
   }

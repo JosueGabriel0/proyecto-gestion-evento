@@ -18,7 +18,7 @@ type UserRole =
   | "ROLE_ADMIN"
   | "ROLE_PONENTE"
   | "ROLE_JURADO"
-  | "ROLE_ESTUDIANTE"
+  | "ROLE_ALUMNO"
   | null;
 
 interface PupilPosition {
@@ -120,17 +120,19 @@ const LoginPage: React.FC = () => {
 
       switch (role) {
         case "ROLE_SUPER_ADMIN":
-          navigate("/dashboard-super-admin");
+          navigate("/super-dashboard");
           break;
         case "ROLE_ADMIN":
-          navigate("/dashboard-admin");
+          navigate("/admin-dashboard");
           break;
         case "ROLE_PONENTE":
-          navigate("/dashboard-docente");
+          navigate("/ponente-dashboard");
           break;
         case "ROLE_JURADO":
-        case "ROLE_ESTUDIANTE":
-          navigate("/dashboard-estudiante");
+          navigate("/jurado-dashboard");
+          break;
+        case "ROLE_ALUMNO":
+          navigate("/alumno-dashboard");
           break;
         default:
           setError("Rol desconocido. Comuníquese con soporte.");

@@ -11,6 +11,7 @@ import { FilialRepository } from "../../../../../infrastructure/repositories/Fil
 import { FilialService } from "../../../../../application/services/FilialService";
 import type { Facultad } from "../../../../../domain/entities/Facultad";
 import type { Filial } from "../../../../../domain/entities/Filial";
+import { TokenStorage } from "../../../../../infrastructure/repositories/TokenStorage";
 
 const facultadRepository = new FacultadRepository();
 const facultadService = new FacultadService(facultadRepository);
@@ -18,10 +19,14 @@ const facultadService = new FacultadService(facultadRepository);
 const filialRepository = new FilialRepository();
 const filialService = new FilialService(filialRepository);
 
+const tokenStorage = new TokenStorage();
+
 export default function FacultadGestionPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filiales, setFiliales] = useState<Filial[]>([]);
   const navigate = useNavigate();
+
+  const [refresh, setRefresh] = useState(0);
 
   // 🔹 Cargar filiales (para mostrar los nombres)
   useEffect(() => {
@@ -61,7 +66,7 @@ export default function FacultadGestionPage() {
       try {
         await facultadService.deleteFacultad(facultad.id);
         Swal.fire("Eliminado", "La facultad ha sido eliminada.", "success");
-        window.location.reload();
+        setRefresh((prev) => prev + 1);
       } catch (error) {
         Swal.fire("Error", "No se pudo eliminar la facultad.", "error");
       }
@@ -116,6 +121,7 @@ export default function FacultadGestionPage() {
           columns={columns}
           fetchData={fetchFacultades}
           searchTerm={searchTerm}
+          refreshTrigger={refresh}
           onEdit={(facultad) => navigate(`/super&admin-facultades/edit/${facultad.id}`)}
           onDelete={handleDelete}
         />

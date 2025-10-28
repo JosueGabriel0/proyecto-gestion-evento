@@ -1820,15 +1820,20 @@
                     }
                 ],
                 "requestBody": {
-                    "description": "Datos actualizados del usuario",
+                    "description": "Datos actualizados del usuario (multipart/form-data)",
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "email",
                                     "escuela_id",
-                                    "persona"
+                                    "nombres",
+                                    "apellidos",
+                                    "tipo_documento",
+                                    "numero_documento",
+                                    "correo_electronico",
+                                    "fecha_nacimiento"
                                 ],
                                 "properties": {
                                     "email": {
@@ -1849,87 +1854,73 @@
                                         "type": "string",
                                         "example": "jurado"
                                     },
-                                    "persona": {
-                                        "required": [
-                                            "nombres",
-                                            "apellidos",
-                                            "tipo_documento",
-                                            "numero_documento",
-                                            "correo_electronico",
-                                            "fecha_nacimiento"
-                                        ],
-                                        "properties": {
-                                            "nombres": {
-                                                "type": "string",
-                                                "example": "María"
-                                            },
-                                            "apellidos": {
-                                                "type": "string",
-                                                "example": "Fernández López"
-                                            },
-                                            "tipo_documento": {
-                                                "type": "string",
-                                                "example": "DNI"
-                                            },
-                                            "numero_documento": {
-                                                "type": "string",
-                                                "example": "78945612"
-                                            },
-                                            "telefono": {
-                                                "type": "string",
-                                                "example": "999888777",
-                                                "nullable": true
-                                            },
-                                            "direccion": {
-                                                "type": "string",
-                                                "example": "Calle Los Sauces 456",
-                                                "nullable": true
-                                            },
-                                            "correo_electronico": {
-                                                "type": "string",
-                                                "example": "maria.fernandez@ejemplo.com"
-                                            },
-                                            "foto_perfil": {
-                                                "type": "string",
-                                                "example": "perfil_maria.jpg",
-                                                "nullable": true
-                                            },
-                                            "fecha_nacimiento": {
-                                                "type": "string",
-                                                "format": "date",
-                                                "example": "1998-02-14"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "nombres": {
+                                        "type": "string",
+                                        "example": "María"
                                     },
-                                    "alumno": {
-                                        "properties": {
-                                            "codigo_universitario": {
-                                                "type": "string",
-                                                "example": "20224567"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "apellidos": {
+                                        "type": "string",
+                                        "example": "Fernández López"
+                                    },
+                                    "tipo_documento": {
+                                        "type": "string",
+                                        "example": "DNI"
+                                    },
+                                    "numero_documento": {
+                                        "type": "string",
+                                        "example": "78945612"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "999888777",
                                         "nullable": true
                                     },
-                                    "jurado": {
-                                        "properties": {
-                                            "especialidad": {
-                                                "type": "string",
-                                                "example": "Ingeniería de Software"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Calle Los Sauces 456",
                                         "nullable": true
                                     },
-                                    "ponente": {
-                                        "properties": {
-                                            "biografia": {
-                                                "type": "string",
-                                                "example": "Ponente en conferencias internacionales de tecnología educativa"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "pais": {
+                                        "type": "string",
+                                        "example": "Peru",
+                                        "nullable": true
+                                    },
+                                    "religion": {
+                                        "type": "string",
+                                        "example": "Adventista",
+                                        "nullable": true
+                                    },
+                                    "correo_electronico": {
+                                        "type": "string",
+                                        "example": "maria.fernandez@ejemplo.com"
+                                    },
+                                    "correo_institucional": {
+                                        "type": "string",
+                                        "example": "maria.fernandez@ejemplo.com"
+                                    },
+                                    "fecha_nacimiento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1998-02-14"
+                                    },
+                                    "foto_perfil": {
+                                        "description": "Archivo de imagen del perfil (jpg, png, etc.)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "codigo_universitario": {
+                                        "type": "string",
+                                        "example": "20224567",
+                                        "nullable": true
+                                    },
+                                    "especialidad": {
+                                        "type": "string",
+                                        "example": "Ingeniería de Software",
+                                        "nullable": true
+                                    },
+                                    "biografia": {
+                                        "type": "string",
+                                        "example": "Ponente en conferencias internacionales de tecnología educativa",
                                         "nullable": true
                                     }
                                 },
@@ -2072,121 +2063,111 @@
                 "tags": [
                     "Usuarios"
                 ],
-                "summary": "Registrar un nuevo usuario",
-                "description": "Crea un nuevo usuario con su información personal, académica y de rol.",
+                "summary": "Crear información de un usuario",
+                "description": "Crea los datos de un usuario existente, incluyendo su información personal, académica y rol.",
                 "operationId": "createUser",
                 "requestBody": {
-                    "description": "Datos necesarios para registrar un nuevo usuario",
+                    "description": "Datos creados del usuario (multipart/form-data)",
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "email",
-                                    "password",
                                     "escuela_id",
-                                    "persona"
+                                    "nombres",
+                                    "apellidos",
+                                    "tipo_documento",
+                                    "numero_documento",
+                                    "correo_electronico",
+                                    "fecha_nacimiento"
                                 ],
                                 "properties": {
                                     "email": {
                                         "type": "string",
                                         "format": "email",
-                                        "example": "usuario@ejemplo.com"
+                                        "example": "usuario.actualizado@ejemplo.com"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "format": "password",
-                                        "example": "12345678"
+                                        "example": "nuevaClave123",
+                                        "nullable": true
                                     },
                                     "escuela_id": {
                                         "type": "integer",
-                                        "example": 2
+                                        "example": 3
                                     },
                                     "role": {
                                         "type": "string",
-                                        "example": "alumno"
+                                        "example": "jurado"
                                     },
-                                    "persona": {
-                                        "required": [
-                                            "nombres",
-                                            "apellidos",
-                                            "tipo_documento",
-                                            "numero_documento",
-                                            "correo_electronico",
-                                            "fecha_nacimiento"
-                                        ],
-                                        "properties": {
-                                            "nombres": {
-                                                "type": "string",
-                                                "example": "Juan"
-                                            },
-                                            "apellidos": {
-                                                "type": "string",
-                                                "example": "Pérez Gómez"
-                                            },
-                                            "tipo_documento": {
-                                                "type": "string",
-                                                "example": "DNI"
-                                            },
-                                            "numero_documento": {
-                                                "type": "string",
-                                                "example": "74125896"
-                                            },
-                                            "telefono": {
-                                                "type": "string",
-                                                "example": "987654321",
-                                                "nullable": true
-                                            },
-                                            "direccion": {
-                                                "type": "string",
-                                                "example": "Av. Los Olivos 123",
-                                                "nullable": true
-                                            },
-                                            "correo_electronico": {
-                                                "type": "string",
-                                                "example": "juan.perez@ejemplo.com"
-                                            },
-                                            "foto_perfil": {
-                                                "type": "string",
-                                                "example": "perfil.jpg",
-                                                "nullable": true
-                                            },
-                                            "fecha_nacimiento": {
-                                                "type": "string",
-                                                "format": "date",
-                                                "example": "1999-05-10"
-                                            }
-                                        },
-                                        "type": "object"
+                                    "nombres": {
+                                        "type": "string",
+                                        "example": "María"
                                     },
-                                    "alumno": {
-                                        "properties": {
-                                            "codigo_universitario": {
-                                                "type": "string",
-                                                "example": "20210045"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "apellidos": {
+                                        "type": "string",
+                                        "example": "Fernández López"
+                                    },
+                                    "tipo_documento": {
+                                        "type": "string",
+                                        "example": "DNI"
+                                    },
+                                    "numero_documento": {
+                                        "type": "string",
+                                        "example": "78945612"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "999888777",
                                         "nullable": true
                                     },
-                                    "jurado": {
-                                        "properties": {
-                                            "especialidad": {
-                                                "type": "string",
-                                                "example": "Inteligencia Artificial"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "direccion": {
+                                        "type": "string",
+                                        "example": "Calle Los Sauces 456",
                                         "nullable": true
                                     },
-                                    "ponente": {
-                                        "properties": {
-                                            "biografia": {
-                                                "type": "string",
-                                                "example": "Experto en gestión de proyectos tecnológicos"
-                                            }
-                                        },
-                                        "type": "object",
+                                    "pais": {
+                                        "type": "string",
+                                        "example": "Peru",
+                                        "nullable": true
+                                    },
+                                    "religion": {
+                                        "type": "string",
+                                        "example": "Adventista",
+                                        "nullable": true
+                                    },
+                                    "correo_electronico": {
+                                        "type": "string",
+                                        "example": "maria.fernandez@ejemplo.com"
+                                    },
+                                    "correo_institucional": {
+                                        "type": "string",
+                                        "example": "maria.fernandez@ejemplo.com"
+                                    },
+                                    "fecha_nacimiento": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1998-02-14"
+                                    },
+                                    "foto_perfil": {
+                                        "description": "Archivo de imagen del perfil (jpg, png, etc.)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "codigo_universitario": {
+                                        "type": "string",
+                                        "example": "20224567",
+                                        "nullable": true
+                                    },
+                                    "especialidad": {
+                                        "type": "string",
+                                        "example": "Ingeniería de Software",
+                                        "nullable": true
+                                    },
+                                    "biografia": {
+                                        "type": "string",
+                                        "example": "Ponente en conferencias internacionales de tecnología educativa",
                                         "nullable": true
                                     }
                                 },
@@ -2196,7 +2177,7 @@
                     }
                 },
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Usuario creado exitosamente",
                         "content": {
                             "application/json": {
@@ -2221,9 +2202,6 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "description": "No autorizado — requiere autenticación"
                     },
                     "500": {
                         "description": "Error interno del servidor"
@@ -2726,10 +2704,6 @@
                     "carrera": {
                         "type": "string",
                         "example": "Ingeniería de Sistemas"
-                    },
-                    "ciclo": {
-                        "type": "string",
-                        "example": "VII"
                     }
                 },
                 "type": "object"
@@ -3019,8 +2993,7 @@
                     },
                     "alumno": {
                         "codigoUniversitario": "20201234",
-                        "carrera": "Ingeniería de Sistemas",
-                        "ciclo": "VII"
+                        "carrera": "Ingeniería de Sistemas"
                     },
                     "jurado": null,
                     "ponente": null

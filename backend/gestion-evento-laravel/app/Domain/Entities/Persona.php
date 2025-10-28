@@ -14,7 +14,10 @@ class Persona
         private string $numeroDocumento,
         private string $telefono,
         private string $direccion,
+        private string $pais,
+        private string $religion,
         private string $correoElectronico,
+        private string $correoInstitucional,
         private ?string $fotoPerfil,
         private DateTime $fechaNacimiento,
         private ?int $userId = null,
@@ -30,7 +33,10 @@ class Persona
     public function getNumeroDocumento(): string { return $this->numeroDocumento; }
     public function getTelefono(): string { return $this->telefono; }
     public function getDireccion(): string { return $this->direccion; }
+    public function getPais(): string { return $this->pais; }
+    public function getReligion(): string { return $this->religion; }
     public function getCorreoElectronico(): string { return $this->correoElectronico; }
+    public function getCorreoInstitucional(): string { return $this->correoInstitucional; }
     public function getFotoPerfil(): ?string { return $this->fotoPerfil; }
     public function getFechaNacimiento(): DateTime { return $this->fechaNacimiento; }
 
@@ -45,7 +51,10 @@ class Persona
     public function setNumeroDocumento(string $numeroDocumento): void { $this->numeroDocumento = $numeroDocumento; }
     public function setTelefono(string $telefono): void { $this->telefono = $telefono; }
     public function setDireccion(string $direccion): void { $this->direccion = $direccion; }
+    public function setPais(string $pais): void { $this->pais = $pais; }
+    public function setRelgion(string $religion): void { $this->religion = $religion; }
     public function setCorreoElectronico(string $correoElectronico): void { $this->correoElectronico = $correoElectronico; }
+    public function setCorreoInstitucional(string $correoInstitucional): void { $this->correoInstitucional = $correoInstitucional; }
     public function setFotoPerfil(?string $foto): void { $this->fotoPerfil = $foto; }
     public function setFechaNacimiento(DateTime $fechaNacimiento): void { $this->fechaNacimiento = $fechaNacimiento; }
 }

@@ -22,6 +22,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use DateTime;
+use Illuminate\Http\JsonResponse;
+use RuntimeException;
 
 class UserController extends Controller
 {
@@ -108,14 +110,19 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $role = $request->query('role');
         $perPage = $request->query('per_page', 10);
 
         $users = $this->getPaginatedUsersUseCase->execute($role, $request->query('page', 1), $perPage);
 
-        return UserResource::collection($users);
+        return response()->json([
+            'current_page' => $users->currentPage(),
+            'per_page'     => $users->perPage(),
+            'total'        => $users->total(),
+            'data'         => UserResource::collection($users->items()),
+        ], JsonResponse::HTTP_OK);
     }
 
     /**
@@ -199,7 +206,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         $term = $request->query('term', '');
         $role = $request->query('role');
@@ -207,7 +214,12 @@ class UserController extends Controller
 
         $users = $this->searchUsersUseCase->execute($term, $role, $perPage);
 
-        return UserResource::collection($users);
+         return response()->json([
+            'current_page' => $users->currentPage(),
+            'per_page'     => $users->perPage(),
+            'total'        => $users->total(),
+            'data'         => UserResource::collection($users->items()),
+        ], JsonResponse::HTTP_OK);
     }
 
     /**
@@ -255,77 +267,72 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function show(int $id)
+    public function show(int $id): JsonResponse
     {
-        $user = $this->findUserByIdUseCase->execute($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'Usuario no encontrado'], Response::HTTP_NOT_FOUND);
+        try {
+            $user = $this->findUserByIdUseCase->execute($id);
+            return response()->json(new UserResource($user), Response::HTTP_OK);
+        } catch (RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
-
-        return new UserResource($user);
     }
 
     /**
      * @OA\Post(
      *     path="/users",
-     *     summary="Registrar un nuevo usuario",
-     *     description="Crea un nuevo usuario con su información personal, académica y de rol.",
+     *     summary="Crear información de un usuario",
+     *     description="Crea los datos de un usuario existente, incluyendo su información personal, académica y rol.",
      *     operationId="createUser",
      *     tags={"Usuarios"},
      *     security={{"bearerAuth":{}}},
      *
      *     @OA\RequestBody(
+     * request="CreateUserRequest",
      *         required=true,
-     *         description="Datos necesarios para registrar un nuevo usuario",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"email", "password", "escuela_id", "persona"},
-     *             @OA\Property(property="email", type="string", format="email", example="usuario@ejemplo.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="12345678"),
-     *             @OA\Property(property="escuela_id", type="integer", example=2),
-     *             @OA\Property(property="role", type="string", example="alumno"),
-     *
-     *             @OA\Property(
-     *                 property="persona",
+     *         description="Datos creados del usuario (multipart/form-data)",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
      *                 type="object",
-     *                 required={"nombres", "apellidos", "tipo_documento", "numero_documento", "correo_electronico", "fecha_nacimiento"},
-     *                 @OA\Property(property="nombres", type="string", example="Juan"),
-     *                 @OA\Property(property="apellidos", type="string", example="Pérez Gómez"),
+     *                 required={
+     *                     "email", "escuela_id", 
+     *                     "nombres", "apellidos", "tipo_documento", 
+     *                     "numero_documento", "correo_electronico", "fecha_nacimiento"
+     *                 },
+     *
+     *                 @OA\Property(property="email", type="string", format="email", example="usuario.actualizado@ejemplo.com"),
+     *                 @OA\Property(property="password", type="string", nullable=true, example="nuevaClave123"),
+     *                 @OA\Property(property="escuela_id", type="integer", example=3),
+     *                 @OA\Property(property="role", type="string", example="jurado"),
+     *
+     *                 @OA\Property(property="nombres", type="string", example="María"),
+     *                 @OA\Property(property="apellidos", type="string", example="Fernández López"),
      *                 @OA\Property(property="tipo_documento", type="string", example="DNI"),
-     *                 @OA\Property(property="numero_documento", type="string", example="74125896"),
-     *                 @OA\Property(property="telefono", type="string", nullable=true, example="987654321"),
-     *                 @OA\Property(property="direccion", type="string", nullable=true, example="Av. Los Olivos 123"),
-     *                 @OA\Property(property="correo_electronico", type="string", example="juan.perez@ejemplo.com"),
-     *                 @OA\Property(property="foto_perfil", type="string", nullable=true, example="perfil.jpg"),
-     *                 @OA\Property(property="fecha_nacimiento", type="string", format="date", example="1999-05-10")
-     *             ),
+     *                 @OA\Property(property="numero_documento", type="string", example="78945612"),
+     *                 @OA\Property(property="telefono", type="string", nullable=true, example="999888777"),
+     *                 @OA\Property(property="direccion", type="string", nullable=true, example="Calle Los Sauces 456"),
+     *                 @OA\Property(property="pais", type="string", nullable=true, example="Peru"),
+     *                 @OA\Property(property="religion", type="string", nullable=true, example="Adventista"),
+     *                 @OA\Property(property="correo_electronico", type="string", example="maria.fernandez@ejemplo.com"),
+     *                 @OA\Property(property="correo_institucional", type="string", example="maria.fernandez@ejemplo.com"),
+     *                 @OA\Property(property="fecha_nacimiento", type="string", format="date", example="1998-02-14"),
      *
-     *             @OA\Property(
-     *                 property="alumno",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="codigo_universitario", type="string", example="20210045")
-     *             ),
+     *                 @OA\Property(
+     *                     property="foto_perfil",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Archivo de imagen del perfil (jpg, png, etc.)"
+     *                 ),
      *
-     *             @OA\Property(
-     *                 property="jurado",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="especialidad", type="string", example="Inteligencia Artificial")
-     *             ),
-     *
-     *             @OA\Property(
-     *                 property="ponente",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="biografia", type="string", example="Experto en gestión de proyectos tecnológicos")
+     *                 @OA\Property(property="codigo_universitario", type="string", nullable=true, example="20224567"),
+     *                 @OA\Property(property="especialidad", type="string", nullable=true, example="Ingeniería de Software"),
+     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa")
      *             )
      *         )
      *     ),
      *
      *     @OA\Response(
-     *         response=201,
+     *         response=200,
      *         description="Usuario creado exitosamente",
      *         @OA\JsonContent(ref="#/components/schemas/User")
      *     ),
@@ -340,62 +347,86 @@ class UserController extends Controller
      *     ),
      *
      *     @OA\Response(
-     *         response=401,
-     *         description="No autorizado — requiere autenticación"
-     *     ),
-     *
-     *     @OA\Response(
      *         response=500,
      *         description="Error interno del servidor"
      *     )
      * )
      */
-    public function store(StoreUserRequest $request)
-    {
-        $personaData = $request->input('persona');
 
+    public function store(StoreUserRequest $request): JsonResponse
+    {
+        // 1️⃣ Extraer campos básicos del usuario
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $escuelaId = $request->input('escuela_id');
+        $role = $request->input('role');
+
+        // 2️⃣ Procesar imagen de perfil (opcional)
+        $fotoPerfil = null;
+        if ($request->hasFile('foto_perfil')) {
+            $fotoPerfil = $request->file('foto_perfil')->store('images/personas', 'public');
+        }
+
+        // 3️⃣ Crear entidad Persona (datos directos desde form-data)
         $persona = new Persona(
             id: null,
-            nombres: $personaData['nombres'],
-            apellidos: $personaData['apellidos'],
-            tipoDocumento: $personaData['tipo_documento'],
-            numeroDocumento: $personaData['numero_documento'],
-            telefono: $personaData['telefono'] ?? null,
-            direccion: $personaData['direccion'] ?? null,
-            correoElectronico: $personaData['correo_electronico'],
-            fotoPerfil: $personaData['foto_perfil'] ?? null,
-            fechaNacimiento: new DateTime($personaData['fecha_nacimiento'])
+            nombres: $request->input('nombres'),
+            apellidos: $request->input('apellidos'),
+            tipoDocumento: $request->input('tipo_documento'),
+            numeroDocumento: $request->input('numero_documento'),
+            telefono: $request->input('telefono'),
+            direccion: $request->input('direccion'),
+            pais: $request->input('pais'),
+            religion: $request->input('religion'),
+            correoElectronico: $request->input('correo_electronico'),
+            correoInstitucional: $request->input('correo_institucional'),
+            fotoPerfil: $fotoPerfil,
+            fechaNacimiento: new DateTime($request->input('fecha_nacimiento'))
         );
 
+        // 4️⃣ Crear entidades opcionales (si el campo existe en el form-data)
+        $alumno = $request->filled('codigo_universitario')
+            ? new Alumno(
+                id: null,
+                userId: null,
+                codigo_universitario: $request->input('codigo_universitario')
+            )
+            : null;
+
+        $jurado = $request->filled('especialidad')
+            ? new Jurado(
+                id: null,
+                userId: null,
+                especialidad: $request->input('especialidad')
+            )
+            : null;
+
+        $ponente = $request->filled('biografia')
+            ? new Ponente(
+                id: null,
+                biografia: $request->input('biografia'),
+                userId: null,
+                ponenciaId: null,
+            )
+            : null;
+
+        // 5️⃣ Crear el usuario del dominio
         $user = new User(
             id: null,
-            email: $request->email,
-            password: $request->password,
-            escuelaId: $request->escuela_id,
+            email: $email,
+            password: $password,
+            escuelaId: $escuelaId,
             persona: $persona,
-            alumno: $request->input('alumno') ? new Alumno(
-                null,
-                null,
-                $request->input('alumno.codigo_universitario')
-            ) : null,
-            jurado: $request->input('jurado') ? new Jurado(
-                null,
-                null,
-                $request->input('jurado.especialidad')
-            ) : null,
-            ponente: $request->input('ponente') ? new Ponente(
-                null,
-                $request->input('ponente.biografia'),
-                null,
-                null
-            ) : null
+            alumno: $alumno,
+            jurado: $jurado,
+            ponente: $ponente
         );
 
-        $created = $this->createUserUseCase->execute($user, $request->role);
+        // 6️⃣ Ejecutar caso de uso (aplica lógica de guardado y asignación de rol)
+        $created = $this->createUserUseCase->execute($user, $role);
 
-        return (new UserResource($created))
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+        // 7️⃣ Retornar respuesta en formato JSON (con UserResource)
+        return response()->json(new UserResource($created), Response::HTTP_CREATED);
     }
 
     /**
@@ -416,50 +447,46 @@ class UserController extends Controller
      *     ),
      *
      *     @OA\RequestBody(
+     * request="UpdateUserRequest",
      *         required=true,
-     *         description="Datos actualizados del usuario",
-     *         @OA\JsonContent(
-     *             type="object",
-     *             required={"email", "escuela_id", "persona"},
-     *             @OA\Property(property="email", type="string", format="email", example="usuario.actualizado@ejemplo.com"),
-     *             @OA\Property(property="password", type="string", nullable=true, example="nuevaClave123"),
-     *             @OA\Property(property="escuela_id", type="integer", example=3),
-     *             @OA\Property(property="role", type="string", example="jurado"),
-     *
-     *             @OA\Property(
-     *                 property="persona",
+     *         description="Datos actualizados del usuario (multipart/form-data)",
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
      *                 type="object",
-     *                 required={"nombres", "apellidos", "tipo_documento", "numero_documento", "correo_electronico", "fecha_nacimiento"},
+     *                 required={
+     *                     "email", "escuela_id", 
+     *                     "nombres", "apellidos", "tipo_documento", 
+     *                     "numero_documento", "correo_electronico", "fecha_nacimiento"
+     *                 },
+     *
+     *                 @OA\Property(property="email", type="string", format="email", example="usuario.actualizado@ejemplo.com"),
+     *                 @OA\Property(property="password", type="string", nullable=true, example="nuevaClave123"),
+     *                 @OA\Property(property="escuela_id", type="integer", example=3),
+     *                 @OA\Property(property="role", type="string", example="jurado"),
+     *
      *                 @OA\Property(property="nombres", type="string", example="María"),
      *                 @OA\Property(property="apellidos", type="string", example="Fernández López"),
      *                 @OA\Property(property="tipo_documento", type="string", example="DNI"),
      *                 @OA\Property(property="numero_documento", type="string", example="78945612"),
      *                 @OA\Property(property="telefono", type="string", nullable=true, example="999888777"),
      *                 @OA\Property(property="direccion", type="string", nullable=true, example="Calle Los Sauces 456"),
+     *                 @OA\Property(property="pais", type="string", nullable=true, example="Peru"),
+     *                 @OA\Property(property="religion", type="string", nullable=true, example="Adventista"),
      *                 @OA\Property(property="correo_electronico", type="string", example="maria.fernandez@ejemplo.com"),
-     *                 @OA\Property(property="foto_perfil", type="string", nullable=true, example="perfil_maria.jpg"),
-     *                 @OA\Property(property="fecha_nacimiento", type="string", format="date", example="1998-02-14")
-     *             ),
+     *                 @OA\Property(property="correo_institucional", type="string", example="maria.fernandez@ejemplo.com"),
+     *                 @OA\Property(property="fecha_nacimiento", type="string", format="date", example="1998-02-14"),
      *
-     *             @OA\Property(
-     *                 property="alumno",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="codigo_universitario", type="string", example="20224567")
-     *             ),
+     *                 @OA\Property(
+     *                     property="foto_perfil",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Archivo de imagen del perfil (jpg, png, etc.)"
+     *                 ),
      *
-     *             @OA\Property(
-     *                 property="jurado",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="especialidad", type="string", example="Ingeniería de Software")
-     *             ),
-     *
-     *             @OA\Property(
-     *                 property="ponente",
-     *                 type="object",
-     *                 nullable=true,
-     *                 @OA\Property(property="biografia", type="string", example="Ponente en conferencias internacionales de tecnología educativa")
+     *                 @OA\Property(property="codigo_universitario", type="string", nullable=true, example="20224567"),
+     *                 @OA\Property(property="especialidad", type="string", nullable=true, example="Ingeniería de Software"),
+     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa")
      *             )
      *         )
      *     ),
@@ -494,50 +521,74 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function update(UpdateUserRequest $request, int $id)
+    public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
-        $personaData = $request->input('persona');
+        try{
+        // 1️⃣ Extraer datos simples
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $escuelaId = $request->input('escuela_id');
+        $role = $request->input('role');
 
+        // 2️⃣ Manejar la foto de perfil (si se envía nueva)
+        $fotoPerfil = null;
+        if ($request->hasFile('foto_perfil')) {
+            $fotoPerfil = $request->file('foto_perfil')->store('images/personas', 'public');
+        } else {
+            // Si no se envía nueva foto, conservar la anterior
+            $fotoPerfil = $request->input('foto_perfil_actual') ?? null;
+        }
+
+        // 3️⃣ Crear entidad Persona con datos planos del form-data
         $persona = new Persona(
             id: null,
-            nombres: $personaData['nombres'],
-            apellidos: $personaData['apellidos'],
-            tipoDocumento: $personaData['tipo_documento'],
-            numeroDocumento: $personaData['numero_documento'],
-            telefono: $personaData['telefono'] ?? null,
-            direccion: $personaData['direccion'] ?? null,
-            correoElectronico: $personaData['correo_electronico'],
-            fotoPerfil: $personaData['foto_perfil'] ?? null,
-            fechaNacimiento: new DateTime($personaData['fecha_nacimiento'])
+            nombres: $request->input('nombres'),
+            apellidos: $request->input('apellidos'),
+            tipoDocumento: $request->input('tipo_documento'),
+            numeroDocumento: $request->input('numero_documento'),
+            telefono: $request->input('telefono'),
+            direccion: $request->input('direccion'),
+            pais: $request->input('pais'),
+            religion: $request->input('religion'),
+            correoElectronico: $request->input('correo_electronico'),
+            correoInstitucional: $request->input('correo_institucional'),
+            fotoPerfil: $fotoPerfil,
+            fechaNacimiento: new DateTime($request->input('fecha_nacimiento'))
         );
 
+        // 4️⃣ Relaciones opcionales
+        $alumno = $request->filled('codigo_universitario')
+            ? new Alumno(null, null, $request->input('codigo_universitario'))
+            : null;
+
+        $jurado = $request->filled('especialidad')
+            ? new Jurado(null, null, $request->input('especialidad'))
+            : null;
+
+        $ponente = $request->filled('biografia')
+            ? new Ponente(null, $request->input('biografia'), null, null)
+            : null;
+
+        // 5️⃣ Crear el usuario con los datos actualizados
         $user = new User(
             id: $id,
-            email: $request->email,
-            password: $request->password ?? '',
-            escuelaId: $request->escuela_id,
+            email: $email,
+            password: $password ?? '',
+            escuelaId: $escuelaId,
             persona: $persona,
-            alumno: $request->input('alumno') ? new Alumno(
-                null,
-                null,
-                $request->input('alumno.codigo_universitario')
-            ) : null,
-            jurado: $request->input('jurado') ? new Jurado(
-                null,
-                null,
-                $request->input('jurado.especialidad')
-            ) : null,
-            ponente: $request->input('ponente') ? new Ponente(
-                null,
-                $request->input('ponente.biografia'),
-                null,
-                null
-            ) : null
+            alumno: $alumno,
+            jurado: $jurado,
+            ponente: $ponente
         );
 
-        $updated = $this->updateUserUseCase->execute($user, $request->role);
+        // 6️⃣ Ejecutar el caso de uso
+        $updated = $this->updateUserUseCase->execute($user, $role);
 
-        return new UserResource($updated);
+        // 7️⃣ Devolver respuesta
+        return response()->json(new UserResource($updated), Response::HTTP_OK);
+        } catch (RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
@@ -584,7 +635,7 @@ class UserController extends Controller
      *     )
      * )
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
         try {
             $this->deleteUserUseCase->execute($id);

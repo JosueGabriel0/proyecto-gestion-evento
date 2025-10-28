@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Role } from "../../../../domain/entities/Role";
 import InputText from "../input/InputText";
 import InputFile from "../input/InputFile";
 import AddEditButton from "../../actions/AddEditButton";
@@ -87,7 +86,6 @@ export default function FilialForm({ initialFilial, onSuccess }: FilialFormProps
       </div>
       <AddEditButton
         name={loading ? "Guardando..." : initialFilial ? "Actualizar" : "Crear"}
-        onClick={() => { }}
         disabled={loading}
       />
     </form>

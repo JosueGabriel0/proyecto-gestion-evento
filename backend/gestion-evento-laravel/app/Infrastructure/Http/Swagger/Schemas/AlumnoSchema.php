@@ -25,11 +25,6 @@ namespace App\Infrastructure\Http\Swagger\Schemas;
  *         example="Ingeniería de Sistemas"
  *     ),
  *
- *     @OA\Property(
- *         property="ciclo",
- *         type="string",
- *         example="VII"
- *     )
  * )
  */
 class AlumnoSchema {}

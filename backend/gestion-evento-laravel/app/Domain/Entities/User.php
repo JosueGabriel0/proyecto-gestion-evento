@@ -257,9 +257,24 @@ class User
         return $this->persona?->getDireccion();
     }
 
+    public function getPersonaPais(): ?string
+    {
+        return $this->persona?->getPais();
+    }
+
+    public function getPersonaReligion(): ?string
+    {
+        return $this->persona?->getReligion();
+    }
+
     public function getPersonaCorreoElectronico(): ?string
     {
         return $this->persona?->getCorreoElectronico();
+    }
+
+    public function getPersonaCorreoInstitucional(): ?string
+    {
+        return $this->persona?->getCorreoInstitucional();
     }
 
     public function getPersonaFotoPerfil(): ?string

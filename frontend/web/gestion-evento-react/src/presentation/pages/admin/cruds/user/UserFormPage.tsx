@@ -4,18 +4,18 @@ import ElectricBorder from "../../../../components/actions/ElectricBorder";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import Loading from "../../../../components/loaders/Loading";
 import Loading2 from "../../../../components/loaders/Loading2";
-import type { Filial } from "../../../../../domain/entities/Filial";
-import { FilialRepository } from "../../../../../infrastructure/repositories/FilialRepository";
-import { FilialService } from "../../../../../application/services/FilialService";
-import FilialForm from "../../../../components/form/filial/FilialForm";
+import { UserRepository } from "../../../../../infrastructure/repositories/UserRepository";
+import { UserService } from "../../../../../application/services/UserService";
+import type { User } from "../../../../../domain/entities/User";
+import UserForm from "../../../../components/form/user/UserForm";
 
-const filialRepository = new FilialRepository();
-const filialService = new FilialService(filialRepository);
+const userRepository = new UserRepository();
+const userService = new UserService(userRepository);
 
-export default function FilialFormPage() {
+export default function UserFormPage() {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [filial, setFilial] = useState<Filial | undefined>();
+  const [user, setUser] = useState<User | undefined>();
   const [loading, setLoading] = useState(true);
   const [isDark, setIsDark] = useState(false);
 
@@ -35,9 +35,9 @@ export default function FilialFormPage() {
 
   useEffect(() => {
     if (id) {
-      filialService
-        .getFilialById(Number(id))
-        .then((data) => setFilial(data))
+      userService
+        .getUserById(Number(id))
+        .then((data) => setUser(data))
         .catch(console.error)
         .finally(() => setLoading(false));
     } else {
@@ -55,9 +55,9 @@ export default function FilialFormPage() {
     <div>
       <div>
         <PageBreadcrumb
-          pageTitle={id ? "Editar Filial" : "Crear Filial"}
+          pageTitle={id ? "Editar Usuario" : "Crear Usuario"}
           pageBack="Cancelar"
-          routeBack="super-filiales"
+          routeBack="super&admin-usuarios"
         />
       </div>
 
@@ -69,9 +69,12 @@ export default function FilialFormPage() {
           thickness={100}
           style={{ borderRadius: 10 }}
         >
-          <FilialForm
-            initialFilial={filial}
-            onSuccess={() => navigate("/super-filiales")} // 👉 Redirige al listado
+          <UserForm
+            initialUser={user}
+            onSuccess={() => {
+              console.log("onSucces ejecutando, navegando...");
+              navigate("/super&admin-usuarios");
+            }}
           />
         </ElectricBorder>
       </div>

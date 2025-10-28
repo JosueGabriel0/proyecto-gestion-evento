@@ -23,6 +23,8 @@ export default function EscuelaGestionPage() {
   const [facultades, setFacultades] = useState<Facultad[]>([]);
   const navigate = useNavigate();
 
+  const [refresh, setRefresh] = useState(0);
+
   // 🔹 Cargar filiales (para mostrar los nombres)
   useEffect(() => {
     const loadFacultades = async () => {
@@ -61,7 +63,7 @@ export default function EscuelaGestionPage() {
       try {
         await escuelaService.deleteEscuela(escuela.id);
         Swal.fire("Eliminado", "La escuela ha sido eliminada.", "success");
-        window.location.reload();
+        setRefresh((prev) => prev + 1);
       } catch (error) {
         Swal.fire("Error", "No se pudo eliminar la escuela.", "error");
       }
@@ -116,6 +118,7 @@ export default function EscuelaGestionPage() {
           columns={columns}
           fetchData={fetchEscuelas}
           searchTerm={searchTerm}
+          refreshTrigger={refresh}
           onEdit={(escuela) => navigate(`/super&admin-escuelas/edit/${escuela.id}`)}
           onDelete={handleDelete}
         />

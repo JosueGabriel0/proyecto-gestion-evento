@@ -133,7 +133,6 @@ export default function EscuelaForm({ initialEscuela, onSuccess }: EscuelaFormPr
 
       <AddEditButton
         name={loading ? "Guardando..." : initialEscuela ? "Actualizar" : "Crear"}
-        onClick={() => { }}
         disabled={loading}
       />
     </form>

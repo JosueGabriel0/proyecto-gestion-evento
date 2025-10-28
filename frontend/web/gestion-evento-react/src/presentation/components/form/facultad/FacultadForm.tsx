@@ -133,7 +133,6 @@ export default function FacultadForm({ initialFacultad, onSuccess }: FacultadFor
 
       <AddEditButton
         name={loading ? "Guardando..." : initialFacultad ? "Actualizar" : "Crear"}
-        onClick={() => { }}
         disabled={loading}
       />
     </form>

@@ -20,7 +20,10 @@ class PersonaModel extends Model
         'numeroDocumento',
         'telefono',
         'direccion',
+        'pais',
+        'religion',
         'correoElectronico',
+        'correoInstitucional',
         'fotoPerfil',
         'fechaNacimiento',
         'user_id',
@@ -44,7 +47,10 @@ class PersonaModel extends Model
             numeroDocumento: $this->numeroDocumento ?? '',
             telefono: $this->telefono,
             direccion: $this->direccion,
+            pais: $this->pais,
+            religion: $this->religion,
             correoElectronico: $this->correoElectronico ?? '',
+            correoInstitucional: $this->correoInstitucional ?? '',
             fotoPerfil: $this->fotoPerfil,
             fechaNacimiento: new DateTime($this->fechaNacimiento ?? '2000-01-01')
         );

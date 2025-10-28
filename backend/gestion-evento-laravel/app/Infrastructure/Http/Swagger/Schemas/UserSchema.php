@@ -65,7 +65,7 @@ namespace App\Infrastructure\Http\Swagger\Schemas;
  *         "alumno": {
  *             "codigoUniversitario": "20201234",
  *             "carrera": "Ingeniería de Sistemas",
- *             "ciclo": "VII"
+ *             
  *         },
  *         "jurado": null,
  *         "ponente": null

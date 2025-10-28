@@ -63,7 +63,6 @@ export default function RoleForm({ initialRole, onSuccess }: RoleFormProps) {
       </div>
         <AddEditButton
           name={loading ? "Guardando..." : initialRole ? "Actualizar" : "Crear"}
-          onClick={() => { }}
           disabled={loading}
         />
     </form>

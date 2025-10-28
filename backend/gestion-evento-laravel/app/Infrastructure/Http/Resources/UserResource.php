@@ -3,43 +3,57 @@
 namespace App\Infrastructure\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Domain\Entities\User as DomainUser;
+use Illuminate\Support\Facades\Storage;
 
 class UserResource extends JsonResource
 {
     public function toArray($request): array
     {
+        // Si el recurso es un Eloquent Model, lo convertimos a Entidad de Dominio
+        $user = $this->resource instanceof DomainUser
+            ? $this->resource
+            : ($this->resource->toDomain() ?? null);
+
+        if (!$user) {
+            return [];
+        }
+
         return [
-            'id' => $this->getId(),
-            'email' => $this->getEmail(),
-            'escuela_id' => $this->getEscuelaId(),
-            'role' => $this->getRoleName(),
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'escuela_id' => $user->getEscuelaId(),
+            'role' => $user->getRoleName(),
 
             'persona' => [
-                'nombres' => $this->getPersonaNombres(),
-                'apellidos' => $this->getPersonaApellidos(),
-                'tipo_documento' => $this->getPersonaTipoDocumento(),
-                'numero_documento' => $this->getPersonaNumeroDocumento(),
-                'telefono' => $this->getPersonaTelefono(),
-                'direccion' => $this->getPersonaDireccion(),
-                'correo_electronico' => $this->getPersonaCorreoElectronico(),
-                'foto_perfil' => $this->getPersonaFotoPerfil(),
-                'fecha_nacimiento' => $this->getPersonaFechaNacimiento(),
+                'nombres' => $user->getPersonaNombres(),
+                'apellidos' => $user->getPersonaApellidos(),
+                'tipo_documento' => $user->getPersonaTipoDocumento(),
+                'numero_documento' => $user->getPersonaNumeroDocumento(),
+                'telefono' => $user->getPersonaTelefono(),
+                'direccion' => $user->getPersonaDireccion(),
+                'pais' => $user->getPersonaPais(),
+                'religion' => $user->getPersonaReligion(),
+                'correo_electronico' => $user->getPersonaCorreoElectronico(),
+                'correo_institucional' => $user->getPersonaCorreoInstitucional(),
+                'foto_perfil' => $user->getPersonaFotoPerfil() ? asset(Storage::url($user->getPersonaFotoPerfil())) : null,
+                'fecha_nacimiento' => $user->getPersonaFechaNacimiento(),
             ],
 
-            'alumno' => $this->getAlumno() ? [
-                'codigo_universitario' => $this->getAlumnoCodigoUniversitario(),
+            'alumno' => $user->getAlumno() ? [
+                'codigo_universitario' => $user->getAlumnoCodigoUniversitario(),
             ] : null,
 
-            'jurado' => $this->getJurado() ? [
-                'especialidad' => $this->getJuradoEspecialidad(),
+            'jurado' => $user->getJurado() ? [
+                'especialidad' => $user->getJuradoEspecialidad(),
             ] : null,
 
-            'ponente' => $this->getPonente() ? [
-                'biografia' => $this->getPonenteBiografia(),
+            'ponente' => $user->getPonente() ? [
+                'biografia' => $user->getPonenteBiografia(),
             ] : null,
 
-            'created_at' => $this->getCreatedAt(),
-            'updated_at' => $this->getUpdatedAt(),
+            'created_at' => $user->getCreatedAt(),
+            'updated_at' => $user->getUpdatedAt(),
         ];
     }
 }

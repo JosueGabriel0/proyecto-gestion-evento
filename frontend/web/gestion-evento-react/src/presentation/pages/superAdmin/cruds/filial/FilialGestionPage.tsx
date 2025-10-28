@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -8,13 +8,32 @@ import { FilialRepository } from "../../../../../infrastructure/repositories/Fil
 import { FilialService } from "../../../../../application/services/FilialService";
 import PageBreadcrumb from "../../../../components/common/PageBreadCrumb";
 import type { Filial } from "../../../../../domain/entities/Filial";
+import { TokenStorage } from "../../../../../infrastructure/repositories/TokenStorage";
 
 const filialRepository = new FilialRepository();
 const filialService = new FilialService(filialRepository);
 
+const tokenStorage = new TokenStorage();
+
 export default function FilialGestionPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const navigate = useNavigate();
+
+    const [refresh, setRefresh] = useState(0);
+
+    const user = tokenStorage.getUser();
+      const userRole = user?.role ?? null;
+    
+       const routeBack = useMemo(() => {
+        switch (userRole) {
+          case "ROLE_SUPER_ADMIN":
+            return "super-dashboard";
+          case "ROLE_ADMIN":
+            return "admin-dashboard";
+          default:
+            return "dashboard"; // fallback genérico
+        }
+      }, [userRole]);
 
     // 🔹 API de datos para la tabla
     const fetchFiliales = async (page: number, perPage: number, term?: string) => {
@@ -41,7 +60,7 @@ export default function FilialGestionPage() {
             try {
                 await filialService.deleteFilial(filial.id);
                 Swal.fire("Eliminado", "La filial ha sido eliminada.", "success");
-                window.location.reload(); // 👉 recarga lista
+                setRefresh((prev) => prev + 1);
             } catch (error) {
                 Swal.fire("Error", "No se pudo eliminar la filial.", "error");
             }
@@ -77,7 +96,7 @@ export default function FilialGestionPage() {
             <PageBreadcrumb
                 pageTitle="Gestión de Filiales"
                 pageBack="Inicio"
-                routeBack="dashboard-super-admin"
+                routeBack={routeBack}
             />
 
             {/* 🔹 Tabla de roles */}
@@ -85,13 +104,14 @@ export default function FilialGestionPage() {
                 title="Tabla de Filiales"
                 placeHolder="Buscar filial......"
                 onSearch={(term) => setSearchTerm(term)}
-                onAdd={() => navigate("/filiales/new")}
+                onAdd={() => navigate("/super-filiales/new")}
             >
                 <BasicTableOne<Filial>
                     columns={columns}
                     fetchData={fetchFiliales}
                     searchTerm={searchTerm}
-                    onEdit={(filial) => navigate(`/filiales/edit/${filial.id}`)}
+                    refreshTrigger={refresh}
+                    onEdit={(filial) => navigate(`/super-filiales/edit/${filial.id}`)}
                     onDelete={handleDelete}
                 />
             </ComponentCard>

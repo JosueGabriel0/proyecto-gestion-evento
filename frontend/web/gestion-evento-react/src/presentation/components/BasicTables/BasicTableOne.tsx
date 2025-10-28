@@ -32,6 +32,7 @@ interface BasicTableOneProps<T> {
   searchTerm: string;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
+  refreshTrigger?: number; // 👈 NUEVA PROP
 }
 
 export default function BasicTableOne<T>({
@@ -40,6 +41,7 @@ export default function BasicTableOne<T>({
   searchTerm,
   onEdit,
   onDelete,
+  refreshTrigger
 }: BasicTableOneProps<T>) {
   const [data, setData] = useState<T[]>([]);
   const [pagination, setPagination] = useState({
@@ -83,8 +85,10 @@ export default function BasicTableOne<T>({
   }, [searchTerm]);
 
   useEffect(() => {
-    load(pagination.current_page, pagination.per_page);
-  }, []);
+    if (!loading) {
+      load(pagination.current_page, pagination.per_page, searchTerm);
+    }
+  }, [refreshTrigger]);
 
   if (loading) {
     return (
@@ -98,7 +102,7 @@ export default function BasicTableOne<T>({
 
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
-      <div className="max-w-full overflow-x-auto">
+      <div className="w-239 overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>

@@ -59,13 +59,16 @@ class UserRepositoryImpl implements UserRepository
                 $model->persona()->create([
                     'nombres' => $persona->getNombres(),
                     'apellidos' => $persona->getApellidos(),
-                    'tipo_documento' => $persona->getTipoDocumento(),
-                    'numero_documento' => $persona->getNumeroDocumento(),
+                    'tipoDocumento' => $persona->getTipoDocumento(),
+                    'numeroDocumento' => $persona->getNumeroDocumento(),
                     'telefono' => $persona->getTelefono(),
                     'direccion' => $persona->getDireccion(),
-                    'correo_electronico' => $persona->getCorreoElectronico(),
-                    'foto_perfil' => $persona->getFotoPerfil(),
-                    'fecha_nacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
+                    'pais' => $persona->getPais(),
+                    'religion' => $persona->getReligion(),
+                    'correoElectronico' => $persona->getCorreoElectronico(),
+                    'correoInstitucional' => $persona->getCorreoInstitucional(),
+                    'fotoPerfil' => $persona->getFotoPerfil(),
+                    'fechaNacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
                 ]);
             }
 
@@ -96,7 +99,7 @@ class UserRepositoryImpl implements UserRepository
                     break;
             }
 
-            return $model->toDomain();
+            return $model->load(['role', 'persona', 'alumno', 'jurado', 'ponente', 'escuela'])->toDomain();
         });
     }
 
@@ -134,13 +137,16 @@ class UserRepositoryImpl implements UserRepository
                     [
                         'nombres' => $persona->getNombres(),
                         'apellidos' => $persona->getApellidos(),
-                        'tipo_documento' => $persona->getTipoDocumento(),
-                        'numero_documento' => $persona->getNumeroDocumento(),
+                        'tipoDocumento' => $persona->getTipoDocumento(),
+                        'numeroDocumento' => $persona->getNumeroDocumento(),
                         'telefono' => $persona->getTelefono(),
                         'direccion' => $persona->getDireccion(),
-                        'correo_electronico' => $persona->getCorreoElectronico(),
-                        'foto_perfil' => $persona->getFotoPerfil(),
-                        'fecha_nacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
+                        'pais' => $persona->getPais(),
+                        'religion' => $persona->getReligion(),
+                        'correoElectronico' => $persona->getCorreoElectronico(),
+                        'correoInstitucional' => $persona->getCorreoElectronico(),
+                        'fotoPerfil' => $persona->getFotoPerfil(),
+                        'fechaNacimiento' => $persona->getFechaNacimiento()->format('Y-m-d'),
                     ]
                 );
             }
@@ -175,7 +181,7 @@ class UserRepositoryImpl implements UserRepository
                     break;
             }
 
-            return $model->toDomain();
+            return $model->load(['role', 'persona', 'alumno', 'jurado', 'ponente', 'escuela'])->toDomain();
         });
     }
 

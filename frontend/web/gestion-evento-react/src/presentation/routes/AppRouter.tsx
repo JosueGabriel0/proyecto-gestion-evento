@@ -13,6 +13,8 @@ import FacultadGestionPage from "../pages/admin/cruds/facultad/FacultadGestionPa
 import FacultadFormPage from "../pages/admin/cruds/facultad/FacultadFormPage";
 import EscuelaGestionPage from "../pages/admin/cruds/escuela/EscuelaGestionPage";
 import EscuelaFormPage from "../pages/admin/cruds/escuela/EscuelaFormPage";
+import UserGestionPage from "../pages/admin/cruds/user/UserGestionPage";
+import UserFormPage from "../pages/admin/cruds/user/UserFormPage";
 
 const AppRouter = () => {
     return (
@@ -23,128 +25,109 @@ const AppRouter = () => {
 
             <Route element={<AppLayout />}>
 
-                <Route path="/dashboard-super-admin" element={
+                <Route path="/super-dashboard" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <AdminDashboardPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super-admin-filiales" element={
+                <Route path="/super-filiales" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super-admin-filiales/new" element={
+                <Route path="/super-filiales/new" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super-admin-filiales/edit/:id" element={
+                <Route path="/super-filiales/edit/:id" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN"]}>
                         <FilialFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/dashboard-admin" element={
+                <Route path="/admin-dashboard" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_ADMIN"]}>
                         <AdminDashboardPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-roles" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-roles" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <RoleGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-roles/new" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-roles/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-roles/edit/:id" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-roles/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <RoleFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-facultades" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-facultades" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <FacultadGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-facultades/new" element={
+                <Route path="/super-admin-facultades/new" element={
                     <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <FacultadFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-facultades/edit/:id" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-facultades/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <FacultadFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-escuelas" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-escuelas" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <EscuelaGestionPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-escuelas/new" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-escuelas/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <EscuelaFormPage />
                     </RoleProtectedRoute>
                 } />
 
-                <Route path="/super&admin-escuelas/edit/:id" element={
-                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN","ROLE_ADMIN"]}>
+                <Route path="/super-admin-escuelas/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
                         <EscuelaFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super-admin-usuarios" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
+                        <UserGestionPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super-admin-usuarios/new" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
+                        <UserFormPage />
+                    </RoleProtectedRoute>
+                } />
+
+                <Route path="/super-admin-usuarios/edit/:id" element={
+                    <RoleProtectedRoute allowedRoles={["ROLE_SUPER_ADMIN", "ROLE_ADMIN"]}>
+                        <UserFormPage />
                     </RoleProtectedRoute>
                 } />
             </Route>
 
-            {/*
-        <Route path="/email" element={<EmailPage />} />
-        <Route path="/restablecimiento-contrasenia" element={<RestablecerContraseniaPage />} />
-        <Route path="/cambiar-contrasenia/:token" element={<CambiarContraseniaPage />} />
-        <Route path="/unauthorized" element={<UnauthorizedPage />} />
-*/}
-
-            {/* 👨‍💼 ADMINISTRADOR */}
-            {/*
-                <Route
-                    path="/dashboard-administrador"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <AdministradorDashboardPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/roles"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <ListRolPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                <Route
-                    path="/add-rol"
-                    element={
-                        <RoleProtectedRoute allowedRoles={["ADMINISTRADOR"]}>
-                            <AddRolPage />
-                        </RoleProtectedRoute>
-                    }
-                />
-                */}
-            {/* ...idem para usuarios, personas, docentes, estudiantes, inscripciones */}
-
-            {/* ❌ 404 */}
             <Route path="*" element={<div className="flex items-center justify-center min-h-screen"><Page404 /></div>} />
         </Routes>
     );

@@ -249,7 +249,6 @@ class RolesUsuariosSeeder extends Seeder
         AlumnoModel::firstOrCreate([
             'user_id' => $alumno->id,
             'codigo_universitario' => '1234567',
-            'ciclo' => 'VIII',
             'matricula_id' => $matricula->id,
         ]);
 
