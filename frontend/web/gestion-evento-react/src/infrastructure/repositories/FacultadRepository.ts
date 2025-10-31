@@ -12,6 +12,11 @@ export class FacultadRepository implements IFacultadRepository {
         return response.data.map((dto: any) => FacultadMapper.toDomain(dto));
     }
 
+    async getFacultadesByFilialId(id: number): Promise<Facultad[]>{
+        const response = await AxiosClient.get(`${this.endpoint}/filial/${id}`);
+        return response.data.map((dto: any) => FacultadMapper.toDomain(dto));
+    }
+
     async getFacultadById(id: number): Promise<Facultad> {
         const response = await AxiosClient.get(`${this.endpoint}/${id}`);
         return FacultadMapper.toDomain(response.data);

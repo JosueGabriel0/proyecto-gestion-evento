@@ -3,6 +3,7 @@ import type { IEscuelaRepository } from "../../domain/repositories/IEscuelaRepos
 import type { PaginatedResponse } from "../dtos/PaginatedResponse";
 import { CreateEscuelaUseCase } from "../useCases/escuela/CreateEscuelaUseCase";
 import { DeleteEscuelaUseCase } from "../useCases/escuela/DeleteEscuelaUseCase";
+import { GetAllEscuelasByFacultadIdUseCase } from "../useCases/escuela/GetAllEscuelasByFacultadIdUseCase";
 import { GetEscuelaByIdUseCase } from "../useCases/escuela/GetEscuelaByIdUseCase";
 import { GetEscuelasPaginatedUseCase } from "../useCases/escuela/GetEscuelasPaginatedUseCase";
 import { GetEscuelasUseCase } from "../useCases/escuela/GetEscuelasUseCase";
@@ -17,8 +18,9 @@ export class EscuelaService {
     private readonly getEscuelasUseCase: GetEscuelasUseCase;
     private readonly searchEscuelaPaginatedUseCase: SearchEscuelaPaginatedUseCase;
     private readonly updateEscuelaUseCase: UpdateEscuelaUseCase;
+    private readonly getAllEscuelasByFacultadIdUseCase: GetAllEscuelasByFacultadIdUseCase;
 
-    constructor(iEscuelaRepository: IEscuelaRepository){
+    constructor(iEscuelaRepository: IEscuelaRepository) {
         this.createEscuelaUseCase = new CreateEscuelaUseCase(iEscuelaRepository);
         this.deleteEscuelaUseCase = new DeleteEscuelaUseCase(iEscuelaRepository);
         this.getEscuelaByIdUseCase = new GetEscuelaByIdUseCase(iEscuelaRepository);
@@ -26,33 +28,38 @@ export class EscuelaService {
         this.getEscuelasUseCase = new GetEscuelasUseCase(iEscuelaRepository);
         this.searchEscuelaPaginatedUseCase = new SearchEscuelaPaginatedUseCase(iEscuelaRepository);
         this.updateEscuelaUseCase = new UpdateEscuelaUseCase(iEscuelaRepository);
+        this.getAllEscuelasByFacultadIdUseCase = new GetAllEscuelasByFacultadIdUseCase(iEscuelaRepository);
     }
 
-    async createEscuela(escuela: Escuela, file?: File): Promise<Escuela>{
+    async createEscuela(escuela: Escuela, file?: File): Promise<Escuela> {
         return await this.createEscuelaUseCase.execute(escuela, file);
     }
 
-    async deleteEscuela(id: number): Promise<void>{
+    async deleteEscuela(id: number): Promise<void> {
         return await this.deleteEscuelaUseCase.execute(id);
     }
 
-    async getEscuelaById(id:number): Promise<Escuela>{
+    async getEscuelaById(id: number): Promise<Escuela> {
         return await this.getEscuelaByIdUseCase.execute(id);
     }
 
-    async getEscuelasPaginated(page: number, perPage?: number): Promise<PaginatedResponse<Escuela>>{
+    async getEscuelasPaginated(page: number, perPage?: number): Promise<PaginatedResponse<Escuela>> {
         return await this.getEscuelasPaginatedUseCase.execute(page, perPage);
     }
 
-    async getEscuelas(): Promise<Escuela[]>{
+    async getEscuelas(): Promise<Escuela[]> {
         return await this.getEscuelasUseCase.execute();
     }
 
-    async searchEscuelaPaginated(term: string, perPage?: number): Promise<PaginatedResponse<Escuela>>{
+    async getEscuelasByFacultad(id: number): Promise<Escuela[]> {
+        return await this.getAllEscuelasByFacultadIdUseCase.execute(id);
+    }
+
+    async searchEscuelaPaginated(term: string, perPage?: number): Promise<PaginatedResponse<Escuela>> {
         return await this.searchEscuelaPaginatedUseCase.execute(term, perPage);
     }
 
-    async updateEscuela(escuela: Escuela, file?: File): Promise<Escuela>{
+    async updateEscuela(escuela: Escuela, file?: File): Promise<Escuela> {
         return await this.updateEscuelaUseCase.execute(escuela, file);
     }
 }

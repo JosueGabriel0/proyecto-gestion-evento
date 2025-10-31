@@ -1,136 +1,110 @@
-import React from 'react';
-import styled from 'styled-components';
+import { faFile } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState, useEffect, useRef } from "react";
 
 interface InputFileProps {
-  onChange: (file: File | null) => void;
   file?: File | null;
+  onChange?: (file: File | null) => void;
+  initialUrl?: string;
   label?: string;
 }
 
-const InputFile: React.FC<InputFileProps> = ({ onChange, file, label }) => {
+const InputFile: React.FC<InputFileProps> = ({ file, onChange, initialUrl, label }) => {
+  const [previewUrl, setPreviewUrl] = useState<string | null>(initialUrl || null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (file) {
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  }, [file]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0] || null;
+    onChange?.(selected);
+  };
+
+  const handleRemoveImage = () => {
+    setPreviewUrl(null);
+    onChange?.(null);
+    if (inputRef.current) inputRef.current.value = "";
+  };
+
   return (
-     <StyledWrapper>
-      <div className="container">
-        <div className="header">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M7 10V9C7 6.23858 9.23858 4 12 4C14.7614 4 17 6.23858 17 9V10C19.2091 10 21 11.7909 21 14C21 15.4806 20.1956 16.8084 19 17.5M7 10C4.79086 10 3 11.7909 3 14C3 15.4806 3.8044 16.8084 5 17.5M7 10C7.43285 10 7.84965 10.0688 8.24006 10.1959M12 12V21M12 12L15 15M12 12L9 15"
-              stroke="#000000"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+    <div className="flex flex-col items-center justify-between p-3 gap-3 h-[300px] w-[300px] rounded-lg shadow-lg bg-gray-50 dark:bg-gray-900 transition-all duration-300">
+      <div className="flex flex-col items-center justify-center w-full flex-1 border-2 border-dashed border-blue-500 rounded-lg relative overflow-hidden">
+        {previewUrl ? (
+          <div className="relative w-full h-full">
+            <img
+              src={previewUrl}
+              alt="Vista previa"
+              className="w-full h-full object-cover rounded-lg"
             />
-          </svg>
-          <p>{label || "Selecciona un archivo para subir"}</p>
-        </div>
-
-        <label htmlFor="file" className="footer">
-          <p>{file ? file.name : "Ningún archivo seleccionado"}</p>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5.16565 10.1534C5.07629 8.99181 5.99473 8 7.15975 8H16.8402C18.0053 8 18.9237 8.9918 18.8344 10.1534L18.142 19.1534C18.0619 20.1954 17.193 21 16.1479 21H7.85206C6.80699 21 5.93811 20.1954 5.85795 19.1534L5.16565 10.1534Z"
-              stroke="#000000"
-              strokeWidth={2}
-            />
-            <path
-              d="M19.5 5H4.5"
-              stroke="#000000"
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
-            <path
-              d="M10 3C10 2.44772 10.4477 2 11 2H13C13.5523 2 14 2.44772 14 3V5H10V3Z"
-              stroke="#000000"
-              strokeWidth={2}
-            />
-          </svg>
-        </label>
-
-        <input
-          id="file"
-          type="file"
-          accept="image/*"
-          onChange={(e) => onChange(e.target.files?.[0] || null)}
-        />
+            <button
+              type="button"
+              onClick={handleRemoveImage}
+              title="Eliminar imagen"
+              className="absolute bottom-3 right-3 bg-red-600 hover:bg-red-700 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-transform hover:scale-110"
+            >
+              🗑️
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* 📷 Ícono central */}
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="w-12 h-12 text-gray-800 dark:text-gray-100 transition-colors duration-300"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7 10V9C7 6.23858 9.23858 4 12 4C14.7614 4 17 6.23858 17 9V10C19.2091 10 21 11.7909 21 14C21 15.4806 20.1956 16.8084 19 17.5M7 10C4.79086 10 3 11.7909 3 14C3 15.4806 3.8044 16.8084 5 17.5"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <p className="mt-2 text-gray-800 dark:text-gray-100 font-medium text-center">
+              {label || "Selecciona una imagen para subir"}
+            </p>
+          </>
+        )}
       </div>
-    </StyledWrapper>
+
+      {/* 📂 Footer con botón y texto */}
+      <label
+        htmlFor="file"
+        className="flex w-full h-12 bg-blue-50 dark:bg-gray-800 rounded-lg px-3 cursor-pointer border border-gray-200 dark:border-gray-700 transition-colors duration-300 hover:bg-blue-100 dark:hover:bg-gray-700"
+      >
+        <div className="flex items-center gap-2 w-full">
+          <div className="flex mt-2 gap-1">
+            <div>
+              <FontAwesomeIcon
+                icon={faFile}
+                className="text-gray-800 dark:text-gray-100 transition-colors duration-300"
+              />
+            </div>
+            <p className="flex-1 text-center text-gray-800 dark:text-gray-100 truncate">
+              {file ? file.name : "Ningún archivo seleccionado"}
+            </p>
+          </div>
+        </div>
+      </label>
+
+      <input
+        id="file"
+        ref={inputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+    </div>
   );
-}
-
-const StyledWrapper = styled.div`
-  .container {
-    height: 300px;
-    width: 300px;
-    border-radius: 10px;
-    box-shadow: 4px 4px 30px rgba(0, 0, 0, .2);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px;
-    gap: 5px;
-    background-color: rgba(0, 110, 255, 0.041);
-  }
-
-  .header {
-    flex: 1;
-    width: 100%;
-    border: 2px dashed royalblue;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .header svg {
-    height: 100px;
-  }
-
-  .header p {
-    text-align: center;
-    color: black;
-  }
-
-  .footer {
-    background-color: rgba(0, 110, 255, 0.075);
-    width: 100%;
-    height: 40px;
-    padding: 8px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    color: black;
-    border: none;
-  }
-
-  .footer svg {
-    height: 130%;
-    fill: royalblue;
-    background-color: rgba(70, 66, 66, 0.103);
-    border-radius: 50%;
-    padding: 2px;
-    cursor: pointer;
-    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.205);
-  }
-
-  .footer p {
-    flex: 1;
-    text-align: center;
-  }
-
-  #file {
-    display: none;
-  }`;
+};
 
 export default InputFile;

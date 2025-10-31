@@ -22,6 +22,14 @@ class FacultadRepositoryImpl implements FacultadRepository
             ->toArray();
     }
 
+    public function getAllByFilialId(int $id): array
+    {
+        return FacultadModel::where('filial_id', $id)
+            ->get()
+            ->map(fn($model) => $this->toEntity($model))
+            ->toArray();
+    }
+
     public function save(Facultad $facultad): Facultad
     {
         $model = new FacultadModel();
@@ -64,7 +72,7 @@ class FacultadRepositoryImpl implements FacultadRepository
 
     public function searchFacultad(string $term, int $perPage = 10): LengthAwarePaginator
     {
-      return FacultadModel::where('nombre', 'LIKE', "%{$term}%")
+        return FacultadModel::where('nombre', 'LIKE', "%{$term}%")
             ->paginate($perPage)
             ->through(fn(FacultadModel $model) => $this->toEntity($model));
     }

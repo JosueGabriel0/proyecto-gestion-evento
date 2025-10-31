@@ -5,15 +5,28 @@ import AddEditButton from "../../actions/AddEditButton";
 import { User } from "../../../../domain/entities/User";
 import { UserRepository } from "../../../../infrastructure/repositories/UserRepository";
 import { UserService } from "../../../../application/services/UserService";
-import type { Role } from "../../../../domain/entities/User";
+import type { Role } from "../../../../domain/entities/Role";
 import { Escuela } from "../../../../domain/entities/Escuela";
 import { EscuelaRepository } from "../../../../infrastructure/repositories/EscuelaRepository";
 import { EscuelaService } from "../../../../application/services/EscuelaService";
 import { RoleRepository } from "../../../../infrastructure/repositories/RoleRepository";
 import { RoleService } from "../../../../application/services/RoleService";
+import InputDate from "../input/InputDate";
+import { FilialRepository } from "../../../../infrastructure/repositories/FilialRepository";
+import { FilialService } from "../../../../application/services/FilialService";
+import { FacultadRepository } from "../../../../infrastructure/repositories/FacultadRepository";
+import { FacultadService } from "../../../../application/services/FacultadService";
+import type { Filial } from "../../../../domain/entities/Filial";
+import type { Facultad } from "../../../../domain/entities/Facultad";
 
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
+
+const filialRepository = new FilialRepository();
+const filialService = new FilialService(filialRepository);
+
+const facultadRepository = new FacultadRepository();
+const facultadService = new FacultadService(facultadRepository);
 
 const escuelaRepository = new EscuelaRepository();
 const escuelaService = new EscuelaService(escuelaRepository);
@@ -27,14 +40,14 @@ interface UserFormProps {
 }
 
 export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
-  // ========== Datos básicos ==========
   const [email, setEmail] = useState(initialUser?.getEmail() || "");
   const [password, setPassword] = useState(initialUser?.getPassword() || "");
   const [roleName, setRoleName] = useState(initialUser?.getRole()?.nombre || "");
   const [roleId, setRoleId] = useState<number>(initialUser?.getRoleId() || 0);
   const [escuelaId, setEscuelaId] = useState<number>(initialUser?.getEscuelaId() || 0);
+  const [filialId, setFilialId] = useState<number | null>(null);
+  const [facultadId, setFacultadId] = useState<number | null>(null);
 
-  // ========== Datos personales ==========
   const [nombres, setNombres] = useState(initialUser?.getPersona()?.nombres || "");
   const [apellidos, setApellidos] = useState(initialUser?.getPersona()?.apellidos || "");
   const [tipoDocumento, setTipoDocumento] = useState(initialUser?.getPersona()?.tipoDocumento || "");
@@ -51,34 +64,118 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
       : ""
   );
 
-  // ========== Archivo y estados de UI ==========
   const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [foto] = useState(initialUser?.getPersona()?.fotoPerfil || "");
   const [loading, setLoading] = useState(false);
   const [openRoles, setOpenRoles] = useState(false);
   const [openEscuelas, setOpenEscuelas] = useState(false);
+  const [openFiliales, setOpenFiliales] = useState(false);
+  const [openFacultades, setOpenFacultades] = useState(false);
 
-  // ========== Datos externos ==========
+  const [filiales, setFiliales] = useState<Filial[]>([]);
+  const [facultades, setFacultades] = useState<Facultad[]>([]);
   const [roles, setRoles] = useState<Role[]>([]);
   const [escuelas, setEscuelas] = useState<Escuela[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // 🔹 Cargar roles
+    filialService.getFiliales().then(setFiliales).catch(console.error);
     roleService.getRoles().then(setRoles).catch(console.error);
-
-    // 🔹 Cargar escuelas
-    escuelaService.getEscuelas().then(setEscuelas).catch(console.error);
   }, []);
+
+  // Cuando cambia la filial seleccionada, cargar sus facultades
+  useEffect(() => {
+    if (filialId) {
+      facultadService
+        .getFacultadesByFilial(filialId)
+        .then((data) => setFacultades(data))
+        .catch((error) => console.error("Error al cargar facultades:", error));
+    } else {
+      setFacultades([]); // Limpia si no hay filial seleccionada
+    }
+  }, [filialId]);
+
+  useEffect(() => {
+    if (facultadId) {
+      escuelaService
+        .getEscuelasByFacultad(facultadId)
+        .then((data) => setEscuelas(data))
+        .catch((error) => console.error("Error al cargar escuelas:", error));
+    } else {
+      setEscuelas([]); // Limpia si no hay filial seleccionada
+    }
+  }, [facultadId]);
+
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    let valid = true;
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const docRegex = /^[0-9A-Za-z-]+$/;
+    const phoneRegex = /^[0-9+\s-]{6,}$/;
+
+    if (!email || !emailRegex.test(email)) {
+      newErrors.email = "Ingrese un correo electrónico válido.";
+      valid = false;
+    }
+
+    if (!initialUser && (!password || password.length < 6)) {
+      newErrors.password = "La contraseña debe tener al menos 6 caracteres.";
+      valid = false;
+    }
+
+    if (!nombres.trim()) {
+      newErrors.nombres = "Los nombres son obligatorios.";
+      valid = false;
+    }
+
+    if (!apellidos.trim()) {
+      newErrors.apellidos = "Los apellidos son obligatorios.";
+      valid = false;
+    }
+
+    if (!tipoDocumento.trim()) {
+      newErrors.tipoDocumento = "El tipo de documento es obligatorio.";
+      valid = false;
+    }
+
+    if (!numeroDocumento.trim() || !docRegex.test(numeroDocumento)) {
+      newErrors.numeroDocumento = "Ingrese un número de documento válido.";
+      valid = false;
+    }
+
+    if (telefono && !phoneRegex.test(telefono)) {
+      newErrors.telefono = "Ingrese un número de teléfono válido.";
+      valid = false;
+    }
+
+    if (!escuelaId) {
+      newErrors.escuelaId = "Debe seleccionar una escuela.";
+      valid = false;
+    }
+
+    if (!roleId) {
+      newErrors.roleId = "Debe seleccionar un rol.";
+      valid = false;
+    }
+
+    if (!fotoFile && !foto) {
+      newErrors.foto = "Debe seleccionar una foto de perfil.";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validate()) return;
+
     setLoading(true);
-
     try {
-      const role = {
-        id: roleId,
-        nombre: roleName,
-      };
-
+      const role = { id: roleId, nombre: roleName };
       const persona = {
         nombres,
         apellidos,
@@ -98,19 +195,16 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
         password,
         escuelaId,
         persona,
-        role
+        role,
       });
 
       if (initialUser) {
         await userService.updateUser(user, fotoFile || undefined);
-        console.log("✅ Usuario actualizado");
       } else {
         await userService.createUser(user, fotoFile || undefined);
-        console.log("✅ Usuario creado");
       }
 
       onSuccess();
-      console.log("✅ onSuccess() ejecutado correctamente");
     } catch (error) {
       console.error("Error al guardar el usuario:", error);
     } finally {
@@ -118,64 +212,181 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
     }
   };
 
-  // ========== Render ==========
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 p-6 border rounded-lg bg-white shadow-md dark:bg-gray-800">
+    <form onSubmit={handleSubmit} className="p-6 border rounded-lg bg-white shadow-md dark:bg-gray-800">
+      {/* ========== Datos básicos ========== */}
+      <div className="grid grid-cols-2 gap-4 mt-5">
+        <InputText
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          label="Correo"
+          placeholder="usuario@correo.com"
+        />
+        <InputText
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          label="Contraseña"
+          type="password"
+        />
+      </div>
+      {(errors.email || errors.password) && (
+        <div className="grid grid-cols-2 gap-4 text-red-500 text-sm">
+          <p>{errors.email}</p>
+          <p>{errors.password}</p>
+        </div>
+      )}
 
-      <InputText value={email} onChange={(e) => setEmail(e.target.value)} label="Correo" placeholder="usuario@correo.com" />
-      <InputText value={password} onChange={(e) => setPassword(e.target.value)} label="Contraseña" type="password" />
+      {/* ========== Datos personales ========== */}
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <InputText value={nombres} onChange={(e) => setNombres(e.target.value)} label="Nombres" />
+        <InputText value={apellidos} onChange={(e) => setApellidos(e.target.value)} label="Apellidos" />
+      </div>
 
-      <InputText value={nombres} onChange={(e) => setNombres(e.target.value)} label="Nombres" />
-      <InputText value={apellidos} onChange={(e) => setApellidos(e.target.value)} label="Apellidos" />
-
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4 mt-10">
         <InputText value={tipoDocumento} onChange={(e) => setTipoDocumento(e.target.value)} label="Tipo de documento" />
         <InputText value={numeroDocumento} onChange={(e) => setNumeroDocumento(e.target.value)} label="Número de documento" />
       </div>
 
-      <InputText value={telefono} onChange={(e) => setTelefono(e.target.value)} label="Teléfono" />
-      <InputText value={direccion} onChange={(e) => setDireccion(e.target.value)} label="Dirección" />
-      <InputText value={pais} onChange={(e) => setPais(e.target.value)} label="País" />
-      <InputText value={religion} onChange={(e) => setReligion(e.target.value)} label="Religión" />
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <InputText value={telefono} onChange={(e) => setTelefono(e.target.value)} label="Teléfono" />
+        <InputText value={direccion} onChange={(e) => setDireccion(e.target.value)} label="Dirección" />
+      </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <InputText
-          value={correoElectronico}
-          onChange={(e) => setCorreoElectronico(e.target.value)}
-          label="Correo personal"
-        />
-        <InputText
-          value={correoInstitucional}
-          onChange={(e) => setCorreoInstitucional(e.target.value)}
-          label="Correo institucional"
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <InputText value={pais} onChange={(e) => setPais(e.target.value)} label="País" />
+        <InputText value={religion} onChange={(e) => setReligion(e.target.value)} label="Religión" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <InputText value={correoElectronico} onChange={(e) => setCorreoElectronico(e.target.value)} label="Correo personal" />
+        <InputText value={correoInstitucional} onChange={(e) => setCorreoInstitucional(e.target.value)} label="Correo institucional" />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mt-10">
+        <InputDate
+          value={fechaNacimiento}
+          onChange={(e) => setFechaNacimiento(e.target.value)}
+          label="Fecha de nacimiento"
         />
       </div>
 
-      <InputText
-        type="date"
-        value={fechaNacimiento}
-        onChange={(e) => setFechaNacimiento(e.target.value)}
-        label="Fecha de nacimiento"
-      />
-
-      {/* Selección de Escuela */}
       <div className="mt-5">
-        <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-md border border-gray-400 text-center mb-1">
+          Selecciona una Filial
+        </span>
+        <div className="border rounded-lg overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setOpenFiliales(!openFiliales)}
+            className="w-full flex justify-between items-center px-4 py-2 
+              bg-black text-white 
+              hover:bg-gray-900 
+              dark:bg-black dark:text-white 
+              dark:hover:bg-gray-950 
+              font-medium rounded-md transition-colors duration-200"
+          >
+            {filialId
+              ? filiales.find((e) => e.id === filialId)?.nombre || "Selecciona una filial"
+              : "Selecciona una filial"}
+            <span className="ml-2 text-gray-400">{openFiliales ? "▲" : "▼"}</span>
+          </button>
+          {openFiliales && (
+            <div className="max-h-60 overflow-y-auto bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+              {filiales.map((filial) => (
+                <div
+                  key={filial.id}
+                  onClick={() => {
+                    setFilialId(filial.id);
+                    setOpenFiliales(false);
+                  }}
+                  className={`px-4 py-2 cursor-pointer 
+                      text-gray-800 dark:text-gray-100   /* 👈 color adaptable claro/oscuro */
+                      hover:bg-gray-100 dark:hover:bg-gray-700 
+                      ${filialId === filial.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""}`}
+                >
+                  {filial.nombre}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        {errors.filialId && <p className="text-red-500 text-sm mt-1">{errors.filialId}</p>}
+      </div>
+
+      <div className="mt-5">
+        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-md border border-gray-400 text-center mb-1">
+          Selecciona una Facultad
+        </span>
+        <div className="border rounded-lg overflow-hidden">
+          <button
+            type="button"
+            disabled={!filialId} // 🔒 Deshabilita si no hay filial seleccionada
+            onClick={() => filialId && setOpenFacultades(!openFacultades)} // 👈 evita abrir si no hay filial
+            className={`w-full flex justify-between items-center px-4 py-2 
+        ${!filialId
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400" // estilo bloqueado
+                : "bg-black text-white hover:bg-gray-900 dark:bg-black dark:text-white dark:hover:bg-gray-950"} 
+        font-medium rounded-md transition-colors duration-200`}
+          >
+            {filialId ?? 0 > 0
+              ? facultadId ?? 0 > 0
+                ? facultades.find((e) => e.id === facultadId)?.nombre || "Selecciona una facultad"
+                : "Selecciona una facultad"
+              : "Selecciona primero una filial"} {/* 👈 Mensaje guía */}
+            <span className="ml-2 text-gray-400">{openFacultades ? "▲" : "▼"}</span>
+          </button>
+
+          {/* 🔽 Solo muestra las facultades si hay filial seleccionada */}
+          {filialId && openFacultades && (
+            <div className="max-h-60 overflow-y-auto bg-white dark:bg-gray-800 border-t dark:border-gray-700">
+              {facultades.map((facultad) => (
+                <div
+                  key={facultad.id}
+                  onClick={() => {
+                    setFacultadId(facultad.id);
+                    setOpenFacultades(false);
+                  }}
+                  className={`px-4 py-2 cursor-pointer 
+                text-gray-800 dark:text-gray-100
+                hover:bg-gray-100 dark:hover:bg-gray-700 
+                ${facultadId === facultad.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""}`}
+                >
+                  {facultad.nombre}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {errors.facultadId && <p className="text-red-500 text-sm mt-1">{errors.facultadId}</p>}
+      </div>
+
+      <div className="mt-5">
+        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-md border border-gray-400 text-center mb-1">
           Selecciona una Escuela
         </span>
         <div className="border rounded-lg overflow-hidden">
           <button
             type="button"
-            onClick={() => setOpenEscuelas(!openEscuelas)}
-            className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+            disabled={!facultadId} // 🔒 Deshabilita si no hay filial seleccionada
+            onClick={() => facultadId && setOpenEscuelas(!openEscuelas)} // 👈 evita abrir si no hay filial
+            className={`w-full flex justify-between items-center px-4 py-2 
+        ${!facultadId
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed dark:bg-gray-700 dark:text-gray-400" // estilo bloqueado
+                : "bg-black text-white hover:bg-gray-900 dark:bg-black dark:text-white dark:hover:bg-gray-950"} 
+        font-medium rounded-md transition-colors duration-200`}
           >
-            {escuelaId
-              ? escuelas.find((e) => e.id === escuelaId)?.nombre || "Selecciona una escuela"
-              : "Selecciona una escuela"}
+            {facultadId ?? 0 > 0
+              ? escuelaId ?? 0 > 0
+                ? escuelas.find((e) => e.id === escuelaId)?.nombre || "Selecciona una escuela"
+                : "Selecciona una escuela"
+              : "Selecciona primero una facultad"} {/* 👈 Mensaje guía */}
             <span className="ml-2 text-gray-400">{openEscuelas ? "▲" : "▼"}</span>
           </button>
-          {openEscuelas && (
-            <div className="max-h-60 overflow-y-auto bg-white dark:bg-gray-800 border-t">
+
+          {/* 🔽 Solo muestra las facultades si hay filial seleccionada */}
+          {facultadId && openEscuelas && (
+            <div className="max-h-60 overflow-y-auto bg-white dark:bg-gray-800 border-t dark:border-gray-700">
               {escuelas.map((escuela) => (
                 <div
                   key={escuela.id}
@@ -183,8 +394,10 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
                     setEscuelaId(escuela.id);
                     setOpenEscuelas(false);
                   }}
-                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${escuelaId === escuela.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""
-                    }`}
+                  className={`px-4 py-2 cursor-pointer 
+                text-gray-800 dark:text-gray-100
+                hover:bg-gray-100 dark:hover:bg-gray-700 
+                ${escuelaId === escuela.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""}`}
                 >
                   {escuela.nombre}
                 </div>
@@ -192,18 +405,25 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
             </div>
           )}
         </div>
+
+        {errors.escuelaId && <p className="text-red-500 text-sm mt-1">{errors.escuelaId}</p>}
       </div>
 
-      {/* Selección de Rol */}
+      {/* ========== Selección de Rol ========== */}
       <div className="mt-5">
-        <span className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <span className="inline-block bg-black text-white text-sm font-medium px-3 py-1 rounded-md border border-gray-400 text-center mb-1">
           Selecciona un Rol
         </span>
         <div className="border rounded-lg overflow-hidden">
           <button
             type="button"
             onClick={() => setOpenRoles(!openRoles)}
-            className="w-full flex justify-between items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
+            className="w-full flex justify-between items-center px-4 py-2 
+              bg-black text-white 
+              hover:bg-gray-900 
+              dark:bg-black dark:text-white 
+              dark:hover:bg-gray-950 
+              font-medium rounded-md transition-colors duration-200"
           >
             {roleId
               ? roles.find((r) => r.id === roleId)?.nombre || "Selecciona un rol"
@@ -217,11 +437,13 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
                   key={role.id}
                   onClick={() => {
                     setRoleId(role.id);
-                    setRoleName(role.nombre); // ✅ Guarda también el nombre del rol
+                    setRoleName(role.nombre);
                     setOpenRoles(false);
                   }}
-                  className={`px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 ${roleId === role.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""
-                    }`}
+                  className={`px-4 py-2 cursor-pointer 
+                      text-gray-800 dark:text-gray-100   /* 👈 color adaptable claro/oscuro */
+                      hover:bg-gray-100 dark:hover:bg-gray-700 
+                      ${roleId === role.id ? "bg-gray-200 dark:bg-gray-600 font-semibold" : ""}`}
                 >
                   {role.nombre}
                 </div>
@@ -229,10 +451,14 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
             </div>
           )}
         </div>
+        {errors.roleId && <p className="text-red-500 text-sm mt-1">{errors.roleId}</p>}
       </div>
 
-      {/* Foto */}
-      <InputFile file={fotoFile} onChange={(file) => setFotoFile(file)} label="Foto de perfil" />
+      {/* ========== Foto ========== */}
+      <div className="mt-5">
+        <InputFile file={fotoFile} onChange={(file) => setFotoFile(file)} label="Foto de perfil" initialUrl={foto} />
+        {errors.foto && <p className="text-red-500 text-sm mt-1">{errors.foto}</p>}
+      </div>
 
       <AddEditButton
         name={loading ? "Guardando..." : initialUser ? "Actualizar" : "Crear"}

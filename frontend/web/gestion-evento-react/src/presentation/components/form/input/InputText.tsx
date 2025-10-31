@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 interface InputTextProps {
+  className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   label?: string;
@@ -9,18 +10,20 @@ interface InputTextProps {
   type?: React.HTMLInputTypeAttribute;
 }
 
-const InputText: React.FC<InputTextProps> = ({ value, onChange, label, placeholder, type = "text" }) => {
+const InputText: React.FC<InputTextProps> = ({ className, value, onChange, label, placeholder, type = "text" }) => {
   return (
     <StyledWrapper>
-      <div className="brutalist-container">
-        <input
-          className="brutalist-input smooth-type"
-          type={type}
-          value={value}
-          onChange={onChange}
-          placeholder={placeholder || "Escribe aquí"}
-        />
-        {label && <label className="brutalist-label">{label}</label>}
+      <div className={className}>
+        <div className="brutalist-container">
+          <input
+            className="brutalist-input smooth-type"
+            type={type}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder || "Escribe aquí"}
+          />
+          {label && <label className="brutalist-label">{label}</label>}
+        </div>
       </div>
     </StyledWrapper>
   );
@@ -42,7 +45,7 @@ const StyledWrapper = styled.div`
     background-color: #fff;
     border: 4px solid #000;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
     border-radius: 0;
     outline: none;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -207,6 +210,35 @@ const StyledWrapper = styled.div`
     50% {
       border-color: #4a90e2;
     }
-  }`;
+  }
+    /* 👇 Esto asegura que el ícono del calendario sea visible y clickeable */
+.brutalist-input[type="date"] {
+  position: relative;
+  z-index: 2;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+/* 👇 Muestra el ícono del calendario (oculto por tus animaciones) */
+.brutalist-input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1 !important;
+  display: block !important;
+  position: absolute;
+  right: 10px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  z-index: 3;
+  filter: invert(0); /* negro en modo claro */
+}
+
+/* 👇 Hace que se vea blanco en modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .brutalist-input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}
+
+  `;
 
 export default InputText;

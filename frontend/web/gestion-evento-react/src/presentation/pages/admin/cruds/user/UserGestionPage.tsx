@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -34,6 +34,20 @@ export default function UserGestionPage() {
     const navigate = useNavigate();
 
     const [refresh, setRefresh] = useState(0);
+
+    const user = tokenStorage.getUser();
+      const userRole = user?.role ?? null;
+    
+       const routeBack = useMemo(() => {
+        switch (userRole) {
+          case "ROLE_SUPER_ADMIN":
+            return "super-dashboard";
+          case "ROLE_ADMIN":
+            return "admin-dashboard";
+          default:
+            return "dashboard"; // fallback genérico
+        }
+      }, [userRole]);
 
     // 🔹 Cargar filiales (para mostrar los nombres)
     useEffect(() => {
@@ -245,14 +259,14 @@ export default function UserGestionPage() {
             <PageBreadcrumb
                 pageTitle="Gestión de Usuarios"
                 pageBack="Inicio"
-                routeBack="dashboard-admin"
+                routeBack={routeBack}
             />
 
             <ComponentCard
                 title="Tabla de Usuarios"
                 placeHolder="Buscar Usuario..."
                 onSearch={(term) => setSearchTerm(term)}
-                onAdd={() => navigate("/super&admin-usuarios/new")}
+                onAdd={() => navigate("/super-admin-usuarios/new")}
                 filter={true}
                 filterPlaceHolder="Filtrar Usuarios"
                 filterOptions={roles}
@@ -265,7 +279,7 @@ export default function UserGestionPage() {
                     fetchData={fetchUsers}
                     searchTerm={searchTerm}
                     refreshTrigger={refresh}
-                    onEdit={(user) => navigate(`/super&admin-usuarios/edit/${user.id}`)}
+                    onEdit={(user) => navigate(`/super-admin-usuarios/edit/${user.id}`)}
                     onDelete={handleDelete}
                 />
             </ComponentCard>

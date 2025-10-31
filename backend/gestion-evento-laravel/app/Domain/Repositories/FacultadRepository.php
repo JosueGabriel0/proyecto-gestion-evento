@@ -14,6 +14,8 @@ interface FacultadRepository
      */
     public function getAll(): array;
 
+    public function getAllByFilialId(int $id): array;
+
     public function save(Facultad $facultad): Facultad;
 
     public function update(int $id, Facultad $filial): Facultad;

@@ -57,7 +57,7 @@ export default function EscuelaFormPage() {
         <PageBreadcrumb
           pageTitle={id ? "Editar Escuela" : "Crear Escuela"}
           pageBack="Cancelar"
-          routeBack="super&admin-escuelas"
+          routeBack="super-admin-escuelas"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function EscuelaFormPage() {
         >
           <EscuelaForm
             initialEscuela={escuela}
-            onSuccess={() => navigate("/super&admin-escuelas")} // 👉 Redirige al listado
+            onSuccess={() => navigate("/super-admin-escuelas")} // 👉 Redirige al listado
           />
         </ElectricBorder>
       </div>

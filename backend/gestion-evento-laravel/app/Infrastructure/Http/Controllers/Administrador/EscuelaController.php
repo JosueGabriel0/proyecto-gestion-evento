@@ -4,6 +4,7 @@ namespace App\Infrastructure\Http\Controllers\Administrador;
 
 use App\Application\UseCases\Escuela\CreateEscuelaUseCase;
 use App\Application\UseCases\Escuela\DeleteEscuelaUseCase;
+use App\Application\UseCases\Escuela\GetAllEscuelasByFacultadIdUseCase;
 use App\Application\UseCases\Escuela\GetAllEscuelasUseCase;
 use App\Application\UseCases\Escuela\GetEscuelaByIdUseCase;
 use App\Application\UseCases\Escuela\GetEscuelasPaginatedUseCase;
@@ -27,6 +28,7 @@ class EscuelaController
         private UpdateEscuelaUseCase $updateEscuelaUseCase,
         private GetEscuelasPaginatedUseCase $getEscuelasPaginatedUseCase,
         private SearchEscuelaUseCase $searchEscuelaUseCase,
+        private GetAllEscuelasByFacultadIdUseCase $getAllEscuelasByFacultadIdUseCase
     ) {}
 
     /**
@@ -53,6 +55,51 @@ class EscuelaController
     public function index(): JsonResponse
     {
         $escuelas = $this->getAllEscuelasUseCase->execute();
+        return response()->json(EscuelaResource::collection($escuelas), Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/escuelas/facultad/{facultadId}",
+     *     summary="Listar escuelas por facultad",
+     *     description="Devuelve todas las escuelas asociadas a una facultad específica",
+     *     tags={"Escuelas"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="facultadId",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la facultad",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de escuelas por facultad",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Escuela")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No se encontraron escuelas para la facultad indicada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="No hay facultades para esta filial")
+     *         )
+     *     )
+     * )
+     */
+    public function getByFacultad(int $facultadId): JsonResponse
+    {
+        $escuelas = $this->getAllEscuelasByFacultadIdUseCase->execute($facultadId);
+
+        if (empty($escuelas)) {
+            return response()->json([
+                'message' => 'No hay escuelas para esta facultad'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         return response()->json(EscuelaResource::collection($escuelas), Response::HTTP_OK);
     }
 

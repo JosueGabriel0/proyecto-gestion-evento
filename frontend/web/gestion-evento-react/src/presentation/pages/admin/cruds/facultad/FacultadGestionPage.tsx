@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -28,6 +28,19 @@ export default function FacultadGestionPage() {
 
   const [refresh, setRefresh] = useState(0);
 
+  const user = tokenStorage.getUser();
+  const userRole = user?.role ?? null;
+
+   const routeBack = useMemo(() => {
+      switch (userRole) {
+        case "ROLE_SUPER_ADMIN":
+          return "super-dashboard";
+        case "ROLE_ADMIN":
+          return "admin-dashboard";
+        default:
+          return "dashboard"; // fallback genérico
+      }
+    }, [userRole]);
   // 🔹 Cargar filiales (para mostrar los nombres)
   useEffect(() => {
     const loadFiliales = async () => {
@@ -108,21 +121,21 @@ export default function FacultadGestionPage() {
       <PageBreadcrumb
         pageTitle="Gestión de Facultades"
         pageBack="Inicio"
-        routeBack="dashboard-admin"
+        routeBack={routeBack}
       />
 
       <ComponentCard
         title="Tabla de Facultades"
         placeHolder="Buscar Facultad..."
         onSearch={(term) => setSearchTerm(term)}
-        onAdd={() => navigate("/super&admin-facultades/new")}
+        onAdd={() => navigate("/super-admin-facultades/new")}
       >
         <BasicTableOne<Facultad>
           columns={columns}
           fetchData={fetchFacultades}
           searchTerm={searchTerm}
           refreshTrigger={refresh}
-          onEdit={(facultad) => navigate(`/super&admin-facultades/edit/${facultad.id}`)}
+          onEdit={(facultad) => navigate(`/super-admin-facultades/edit/${facultad.id}`)}
           onDelete={handleDelete}
         />
       </ComponentCard>

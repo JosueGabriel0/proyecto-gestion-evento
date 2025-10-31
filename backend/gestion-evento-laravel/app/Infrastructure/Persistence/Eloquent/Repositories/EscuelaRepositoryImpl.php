@@ -23,19 +23,29 @@ class EscuelaRepositoryImpl implements EscuelaRepository
         return $escuelasEncontradas;
     }
 
-    public function save(Escuela $escuela): Escuela{
+    public function save(Escuela $escuela): Escuela
+    {
         $nuevaEscuela = new EscuelaModel();
-        $nuevaEscuela -> nombre = $escuela->getNombre();
-        $nuevaEscuela -> codigo = $escuela->getCodigo();
-        $nuevaEscuela -> facultad_id = $escuela->getFacultadId();
-        $nuevaEscuela -> foto = $escuela->getFoto();
-        
-        $nuevaEscuela -> save();
+        $nuevaEscuela->nombre = $escuela->getNombre();
+        $nuevaEscuela->codigo = $escuela->getCodigo();
+        $nuevaEscuela->facultad_id = $escuela->getFacultadId();
+        $nuevaEscuela->foto = $escuela->getFoto();
+
+        $nuevaEscuela->save();
 
         return $this->toEntity($nuevaEscuela);
     }
 
-    public function update(int $id, Escuela $escuela): Escuela {
+    public function getAllEscuelasByFacultadId(int $id): array
+    {
+        return EscuelaModel::where('facultad_id', $id)
+            ->get()
+            ->map(fn($model) => $this->toEntity($model))
+            ->toArray();
+    }
+
+    public function update(int $id, Escuela $escuela): Escuela
+    {
         $escuelaActualizada = EscuelaModel::findOrFail($id);
         $escuelaActualizada->nombre = $escuela->getNombre();
         $escuelaActualizada->codigo = $escuela->getCodigo();
@@ -43,10 +53,11 @@ class EscuelaRepositoryImpl implements EscuelaRepository
         $escuelaActualizada->foto = $escuela->getFoto();
         $escuelaActualizada->save();
 
-        return $this-> toEntity($escuelaActualizada);
+        return $this->toEntity($escuelaActualizada);
     }
 
-    public function delete(int $id): void{
+    public function delete(int $id): void
+    {
         EscuelaModel::destroy($id);
     }
 
@@ -62,7 +73,7 @@ class EscuelaRepositoryImpl implements EscuelaRepository
 
     public function searchEscuela(string $term, int $perPage = 10): LengthAwarePaginator
     {
-      return EscuelaModel::where('nombre', 'LIKE', "%{$term}%")
+        return EscuelaModel::where('nombre', 'LIKE', "%{$term}%")
             ->paginate($perPage)
             ->through(fn(EscuelaModel $model) => $this->toEntity($model));
     }

@@ -3,6 +3,7 @@ import type { Escuela } from "../entities/Escuela";
 
 export interface IEscuelaRepository{
     getAllEscuelas(): Promise<Escuela[]>;
+    getAllEscuelasByFacultadId(id: number): Promise<Escuela[]>;
     getEscuelaById(id: number): Promise<Escuela>;
     postEscuela(escuela: Escuela, file?: File): Promise<Escuela>;
     putEscuela(escuela: Escuela, file?: File): Promise<Escuela>;

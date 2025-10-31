@@ -16,14 +16,45 @@ interface RoleFormProps {
 
 export default function RoleForm({ initialRole, onSuccess }: RoleFormProps) {
   const [nombre, setNombre] = useState(initialRole?.nombre || "");
-  const [foto, setFoto] = useState(initialRole?.foto || "");
-  const [loading, setLoading] = useState(false);
+  const [foto] = useState(initialRole?.foto || "");
   const [fotoFile, setFotoFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
 
+  // ✅ Estado de errores
+  const [errors, setErrors] = useState({
+    nombre: "",
+    foto: "",
+  });
+
+  // 📋 Validar campos antes de enviar
+  const validate = () => {
+    const newErrors = { nombre: "", foto: "" };
+    let isValid = true;
+
+    if (!nombre.trim()) {
+      newErrors.nombre = "El nombre del rol es obligatorio.";
+      isValid = false;
+    } else if (nombre.length < 3) {
+      newErrors.nombre = "El nombre debe tener al menos 3 caracteres.";
+      isValid = false;
+    }
+
+    if (!fotoFile && !foto) {
+      newErrors.foto = "Debe seleccionar una imagen para el rol.";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  // 💾 Envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
+    if (!validate()) return; // ❌ No continúa si hay errores
+
+    setLoading(true);
     try {
       if (initialRole) {
         const role = new Role(initialRole.id, nombre, "");
@@ -32,6 +63,7 @@ export default function RoleForm({ initialRole, onSuccess }: RoleFormProps) {
         const role = new Role(0, nombre, "");
         await roleService.createRole(role, fotoFile || undefined);
       }
+
       onSuccess(); // notificar éxito
     } catch (error) {
       console.error("Error al guardar el rol:", error);
@@ -45,26 +77,43 @@ export default function RoleForm({ initialRole, onSuccess }: RoleFormProps) {
       onSubmit={handleSubmit}
       className="space-y-4 p-6 border rounded-lg bg-white shadow-md dark:bg-gray-800"
     >
+      {/* 🏷️ Nombre del rol */}
       <div className="mt-5">
         <InputText
           value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
+          onChange={(e) => {
+            setNombre(e.target.value);
+            if (errors.nombre) setErrors((prev) => ({ ...prev, nombre: "" }));
+          }}
           label="Nombre del Rol"
           placeholder="Escribe el nombre del rol"
         />
+        {errors.nombre && (
+          <p className="text-red-500 text-sm mt-1">{errors.nombre}</p>
+        )}
       </div>
 
-      <div>
+      {/* 🖼️ Foto */}
+      <div className="mt-5">
         <InputFile
           file={fotoFile}
-          onChange={(file) => setFotoFile(file)}
+          onChange={(file) => {
+            setFotoFile(file);
+            if (errors.foto) setErrors((prev) => ({ ...prev, foto: "" }));
+          }}
+          initialUrl={foto}
           label="Foto del Rol"
         />
+        {errors.foto && (
+          <p className="text-red-500 text-sm mt-1">{errors.foto}</p>
+        )}
       </div>
-        <AddEditButton
-          name={loading ? "Guardando..." : initialRole ? "Actualizar" : "Crear"}
-          disabled={loading}
-        />
+
+      {/* 🔘 Botón */}
+      <AddEditButton
+        name={loading ? "Guardando..." : initialRole ? "Actualizar" : "Crear"}
+        disabled={loading}
+      />
     </form>
   );
 }

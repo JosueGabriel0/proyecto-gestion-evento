@@ -8,6 +8,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 interface EscuelaRepository {
     public function findById(int $id): ?Escuela;
     public function findAll(): array;
+    public function getAllEscuelasByFacultadId(int $id): array;
     public function save(Escuela $escuela): Escuela;
     public function update(int $id, Escuela $escuela): Escuela;
     public function delete(int $id): void;

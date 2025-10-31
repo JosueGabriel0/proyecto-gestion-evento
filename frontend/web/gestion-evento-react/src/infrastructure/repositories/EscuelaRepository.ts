@@ -12,6 +12,11 @@ export class EscuelaRepository implements IEscuelaRepository{
         return response.data.map((dto: any) => EscuelaMapper.toDomain(dto));
     }
 
+    async getAllEscuelasByFacultadId(id: number): Promise<Escuela[]>{
+        const response = await AxiosClient.get(`${this.endpoint}/facultad/${id}`);
+        return response.data.map((dto: any) => EscuelaMapper.toDomain(dto));
+    }
+
     async getEscuelaById(id: number): Promise<Escuela>{
         const response = await AxiosClient.get(`${this.endpoint}/${id}`);
         return EscuelaMapper.toDomain(response.data);

@@ -33,11 +33,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::middleware([CheckRole::class . ':ROLE_SUPER_ADMIN,ROLE_ADMIN'])->group(function () {
         Route::get('/filiales', [FilialController::class, 'index']);
 
+        Route::get('/facultades/filial/{filialId}', [FacultadController::class, 'getByFilial']);
         Route::get('/facultades/paginated', [FacultadController::class, 'paginated']);
         Route::get('/facultades/search',    [FacultadController::class, 'search']);
         Route::apiResource('facultades', FacultadController::class);
         Route::post('/facultades/{id}', [FacultadController::class, 'update']);
 
+        Route::get('/escuelas/facultad/{facultadId}', [EscuelaController::class, 'getByFacultad']);
         Route::get('/escuelas/paginated', [EscuelaController::class, 'paginated']);
         Route::get('/escuelas/search',    [EscuelaController::class, 'search']);
         Route::apiResource('escuelas', EscuelaController::class);

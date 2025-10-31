@@ -57,7 +57,7 @@ export default function FacultadFormPage() {
         <PageBreadcrumb
           pageTitle={id ? "Editar Facultad" : "Crear Facultad"}
           pageBack="Cancelar"
-          routeBack="super&admin-facultades"
+          routeBack="super-admin-facultades"
         />
       </div>
 
@@ -71,7 +71,7 @@ export default function FacultadFormPage() {
         >
           <FacultadForm
             initialFacultad={facultad}
-            onSuccess={() => navigate("/super&admin-facultades")} // 👉 Redirige al listado
+            onSuccess={() => navigate("/super-admin-facultades")} // 👉 Redirige al listado
           />
         </ElectricBorder>
       </div>

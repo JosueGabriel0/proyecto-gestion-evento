@@ -189,6 +189,64 @@
                 ]
             }
         },
+        "/escuelas/facultad/{facultadId}": {
+            "get": {
+                "tags": [
+                    "Escuelas"
+                ],
+                "summary": "Listar escuelas por facultad",
+                "description": "Devuelve todas las escuelas asociadas a una facultad específica",
+                "operationId": "8f7f9e3d0c6cb5db8d57388d9a0227ff",
+                "parameters": [
+                    {
+                        "name": "facultadId",
+                        "in": "path",
+                        "description": "ID de la facultad",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de escuelas por facultad",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Escuela"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron escuelas para la facultad indicada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No hay facultades para esta filial"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/escuelas/{id}": {
             "get": {
                 "tags": [
@@ -653,6 +711,64 @@
                                         },
                                         "errors": {
                                             "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/facultades/filial/{filialId}": {
+            "get": {
+                "tags": [
+                    "Facultades"
+                ],
+                "summary": "Listar facultades por filial",
+                "description": "Devuelve todas las facultades asociadas a una filial específica",
+                "operationId": "752d3c39c6605ffe48f1b8acc7472704",
+                "parameters": [
+                    {
+                        "name": "filialId",
+                        "in": "path",
+                        "description": "ID de la filial",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de facultades por filial",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Facultad"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron facultades para la filial indicada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No hay facultades para esta filial"
                                         }
                                     },
                                     "type": "object"

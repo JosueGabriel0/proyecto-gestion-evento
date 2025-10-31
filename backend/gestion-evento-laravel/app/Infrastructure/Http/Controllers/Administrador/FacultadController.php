@@ -14,6 +14,7 @@ use App\Application\UseCases\Facultad\UpdateFacultadUseCase;
 use App\Infrastructure\Http\Requests\Facultad\CreateFacultadRequest;
 use App\Infrastructure\Http\Requests\Facultad\UpdateFacultadRequest;
 use App\Infrastructure\Http\Resources\FacultadResource;
+use App\Application\UseCases\Facultad\GetAllByFilialIdUseCase;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use OpenApi\Annotations as OA;
@@ -29,6 +30,7 @@ class FacultadController extends Controller
         private GetAllFacultadesUseCase $listFacultadesUseCase,
         private GetFacultadesPaginatedUseCase $getFacultadesPaginatedUseCase,
         private SearchFacultadUseCase $searchFacultadUseCase,
+        private GetAllByFilialIdUseCase $getAllByFilialIdUseCase
     ) {}
 
     /**
@@ -55,6 +57,51 @@ class FacultadController extends Controller
     public function index(): JsonResponse
     {
         $facultades = $this->listFacultadesUseCase->execute();
+        return response()->json(FacultadResource::collection($facultades), Response::HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/facultades/filial/{filialId}",
+     *     summary="Listar facultades por filial",
+     *     description="Devuelve todas las facultades asociadas a una filial específica",
+     *     tags={"Facultades"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="filialId",
+     *         in="path",
+     *         required=true,
+     *         description="ID de la filial",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de facultades por filial",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Facultad")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No se encontraron facultades para la filial indicada",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="No hay facultades para esta filial")
+     *         )
+     *     )
+     * )
+     */
+    public function getByFilial(int $filialId): JsonResponse
+    {
+        $facultades = $this->getAllByFilialIdUseCase->execute($filialId);
+
+        if (empty($facultades)) {
+            return response()->json([
+                'message' => 'No hay facultades para esta filial'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         return response()->json(FacultadResource::collection($facultades), Response::HTTP_OK);
     }
 
@@ -267,7 +314,7 @@ class FacultadController extends Controller
         }
     }
 
-    
+
     /**
      * @OA\Delete(
      *     path="/facultades/{id}",

@@ -57,7 +57,7 @@ export default function UserFormPage() {
         <PageBreadcrumb
           pageTitle={id ? "Editar Usuario" : "Crear Usuario"}
           pageBack="Cancelar"
-          routeBack="super&admin-usuarios"
+          routeBack="super-admin-usuarios"
         />
       </div>
 
@@ -73,7 +73,7 @@ export default function UserFormPage() {
             initialUser={user}
             onSuccess={() => {
               console.log("onSucces ejecutando, navegando...");
-              navigate("/super&admin-usuarios");
+              navigate("/super-admin-usuarios");
             }}
           />
         </ElectricBorder>

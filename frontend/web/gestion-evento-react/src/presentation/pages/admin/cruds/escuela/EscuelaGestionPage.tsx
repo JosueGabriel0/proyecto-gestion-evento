@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
@@ -11,6 +11,7 @@ import type { Facultad } from "../../../../../domain/entities/Facultad";
 import { EscuelaRepository } from "../../../../../infrastructure/repositories/EscuelaRepository";
 import { EscuelaService } from "../../../../../application/services/EscuelaService";
 import type { Escuela } from "../../../../../domain/entities/Escuela";
+import { TokenStorage } from "../../../../../infrastructure/repositories/TokenStorage";
 
 const facultadRepository = new FacultadRepository();
 const facultadService = new FacultadService(facultadRepository);
@@ -18,12 +19,28 @@ const facultadService = new FacultadService(facultadRepository);
 const escuelaRepository = new EscuelaRepository();
 const escuelaService = new EscuelaService(escuelaRepository);
 
+const tokenStorage = new TokenStorage();
+
 export default function EscuelaGestionPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [facultades, setFacultades] = useState<Facultad[]>([]);
   const navigate = useNavigate();
 
   const [refresh, setRefresh] = useState(0);
+
+  const user = tokenStorage.getUser();
+    const userRole = user?.role ?? null;
+  
+     const routeBack = useMemo(() => {
+      switch (userRole) {
+        case "ROLE_SUPER_ADMIN":
+          return "super-dashboard";
+        case "ROLE_ADMIN":
+          return "admin-dashboard";
+        default:
+          return "dashboard"; // fallback genérico
+      }
+    }, [userRole]);
 
   // 🔹 Cargar filiales (para mostrar los nombres)
   useEffect(() => {
@@ -105,21 +122,21 @@ export default function EscuelaGestionPage() {
       <PageBreadcrumb
         pageTitle="Gestión de Escuela"
         pageBack="Inicio"
-        routeBack="dashboard-admin"
+        routeBack={routeBack}
       />
 
       <ComponentCard
         title="Tabla de Escuelas"
         placeHolder="Buscar Escuela..."
         onSearch={(term) => setSearchTerm(term)}
-        onAdd={() => navigate("/super&admin-escuelas/new")}
+        onAdd={() => navigate("/super-admin-escuelas/new")}
       >
         <BasicTableOne<Escuela>
           columns={columns}
           fetchData={fetchEscuelas}
           searchTerm={searchTerm}
           refreshTrigger={refresh}
-          onEdit={(escuela) => navigate(`/super&admin-escuelas/edit/${escuela.id}`)}
+          onEdit={(escuela) => navigate(`/super-admin-escuelas/edit/${escuela.id}`)}
           onDelete={handleDelete}
         />
       </ComponentCard>
