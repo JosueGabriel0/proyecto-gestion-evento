@@ -214,7 +214,7 @@ class UserController extends Controller
 
         $users = $this->searchUsersUseCase->execute($term, $role, $perPage);
 
-         return response()->json([
+        return response()->json([
             'current_page' => $users->currentPage(),
             'per_page'     => $users->perPage(),
             'total'        => $users->total(),
@@ -326,7 +326,15 @@ class UserController extends Controller
      *
      *                 @OA\Property(property="codigo_universitario", type="string", nullable=true, example="20224567"),
      *                 @OA\Property(property="especialidad", type="string", nullable=true, example="Ingeniería de Software"),
-     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa")
+     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa"),
+     *                 @OA\Property(
+     *                  property="ponencia_id",
+     *                  type="integer",
+     *                  nullable=true,
+     *                  example=5,
+     *                  description="ID de la ponencia asignada al ponente"
+     *                  )
+
      *             )
      *         )
      *     ),
@@ -401,12 +409,12 @@ class UserController extends Controller
             )
             : null;
 
-        $ponente = $request->filled('biografia')
+        $ponente = $request->filled('biografia') || $request->filled('ponencia_id')
             ? new Ponente(
                 id: null,
                 biografia: $request->input('biografia'),
                 userId: null,
-                ponenciaId: null,
+                ponenciaId: $request->input('ponencia_id') ? (int) $request->input('ponencia_id') : null
             )
             : null;
 
@@ -486,7 +494,16 @@ class UserController extends Controller
      *
      *                 @OA\Property(property="codigo_universitario", type="string", nullable=true, example="20224567"),
      *                 @OA\Property(property="especialidad", type="string", nullable=true, example="Ingeniería de Software"),
-     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa")
+     *                 @OA\Property(property="biografia", type="string", nullable=true, example="Ponente en conferencias internacionales de tecnología educativa"),
+     * 
+     *                 @OA\Property(
+     *                  property="ponencia_id",
+     *                  type="integer",
+     *                  nullable=true,
+     *                  example=5,
+     *                  description="ID de la ponencia asignada al ponente"
+     *                  )
+
      *             )
      *         )
      *     ),
@@ -523,69 +540,74 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, int $id): JsonResponse
     {
-        try{
-        // 1️⃣ Extraer datos simples
-        $email = $request->input('email');
-        $password = $request->input('password');
-        $escuelaId = $request->input('escuela_id');
-        $role = $request->input('role');
+        try {
+            // 1️⃣ Extraer datos simples
+            $email = $request->input('email');
+            $password = $request->input('password');
+            $escuelaId = $request->input('escuela_id');
+            $role = $request->input('role');
 
-        // 2️⃣ Manejar la foto de perfil (si se envía nueva)
-        $fotoPerfil = null;
-        if ($request->hasFile('foto_perfil')) {
-            $fotoPerfil = $request->file('foto_perfil')->store('images/personas', 'public');
-        } else {
-            // Si no se envía nueva foto, conservar la anterior
-            $fotoPerfil = $request->input('foto_perfil_actual') ?? null;
-        }
+            // 2️⃣ Manejar la foto de perfil (si se envía nueva)
+            $fotoPerfil = null;
+            if ($request->hasFile('foto_perfil')) {
+                $fotoPerfil = $request->file('foto_perfil')->store('images/personas', 'public');
+            } else {
+                // Si no se envía nueva foto, conservar la anterior
+                $fotoPerfil = $request->input('foto_perfil_actual') ?? null;
+            }
 
-        // 3️⃣ Crear entidad Persona con datos planos del form-data
-        $persona = new Persona(
-            id: null,
-            nombres: $request->input('nombres'),
-            apellidos: $request->input('apellidos'),
-            tipoDocumento: $request->input('tipo_documento'),
-            numeroDocumento: $request->input('numero_documento'),
-            telefono: $request->input('telefono'),
-            direccion: $request->input('direccion'),
-            pais: $request->input('pais'),
-            religion: $request->input('religion'),
-            correoElectronico: $request->input('correo_electronico'),
-            correoInstitucional: $request->input('correo_institucional'),
-            fotoPerfil: $fotoPerfil,
-            fechaNacimiento: new DateTime($request->input('fecha_nacimiento'))
-        );
+            // 3️⃣ Crear entidad Persona con datos planos del form-data
+            $persona = new Persona(
+                id: null,
+                nombres: $request->input('nombres'),
+                apellidos: $request->input('apellidos'),
+                tipoDocumento: $request->input('tipo_documento'),
+                numeroDocumento: $request->input('numero_documento'),
+                telefono: $request->input('telefono'),
+                direccion: $request->input('direccion'),
+                pais: $request->input('pais'),
+                religion: $request->input('religion'),
+                correoElectronico: $request->input('correo_electronico'),
+                correoInstitucional: $request->input('correo_institucional'),
+                fotoPerfil: $fotoPerfil,
+                fechaNacimiento: new DateTime($request->input('fecha_nacimiento'))
+            );
 
-        // 4️⃣ Relaciones opcionales
-        $alumno = $request->filled('codigo_universitario')
-            ? new Alumno(null, null, $request->input('codigo_universitario'))
-            : null;
+            // 4️⃣ Relaciones opcionales
+            $alumno = $request->filled('codigo_universitario')
+                ? new Alumno(null, null, $request->input('codigo_universitario'))
+                : null;
 
-        $jurado = $request->filled('especialidad')
-            ? new Jurado(null, null, $request->input('especialidad'))
-            : null;
+            $jurado = $request->filled('especialidad')
+                ? new Jurado(null, null, $request->input('especialidad'))
+                : null;
 
-        $ponente = $request->filled('biografia')
-            ? new Ponente(null, $request->input('biografia'), null, null)
-            : null;
+            $ponente = $request->filled('biografia') || $request->filled('ponencia_id')
+                ? new Ponente(
+                    id: null,
+                    biografia: $request->input('biografia'),
+                    userId: null,
+                    ponenciaId: $request->input('ponencia_id') ? (int) $request->input('ponencia_id') : null
+                )
+                : null;
 
-        // 5️⃣ Crear el usuario con los datos actualizados
-        $user = new User(
-            id: $id,
-            email: $email,
-            password: $password ?? '',
-            escuelaId: $escuelaId,
-            persona: $persona,
-            alumno: $alumno,
-            jurado: $jurado,
-            ponente: $ponente
-        );
+            // 5️⃣ Crear el usuario con los datos actualizados
+            $user = new User(
+                id: $id,
+                email: $email,
+                password: $password ?? '',
+                escuelaId: $escuelaId,
+                persona: $persona,
+                alumno: $alumno,
+                jurado: $jurado,
+                ponente: $ponente
+            );
 
-        // 6️⃣ Ejecutar el caso de uso
-        $updated = $this->updateUserUseCase->execute($user, $role);
+            // 6️⃣ Ejecutar el caso de uso
+            $updated = $this->updateUserUseCase->execute($user, $role);
 
-        // 7️⃣ Devolver respuesta
-        return response()->json(new UserResource($updated), Response::HTTP_OK);
+            // 7️⃣ Devolver respuesta
+            return response()->json(new UserResource($updated), Response::HTTP_OK);
         } catch (RuntimeException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }

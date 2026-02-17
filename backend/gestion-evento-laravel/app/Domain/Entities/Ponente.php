@@ -7,7 +7,7 @@ class Ponente
     private ?int $id;
     private ?string $biografia;
     private ?int $userId;
-    private int $ponenciaId;
+    private ?int $ponenciaId;
 
     /**
      * Constructor
@@ -36,7 +36,7 @@ class Ponente
         return $this->userId;
     }
 
-    public function getPonenciaId(): int
+    public function getPonenciaId(): ?int
     {
         return $this->ponenciaId;
     }
@@ -57,7 +57,7 @@ class Ponente
         $this->userId = $userId;
     }
 
-    public function setPonenciaId(int $ponenciaId): void
+    public function setPonenciaId(?int $ponenciaId): void
     {
         $this->ponenciaId = $ponenciaId;
     }

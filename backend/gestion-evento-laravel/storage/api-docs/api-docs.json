@@ -1151,6 +1151,375 @@
                 ]
             }
         },
+        "/ponencias": {
+            "get": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Listar ponencias",
+                "description": "Devuelve todas las ponencias registradas",
+                "operationId": "a9d91d5eb81e5a7860d096bff6cff1b8",
+                "responses": {
+                    "200": {
+                        "description": "Lista de ponencias",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Ponencia"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Crear una nueva ponencia",
+                "description": "Crea una ponencia con todos sus campos y archivos opcionales",
+                "operationId": "2d07983874daaec673ad56c33cca8fc2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "eventoId",
+                                    "categoriaId",
+                                    "ponente",
+                                    "codigoQr"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Impacto de la IA"
+                                    },
+                                    "eventoId": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "categoriaId": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "ponente": {
+                                        "type": "string",
+                                        "example": "Dr. Juan Pérez"
+                                    },
+                                    "institucion": {
+                                        "type": "string",
+                                        "example": "UPeU",
+                                        "nullable": true
+                                    },
+                                    "archivoPresentacion": {
+                                        "description": "Archivo PDF de la presentación",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "foto": {
+                                        "description": "Foto opcional de la ponencia",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "codigoQr": {
+                                        "type": "string",
+                                        "example": "QR-ABC123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Ponencia creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ponencia"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ponencias/{id}": {
+            "get": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Obtener una ponencia por ID",
+                "description": "Devuelve una ponencia específica por su ID",
+                "operationId": "6ddfa7318d452ee7bb6bbb6a7d56de71",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ponencia",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ponencia encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ponencia"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ponencia no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ponencia no encontrada"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Actualizar una ponencia",
+                "description": "Permite actualizar los datos de una ponencia existente",
+                "operationId": "fb544869e0a418edb4f370789dc324d4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ponencia a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "example": "Ponencia actualizada"
+                                    },
+                                    "eventoId": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "categoriaId": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "ponente": {
+                                        "type": "string",
+                                        "example": "Mg. Felipe Ramos"
+                                    },
+                                    "institucion": {
+                                        "type": "string",
+                                        "example": "UNSAAC"
+                                    },
+                                    "archivoPresentacion": {
+                                        "description": "Nuevo PDF de la presentación",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "foto": {
+                                        "description": "Nueva foto opcional",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "codigoQr": {
+                                        "type": "string",
+                                        "example": "QR-XYZ999"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ponencia actualizada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Ponencia"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ponencia no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Eliminar una ponencia",
+                "description": "Elimina una ponencia por su ID",
+                "operationId": "68318179804614c326082518a84c5363",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la ponencia a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 7
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ponencia eliminada exitosamente"
+                    },
+                    "404": {
+                        "description": "Ponencia no encontrada"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ponencias/paginated": {
+            "get": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Obtener ponencias paginadas",
+                "description": "Devuelve una lista paginada de ponencias",
+                "operationId": "69747463673c8e7ed6583c66dd861034",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Página a visualizar",
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Cantidad por página",
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de ponencias"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ponencias/search": {
+            "get": {
+                "tags": [
+                    "Ponencias"
+                ],
+                "summary": "Buscar ponencias",
+                "description": "Permite buscar ponencias por nombre, ponente o institución",
+                "operationId": "ce781e69966cd3c6e157c5b2414650a4",
+                "parameters": [
+                    {
+                        "name": "q",
+                        "in": "query",
+                        "description": "Término de búsqueda",
+                        "schema": {
+                            "type": "string",
+                            "example": "IA"
+                        }
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "Resultados por página",
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Resultados obtenidos"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/roles": {
             "get": {
                 "tags": [
@@ -2038,6 +2407,12 @@
                                         "type": "string",
                                         "example": "Ponente en conferencias internacionales de tecnología educativa",
                                         "nullable": true
+                                    },
+                                    "ponencia_id": {
+                                        "description": "ID de la ponencia asignada al ponente",
+                                        "type": "integer",
+                                        "example": 5,
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -2284,6 +2659,12 @@
                                     "biografia": {
                                         "type": "string",
                                         "example": "Ponente en conferencias internacionales de tecnología educativa",
+                                        "nullable": true
+                                    },
+                                    "ponencia_id": {
+                                        "description": "ID de la ponencia asignada al ponente",
+                                        "type": "integer",
+                                        "example": 5,
                                         "nullable": true
                                     }
                                 },
@@ -2991,6 +3372,61 @@
                 },
                 "type": "object"
             },
+            "Ponencia": {
+                "title": "Ponencia",
+                "description": "Representación de una ponencia dentro del sistema",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nombre": {
+                        "type": "string",
+                        "example": "Impacto de la Inteligencia Artificial en la Educación Superior"
+                    },
+                    "eventoId": {
+                        "description": "ID del evento asociado",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "categoriaId": {
+                        "description": "ID de la categoría de la ponencia",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "ponente": {
+                        "description": "Nombre del ponente",
+                        "type": "string",
+                        "example": "Dr. Juan Pérez"
+                    },
+                    "institucion": {
+                        "description": "Institución del ponente",
+                        "type": "string",
+                        "example": "Universidad Peruana Unión",
+                        "nullable": true
+                    },
+                    "archivoPresentacion": {
+                        "description": "Ruta del archivo PDF de la presentación",
+                        "type": "string",
+                        "format": "url",
+                        "example": "http://localhost/storage/ponencias/presentacion_123.pdf",
+                        "nullable": true
+                    },
+                    "foto": {
+                        "description": "Ruta de la foto relacionada a la ponencia",
+                        "type": "string",
+                        "format": "url",
+                        "example": "http://localhost/storage/ponencias/foto_ponencia_123.png",
+                        "nullable": true
+                    },
+                    "codigoQr": {
+                        "description": "Código QR generado para la ponencia",
+                        "type": "string",
+                        "example": "QR-ABC123456"
+                    }
+                },
+                "type": "object"
+            },
             "Ponente": {
                 "title": "Ponente",
                 "description": "Datos del ponente asociado a un usuario y una ponencia",
@@ -3143,6 +3579,10 @@
         {
             "name": "Facultades",
             "description": "Facultades"
+        },
+        {
+            "name": "Ponencias",
+            "description": "Ponencias"
         },
         {
             "name": "Roles",

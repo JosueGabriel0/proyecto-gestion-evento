@@ -209,7 +209,6 @@ const AppSidebar: React.FC = () => {
           {renderMenuItems(navItems)}
         </nav>
 
-        {(isExpanded || isHovered || isMobileOpen) && <SidebarWidget />}
       </div>
     </aside>
   );

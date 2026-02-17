@@ -88,7 +88,10 @@ const InputFile: React.FC<InputFileProps> = ({ file, onChange, initialUrl, label
                 className="text-gray-800 dark:text-gray-100 transition-colors duration-300"
               />
             </div>
-            <p className="flex-1 text-center text-gray-800 dark:text-gray-100 truncate">
+            <p
+              title={file ? file.name : "Ningún archivo seleccionado"}
+              className="flex-1 text-center text-gray-800 dark:text-gray-100 truncate overflow-hidden whitespace-nowrap max-w-[200px]"
+            >
               {file ? file.name : "Ningún archivo seleccionado"}
             </p>
           </div>
@@ -96,7 +99,6 @@ const InputFile: React.FC<InputFileProps> = ({ file, onChange, initialUrl, label
       </label>
 
       <input
-        id="file"
         ref={inputRef}
         type="file"
         accept="image/*"

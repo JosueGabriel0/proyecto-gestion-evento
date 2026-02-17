@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('ponencias', function (Blueprint $table) {
             $table->id();
 
+            $table->string('nombre');
+
             // Relación 1 a 1 con eventos
             $table->foreignId('evento_id')->constrained('eventos')->onDelete('cascade');
 

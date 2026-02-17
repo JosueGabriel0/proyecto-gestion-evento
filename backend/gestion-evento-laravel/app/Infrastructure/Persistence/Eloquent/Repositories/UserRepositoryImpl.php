@@ -94,6 +94,7 @@ class UserRepositoryImpl implements UserRepository
                     if ($user->getPonente()) {
                         $model->ponente()->create([
                             'biografia' => $user->getPonente()->getBiografia(),
+                            'ponencia_id' => $user->getPonente()->getPonenciaId(), // ✅
                         ]);
                     }
                     break;
@@ -175,7 +176,10 @@ class UserRepositoryImpl implements UserRepository
                     if ($user->getPonente()) {
                         $model->ponente()->updateOrCreate(
                             ['user_id' => $model->id],
-                            ['biografia' => $user->getPonente()->getBiografia()]
+                            [
+                                'biografia' => $user->getPonente()->getBiografia(),
+                                'ponencia_id' => $user->getPonente()->getPonenciaId(), // ✅
+                            ]
                         );
                     }
                     break;

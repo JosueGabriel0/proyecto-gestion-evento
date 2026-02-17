@@ -18,6 +18,7 @@ import { FacultadRepository } from "../../../../infrastructure/repositories/Facu
 import { FacultadService } from "../../../../application/services/FacultadService";
 import type { Filial } from "../../../../domain/entities/Filial";
 import type { Facultad } from "../../../../domain/entities/Facultad";
+import Accordeon from "../../actions/Accordeon";
 
 const userRepository = new UserRepository();
 const userService = new UserService(userRepository);
@@ -64,6 +65,10 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
       : ""
   );
 
+  const [codigoUniversitario, setCodigoUniversitario] = useState(initialUser?.getAlumno()?.codigoUniversitario || "");
+  const [especialidad, setEspecialidad] = useState(initialUser?.getJurado()?.especialidad || "");
+  const [biografia, setBiografia] = useState(initialUser?.getPonente()?.biografia || "");
+
   const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [foto] = useState(initialUser?.getPersona()?.fotoPerfil || "");
   const [loading, setLoading] = useState(false);
@@ -77,6 +82,75 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
   const [roles, setRoles] = useState<Role[]>([]);
   const [escuelas, setEscuelas] = useState<Escuela[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const tiposDocumento = [
+    "DNI",
+    "Pasaporte",
+    "Carnet de Extranjería",
+    "Partida de Nacimiento",
+    "Otro"
+  ];
+
+  const paises = [
+    "Perú",
+    "Argentina",
+    "Bolivia",
+    "Brasil",
+    "Chile",
+    "Colombia",
+    "Ecuador",
+    "Paraguay",
+    "Uruguay",
+    "Venezuela",
+    "México",
+    "Guatemala",
+    "Honduras",
+    "El Salvador",
+    "Nicaragua",
+    "Costa Rica",
+    "Panamá",
+    "Cuba",
+    "República Dominicana",
+    "Puerto Rico",
+    "España",
+    "Portugal",
+    "Estados Unidos",
+    "Canadá",
+    "Italia",
+    "Francia",
+    "Alemania",
+    "Reino Unido",
+    "Suiza",
+    "Suecia",
+    "Noruega",
+    "Dinamarca",
+    "Países Bajos",
+    "Bélgica",
+    "Austria",
+    "Finlandia",
+    "Polonia",
+    "Hungría",
+    "Rusia",
+    "China",
+    "Japón",
+    "Corea del Sur",
+    "India",
+    "Filipinas",
+    "Tailandia",
+    "Vietnam",
+    "Indonesia",
+    "Australia",
+    "Nueva Zelanda",
+    "Sudáfrica",
+    "Egipto",
+    "Marruecos",
+    "Nigeria",
+    "Kenia",
+    "Arabia Saudita",
+    "Emiratos Árabes Unidos",
+    "Turquía",
+    "Israel"
+  ];
 
   useEffect(() => {
     filialService.getFiliales().then(setFiliales).catch(console.error);
@@ -159,6 +233,21 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
       valid = false;
     }
 
+    if (roleName === "ROLE_ALUMNO" && !codigoUniversitario.trim()) {
+      newErrors.codigoUniversitario = "El código universitario es obligatorio.";
+      valid = false;
+    }
+
+    if (roleName === "ROLE_JURADO" && !especialidad.trim()) {
+      newErrors.especialidad = "La especialidad es obligatoria.";
+      valid = false;
+    }
+
+    if (roleName === "ROLE_PONENTE" && !biografia.trim()) {
+      newErrors.biografia = "La biografía es obligatoria.";
+      valid = false;
+    }
+
     if (!fotoFile && !foto) {
       newErrors.foto = "Debe seleccionar una foto de perfil.";
       valid = false;
@@ -190,21 +279,35 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
         fechaNacimiento: new Date(fechaNacimiento),
       };
 
-      const user = new User({
+      // 🔹 Estructura base del usuario
+      const userData: any = {
+        id: initialUser?.getId(),
         email,
         password,
         escuelaId,
         persona,
         role,
-      });
+      };
 
+      // 🔹 Campos dinámicos según rol
+      if (roleName === "ROLE_ALUMNO") {
+        userData.alumno = { codigoUniversitario };
+      } else if (roleName === "ROLE_JURADO") {
+        userData.jurado = { especialidad };
+      } else if (roleName === "ROLE_PONENTE") {
+        userData.ponente = { biografia };
+      }
+
+      const user = new User(userData);
+
+      // ✅ Guardar o actualizar
       if (initialUser) {
         await userService.updateUser(user, fotoFile || undefined);
       } else {
         await userService.createUser(user, fotoFile || undefined);
       }
 
-      onSuccess();
+      onSuccess(); // refresca tabla o redirige
     } catch (error) {
       console.error("Error al guardar el usuario:", error);
     } finally {
@@ -243,7 +346,12 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-10">
-        <InputText value={tipoDocumento} onChange={(e) => setTipoDocumento(e.target.value)} label="Tipo de documento" />
+        <Accordeon
+          label="Tipo de documento"
+          options={tiposDocumento}
+          value={tipoDocumento}
+          onChange={setTipoDocumento}
+        />
         <InputText value={numeroDocumento} onChange={(e) => setNumeroDocumento(e.target.value)} label="Número de documento" />
       </div>
 
@@ -253,7 +361,12 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
       </div>
 
       <div className="grid grid-cols-2 gap-4 mt-10">
-        <InputText value={pais} onChange={(e) => setPais(e.target.value)} label="País" />
+        <Accordeon
+          label="País"
+          options={paises}
+          value={pais}
+          onChange={setPais}
+        />
         <InputText value={religion} onChange={(e) => setReligion(e.target.value)} label="Religión" />
       </div>
 
@@ -454,8 +567,42 @@ export default function UserForm({ initialUser, onSuccess }: UserFormProps) {
         {errors.roleId && <p className="text-red-500 text-sm mt-1">{errors.roleId}</p>}
       </div>
 
+      {/* === Inputs dinámicos según el rol seleccionado === */}
+      {roleName === "ROLE_ALUMNO" && (
+        <div className="mt-10">
+          <InputText
+            value={codigoUniversitario}
+            onChange={(e) => setCodigoUniversitario(e.target.value)}
+            label="Código Universitario"
+            placeholder="Ej. 202312345"
+          />
+        </div>
+      )}
+
+      {roleName === "ROLE_JURADO" && (
+        <div className="mt-10">
+          <InputText
+            value={especialidad}
+            onChange={(e) => setEspecialidad(e.target.value)}
+            label="Especialidad"
+            placeholder="Ej. Inteligencia Artificial"
+          />
+        </div>
+      )}
+
+      {roleName === "ROLE_PONENTE" && (
+        <div className="mt-10">
+          <InputText
+            value={biografia}
+            onChange={(e) => setBiografia(e.target.value)}
+            label="Biografía"
+            placeholder="Describe tu experiencia profesional..."
+          />
+        </div>
+      )}
+
       {/* ========== Foto ========== */}
-      <div className="mt-5">
+      <div className="mt-5 mb-5">
         <InputFile file={fotoFile} onChange={(file) => setFotoFile(file)} label="Foto de perfil" initialUrl={foto} />
         {errors.foto && <p className="text-red-500 text-sm mt-1">{errors.foto}</p>}
       </div>

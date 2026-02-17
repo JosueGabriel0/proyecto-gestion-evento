@@ -54,5 +54,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/users/search',    [UserController::class, 'search']);
         Route::apiResource('users', UserController::class);
         Route::post('/users/{id}', [UserController::class, 'update']);
+
+        Route::get('/ponencias/paginated', [FacultadController::class, 'paginated']);
+        Route::get('/ponencias/search',    [FacultadController::class, 'search']);
+        Route::apiResource('ponencias', FacultadController::class);
+        Route::post('/ponencias/{id}', [FacultadController::class, 'update']);
     });
 });

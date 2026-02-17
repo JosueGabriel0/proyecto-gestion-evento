@@ -12,30 +12,45 @@ class PonenciaModel extends Model
     protected $table = 'ponencias';
 
     protected $fillable = [
-        'alumno_id',
-        'titulo',
-        'descripcion',
-        'area',
-        'horario',
+        'nombre',
+        'evento_id',
+        'categoria_id',
+        'ponente',
+        'institucion',
+        'archivo_presentacion',
+        'foto',
+        'codigo_qr',
     ];
 
-    // 🔗 Relaciones
+    /**
+     * Una ponencia pertenece a un evento (1:1)
+     */
+    public function evento()
+    {
+        return $this->belongsTo(EventoModel::class, 'evento_id');
+    }
 
-    // Una ponencia pertenece a un alumno
+    /**
+     * Una ponencia pertenece a una categoría
+     */
     public function categoria()
     {
-        return $this->belongsTo(CategoriaModel::class);
+        return $this->belongsTo(CategoriaModel::class, 'categoria_id');
     }
 
-    // Una ponencia puede tener muchas evaluaciones
+    /**
+     * Relación opcional: una ponencia puede tener varios asistentes o evaluaciones (si aplica)
+     */
     public function evaluaciones()
     {
-        return $this->hasMany(EvaluacionModel::class);
+        return $this->hasMany(EvaluacionModel::class, 'ponencia_id');
     }
 
-    // Una ponencia puede tener un resultado final
-    public function resultado()
+    /**
+     * Accessor para mostrar nombre del ponente en mayúsculas
+     */
+    public function getPonenteUppercaseAttribute()
     {
-        return $this->hasOne(ResultadoModel::class);
+        return strtoupper($this->ponente);
     }
 }
